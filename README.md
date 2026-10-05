@@ -1,36 +1,102 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AgentBridge
 
-## Getting Started
+**The private MLS for real-estate agents.** Agents share the inventory they hold with every other agency — without exposing the exact location, the owner or their own identity. Agents match buyers to stock, chat anonymously, and only after both sides accept co-broker terms in a **Deal Room** are names, contact details and the address revealed. The platform's success fee is locked in *before* the reveal, so nobody can take the deal offline to avoid it.
 
-First, run the development server:
+Stack: **Next.js 16 (App Router) · Supabase (Postgres, Auth, Storage, Realtime) · Tailwind CSS v4 · Vercel**.
+
+---
+
+## How privacy is enforced
+
+Privacy is enforced by **Postgres Row-Level Security**, not just by hiding fields in the UI:
+
+| Table | Who can read it |
+| --- | --- |
+| `agents` (anon code, plan, verified) | every signed-in agent |
+| `agent_identities` (name, agency, phone, email) | the owner — and the counterparty of a Deal Room **both** sides have accepted |
+| `listings` (price, type, size, locality, features, photos, commission) | every signed-in agent |
+| `listing_private` (address, building, viewing notes) | the owner — and the counterparty of an accepted Deal Room for that listing |
+| `conversations` / `messages` | the two participants |
+| `deal_rooms` | the two participants (writes only via RPC) |
+
+Deal Room transitions (`open_deal_room`, `accept_deal_room`, `cancel_deal_room`, `close_deal_room`) are `security definer` functions, so the state machine can't be bypassed from the client. An agreed room (`status = active`) cannot be cancelled unilaterally.
+
+## Business model (built in)
+
+- **Free** — browse, up to 3 live listings (enforced by a DB trigger)
+- **Pro Agent** — €79/month, unlimited listings & requests
+- **Agency** — €299/month, team seats & analytics
+- **Success fee** — 7.5% of the buyer-agent commission from each side on deals closed through a Deal Room. Both agents accept this digitally before the reveal.
+
+Plan limits live in `PLANS` (`src/lib/constants.ts`) and `enforce_listing_limit()` (migration). Billing (Stripe) is **not** wired up yet; change `agents.plan` manually for now.
+
+---
+
+## Setup
+
+### 1. Supabase
+
+1. Create a project at <https://supabase.com>.
+2. Open **SQL Editor** and run `supabase/migrations/0001_init.sql` in full (or `supabase db push` if you use the CLI).
+   This creates all tables, RLS policies, RPCs, the `listing-photos` storage bucket and enables Realtime on `messages`.
+3. **Authentication → URL Configuration**
+   - Site URL: `http://localhost:3000` (later your Vercel URL)
+   - Redirect URLs: add `http://localhost:3000/auth/callback` and `https://<your-app>.vercel.app/auth/callback`
+4. (Optional, for fast local testing) **Authentication → Providers → Email → disable "Confirm email"** so signups log in immediately.
+
+### 2. Environment
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cp .env.example .env.local
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Fill in from **Project Settings → API**:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...   # or the legacy anon key
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 3. Run
 
-## Learn More
+```bash
+npm install
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+Open <http://localhost:3000>. Create two accounts (use two browsers) to try the full flow: list → browse → message → Deal Room → accept on both sides → reveal.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 4. Deploy to Vercel
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Push this repo to GitHub and import it in Vercel.
+2. Add the three environment variables above (set `NEXT_PUBLIC_SITE_URL` to the production URL).
+3. Add the production callback URL in Supabase (step 1.3).
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Project layout
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+supabase/migrations/0001_init.sql   schema, RLS, RPCs, storage, realtime
+src/proxy.ts                        session refresh + route protection (Next 16 "proxy", formerly middleware)
+src/lib/supabase/                   server / browser / proxy Supabase clients
+src/lib/constants.ts                localities, property types, plans, co-broker terms
+src/lib/matching.ts                 buyer-request ⇄ listing matching queries
+src/app/(auth)/                     login, signup
+src/app/(app)/dashboard             overview, matches, pending Deal Rooms
+src/app/(app)/listings              browse / create / edit / detail (+ private panel)
+src/app/(app)/requests              buyer demand, propose stock anonymously
+src/app/(app)/messages              anonymous realtime chat
+src/app/(app)/deals                 Deal Rooms: terms, acceptance, reveal, close
+src/app/(app)/settings              private profile, plan
+```
+
+## Roadmap
+
+- Stripe subscriptions + invoicing the success fee on `close_deal_room`
+- Agent verification workflow (licence check → `agents.verified`)
+- Email / push notifications for new matches and messages
+- Agency accounts with multiple seats
+- Approximate-area map (locality polygon, never a pin) on listings
+- Analytics: demand by locality, time-to-match, average commission
