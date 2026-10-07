@@ -1,16 +1,16 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { BuyerRequest, BuyerRequestWithAgent, Listing, ListingWithAgent } from "@/lib/types";
+import type { BuyerRequestWithAgent, Listing, ListingWithAgent, MatchCriteria } from "@/lib/types";
 
 /** Quote a value for use inside a PostgREST array literal. */
 function arrayLiteral(values: string[]) {
   return `{${values.map((v) => `"${v.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`).join(",")}}`;
 }
 
-/** Live listings (from other agents) that satisfy a buyer request. */
+/** Live listings (from other agents) that satisfy a buyer request or ad-hoc brief. */
 export async function listingsMatchingRequest(
   supabase: SupabaseClient,
-  req: BuyerRequest,
-  opts: { excludeAgentId?: string; limit?: number } = {},
+  req: MatchCriteria,
+  opts: { excludeAgentId?: string; excludeIds?: string[]; limit?: number } = {},
 ) {
   let q = supabase
     .from("listings")
@@ -20,6 +20,7 @@ export async function listingsMatchingRequest(
     .limit(opts.limit ?? 30);
 
   if (opts.excludeAgentId) q = q.neq("agent_id", opts.excludeAgentId);
+  if (opts.excludeIds?.length) q = q.not("id", "in", `(${opts.excludeIds.join(",")})`);
   if (req.property_types.length) q = q.in("property_type", req.property_types);
   if (req.localities.length) q = q.in("locality", req.localities);
   if (req.min_price != null) q = q.gte("price", req.min_price);

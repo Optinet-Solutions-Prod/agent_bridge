@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { EyeOff } from "lucide-react";
 import { saveListing } from "@/app/(app)/listings/actions";
 import { PhotoUploader } from "@/components/photo-uploader";
@@ -23,6 +23,13 @@ export function ListingForm({
   const action = saveListing.bind(null, listing?.id ?? null);
   const [state, formAction] = useActionState<ActionState, FormData>(action, {});
   const fe = state.fieldErrors ?? {};
+
+  // The form is long: bring the first problem into view instead of leaving the
+  // agent staring at a button that "did nothing".
+  useEffect(() => {
+    if (!state.error && !state.fieldErrors) return;
+    document.querySelector("[data-field-error], [data-form-error]")?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, [state]);
 
   return (
     <form action={formAction} className="space-y-6">
@@ -157,11 +164,18 @@ export function ListingForm({
         </CardBody>
       </Card>
 
-      <div className="flex items-center justify-end gap-2">
-        <LinkButton href={listing ? `/listings/${listing.id}` : "/listings"} variant="ghost">
-          Cancel
-        </LinkButton>
-        <SubmitButton pendingText="Saving…">{listing ? "Save changes" : "Publish listing"}</SubmitButton>
+      <div className="space-y-3">
+        {(state.error || state.fieldErrors) && (
+          <p className="text-right text-sm text-red-600">
+            {state.error ?? "Some fields need attention — scroll up to the highlighted ones."}
+          </p>
+        )}
+        <div className="flex items-center justify-end gap-2">
+          <LinkButton href={listing ? `/listings/${listing.id}` : "/listings"} variant="ghost">
+            Cancel
+          </LinkButton>
+          <SubmitButton pendingText="Saving…">{listing ? "Save changes" : "Publish listing"}</SubmitButton>
+        </div>
       </div>
     </form>
   );

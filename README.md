@@ -37,8 +37,8 @@ Plan limits live in `PLANS` (`src/lib/constants.ts`) and `enforce_listing_limit(
 ### 1. Supabase
 
 1. Create a project at <https://supabase.com>.
-2. Open **SQL Editor** and run `supabase/migrations/0001_init.sql` in full (or `supabase db push` if you use the CLI).
-   This creates all tables, RLS policies, RPCs, the `listing-photos` storage bucket and enables Realtime on `messages`.
+2. Open **SQL Editor** and run every file in `supabase/migrations/` in order (`0001_init.sql`, then `0002_swipes.sql`), or `supabase db push` if you use the CLI.
+   This creates all tables, RLS policies, RPCs, the `listing-photos` storage bucket, Realtime on `messages`, and the swipe table.
 3. **Authentication → URL Configuration**
    - Site URL: `http://localhost:3000` (later your Vercel URL)
    - Redirect URLs: add `http://localhost:3000/auth/callback` and `https://<your-app>.vercel.app/auth/callback`
@@ -67,6 +67,25 @@ npm run dev
 
 Open <http://localhost:3000>. Create two accounts (use two browsers) to try the full flow: list → browse → message → Deal Room → accept on both sides → reveal.
 
+### 3b. Demo data (optional)
+
+```bash
+node scripts/seed-demo.mjs
+```
+
+Needs `SUPABASE_SERVICE_KEY` in `.env` (server-side only — never `NEXT_PUBLIC_`). Creates six demo agencies with ~24 live listings
+(Unsplash photos) and a few buyer briefs, and upgrades `admin@optinetsolutions.com` to the Agency plan. Safe to re-run.
+Every demo login uses the password `Demo123456`:
+
+| Email | Agency | Plan |
+| --- | --- | --- |
+| maria.borg@example.com | Harbour Homes Malta | Agency |
+| matthew.spiteri@example.com | Prime Residences | Agency |
+| jeanpaul.zammit@example.com | Zammit & Co Estates | Pro |
+| daniela.vella@example.com | Coastline Property | Pro |
+| luke.camilleri@example.com | Camilleri Realty | Free |
+| sarah.grech@example.com | Gozo Living | Free |
+
 ### 4. Deploy to Vercel
 
 1. Push this repo to GitHub and import it in Vercel.
@@ -86,6 +105,9 @@ src/lib/matching.ts                 buyer-request ⇄ listing matching queries
 src/app/(auth)/                     login, signup
 src/app/(app)/dashboard             overview, matches, pending Deal Rooms
 src/app/(app)/listings              browse / create / edit / detail (+ private panel)
+src/app/(app)/discover              Tinder-style swipe deck per client brief + shortlist
+src/components/swipe-deck.tsx       drag / keyboard swipe cards, optimistic save
+scripts/seed-demo.mjs               demo agencies, listings and briefs
 src/app/(app)/requests              buyer demand, propose stock anonymously
 src/app/(app)/messages              anonymous realtime chat
 src/app/(app)/deals                 Deal Rooms: terms, acceptance, reveal, close

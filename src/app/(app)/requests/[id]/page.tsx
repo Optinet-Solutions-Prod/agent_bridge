@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Pencil, Send } from "lucide-react";
+import { Flame, Pencil, Send } from "lucide-react";
 import { deleteRequest, proposeListingForRequest, setRequestStatus } from "@/app/(app)/requests/actions";
 import { ListingCard } from "@/components/listing-card";
 import { budgetLabel } from "@/components/request-card";
@@ -41,6 +41,9 @@ export default async function RequestDetailPage({ params }: PageProps<"/requests
         actions={
           isOwner ? (
             <>
+              <LinkButton href={`/discover?request=${request.id}`}>
+                <Flame className="h-4 w-4" /> Swipe matches
+              </LinkButton>
               <LinkButton href={`/requests/${request.id}/edit`} variant="secondary">
                 <Pencil className="h-4 w-4" /> Edit
               </LinkButton>

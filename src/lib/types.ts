@@ -81,6 +81,23 @@ export interface BuyerRequestWithAgent extends BuyerRequest {
   agents: Pick<Agent, "anon_code" | "verified"> | null;
 }
 
+/** The subset of a buyer request that drives matching; also used for ad-hoc swipe briefs. */
+export type MatchCriteria = Pick<
+  BuyerRequest,
+  "property_types" | "localities" | "min_price" | "max_price" | "min_bedrooms" | "min_size_sqm" | "must_have_features"
+>;
+
+export type SwipeDecision = "like" | "pass";
+
+export interface ListingSwipe {
+  id: string;
+  agent_id: string;
+  buyer_request_id: string | null;
+  listing_id: string;
+  decision: SwipeDecision;
+  created_at: string;
+}
+
 export interface Conversation {
   id: string;
   listing_id: string;

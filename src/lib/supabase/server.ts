@@ -26,11 +26,11 @@ export async function createClient() {
   });
 }
 
-/** Convenience: current auth user or null. */
+/** Convenience: current auth user (id + email from the locally verified JWT) or null. */
 export async function getUser() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  return user;
+  const { data } = await supabase.auth.getClaims();
+  const claims = data?.claims;
+  if (!claims?.sub) return null;
+  return { id: claims.sub, email: typeof claims.email === "string" ? claims.email : null };
 }

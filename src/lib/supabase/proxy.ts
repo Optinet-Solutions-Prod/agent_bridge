@@ -2,7 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/env";
 
-const PROTECTED_PREFIXES = ["/dashboard", "/listings", "/requests", "/messages", "/deals", "/settings"];
+const PROTECTED_PREFIXES = ["/dashboard", "/listings", "/discover", "/requests", "/messages", "/deals", "/settings"];
 const AUTH_ONLY_PATHS = ["/login", "/signup"];
 
 /**
@@ -32,11 +32,12 @@ export async function updateSession(request: NextRequest) {
     },
   });
 
-  // Do not add logic between createServerClient and getUser: it can cause
+  // Do not add logic between createServerClient and getClaims: it can cause
   // random logouts because the session cookie would not be refreshed.
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // getClaims() verifies the ES256 token locally against the cached JWKS, so
+  // this normally costs no network round trip (it only refreshes when expired).
+  const { data } = await supabase.auth.getClaims();
+  const user = data?.claims ?? null;
 
   const { pathname } = request.nextUrl;
   const isProtected = PROTECTED_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`));
