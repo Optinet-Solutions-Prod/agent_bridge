@@ -1,13 +1,16 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { LogOut, Plus } from "lucide-react";
 import { signOut } from "@/app/auth/actions";
+import { DemoSwitcher } from "@/components/demo-switcher";
 import { Logo } from "@/components/logo";
 import { SidebarNav, TabBarNav } from "@/components/nav-links";
 import { AnonBadge, LinkButton } from "@/components/ui";
 import { PLANS } from "@/lib/constants";
+import { DEMO_MODE } from "@/lib/demo";
 import type { Agent } from "@/lib/types";
 
-export function AppShell({ agent, children }: { agent: Agent; children: React.ReactNode }) {
+export function AppShell({ agent, email, children }: { agent: Agent; email: string | null; children: React.ReactNode }) {
   const plan = PLANS[agent.plan];
 
   return (
@@ -25,7 +28,12 @@ export function AppShell({ agent, children }: { agent: Agent; children: React.Re
             <Plus className="h-4 w-4" /> New listing
           </LinkButton>
         </div>
-        <div className="border-t border-white/10 p-4">
+        <div className="space-y-4 border-t border-white/10 p-4">
+          {DEMO_MODE && (
+            <Suspense>
+              <DemoSwitcher currentEmail={email} dark />
+            </Suspense>
+          )}
           <div className="flex items-center justify-between gap-2">
             <div className="min-w-0">
               <p className="text-[11px] font-medium uppercase tracking-wide text-slate-500">You appear as</p>
@@ -44,7 +52,7 @@ export function AppShell({ agent, children }: { agent: Agent; children: React.Re
               </button>
             </form>
           </div>
-          <div className="mt-3 flex items-center justify-between text-xs">
+          <div className="flex items-center justify-between text-xs">
             <span className="text-slate-400">{plan.name} plan</span>
             {agent.plan === "free" && (
               <Link href="/pricing" className="font-medium text-teal-300 hover:underline">
@@ -59,7 +67,13 @@ export function AppShell({ agent, children }: { agent: Agent; children: React.Re
       <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-slate-200/80 bg-white/90 px-4 backdrop-blur lg:hidden">
         <Logo href="/dashboard" />
         <div className="flex items-center gap-1.5">
-          <AnonBadge code={agent.anon_code} verified={agent.verified} prefix="You" />
+          {DEMO_MODE ? (
+            <Suspense>
+              <DemoSwitcher currentEmail={email} compact />
+            </Suspense>
+          ) : (
+            <AnonBadge code={agent.anon_code} verified={agent.verified} prefix="You" />
+          )}
           <form action={signOut}>
             <button type="submit" aria-label="Log out" className="rounded-lg p-2 text-slate-500 hover:bg-slate-100">
               <LogOut className="h-4 w-4" />

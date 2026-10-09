@@ -4,6 +4,7 @@ import { ArrowRight, Check, EyeOff, Flame, Heart, Lock, MessageSquareLock, Shiel
 import { Logo } from "@/components/logo";
 import { LinkButton } from "@/components/ui";
 import { APP_NAME, APP_TAGLINE, PLANS, PLATFORM_FEE_PCT } from "@/lib/constants";
+import { DEMO_MODE } from "@/lib/demo";
 import { getUser } from "@/lib/supabase/server";
 
 const HERO_PHOTO = "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80";
@@ -23,6 +24,13 @@ export default async function HomePage() {
             </Link>
             {user ? (
               <LinkButton href="/dashboard">Open dashboard</LinkButton>
+            ) : DEMO_MODE ? (
+              <>
+                <LinkButton href="/login" variant="ghost">
+                  Log in
+                </LinkButton>
+                <LinkButton href="/dashboard">Open the app</LinkButton>
+              </>
             ) : (
               <>
                 <LinkButton href="/login" variant="ghost">
@@ -51,9 +59,15 @@ export default async function HomePage() {
                 through the network against each client&apos;s brief, chat anonymously, and reveal only after co-broker terms are locked in.
               </p>
               <div className="mt-9 flex flex-wrap gap-3">
-                <LinkButton href="/signup" size="lg">
-                  Create your agent profile <ArrowRight className="h-4 w-4" />
-                </LinkButton>
+                {DEMO_MODE ? (
+                  <LinkButton href="/discover" size="lg">
+                    Try the demo — no login needed <ArrowRight className="h-4 w-4" />
+                  </LinkButton>
+                ) : (
+                  <LinkButton href="/signup" size="lg">
+                    Create your agent profile <ArrowRight className="h-4 w-4" />
+                  </LinkButton>
+                )}
                 <LinkButton href="/pricing" size="lg" variant="secondary" className="border-white/15 bg-white/5 text-white hover:bg-white/10">
                   See pricing
                 </LinkButton>

@@ -10,6 +10,7 @@ import { SwipeDeck } from "@/components/swipe-deck";
 import { Button, Card, CardBody, EmptyState, LinkButton, PageHeader } from "@/components/ui";
 import { requireAgent } from "@/lib/auth";
 import { formatPrice } from "@/lib/format";
+import { interestCounts, listingInterest } from "@/lib/interest";
 import { listingsMatchingRequest } from "@/lib/matching";
 import type { BuyerRequest, ListingWithAgent, MatchCriteria, SwipeDecision } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -94,6 +95,8 @@ export default async function DiscoverPage({ searchParams }: { searchParams: Pro
   ]);
   // Keep the shortlist in "most recently liked first" order.
   const shortlist = likedIds.map((id) => shortlistRows.find((l) => l.id === id)).filter((l): l is ListingWithAgent => !!l);
+  // How many other agents already shortlisted each card — powers the "hot" badge and the match celebration.
+  const interest = interestCounts(await listingInterest(supabase, [...deck.map((l) => l.id), ...shortlist.map((l) => l.id)]));
 
   // Preserve the current brief in links between tabs.
   const base = new URLSearchParams();
@@ -165,7 +168,7 @@ export default async function DiscoverPage({ searchParams }: { searchParams: Pro
 
       {tab === "swipe" ? (
         deck.length > 0 ? (
-          <SwipeDeck key={deckKey} listings={deck} requestId={requestId} likedCount={likedIds.length} shortlistHref={href({ tab: "shortlist" })} />
+          <SwipeDeck key={deckKey} listings={deck} requestId={requestId} likedCount={likedIds.length} shortlistHref={href({ tab: "shortlist" })} interest={interest} />
         ) : (
           <EmptyState
             icon={SlidersHorizontal}
@@ -206,7 +209,7 @@ export default async function DiscoverPage({ searchParams }: { searchParams: Pro
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {shortlist.map((l) => (
             <div key={l.id} className="flex flex-col gap-2">
-              <ListingCard listing={l} />
+              <ListingCard listing={l} interest={interest[l.id]} />
               <div className="flex gap-2">
                 <form action={startConversation.bind(null, l.id, requestId)} className="flex-1">
                   <SubmitButton size="sm" className="w-full" pendingText="Opening chat…">

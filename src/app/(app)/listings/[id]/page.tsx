@@ -2,13 +2,14 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Bath, BedDouble, EyeOff, Lock, LockOpen, MessageSquare, Pencil, Ruler, Trees } from "lucide-react";
+import { Bath, BedDouble, EyeOff, Flame, Lock, LockOpen, MessageSquare, Pencil, Ruler, Trees } from "lucide-react";
 import { deleteListing, setListingStatus, startConversation } from "@/app/(app)/listings/actions";
 import { SubmitButton } from "@/components/submit-button";
 import { AnonBadge, Badge, Button, Card, CardBody, CardTitle, DescriptionList, LinkButton, PageHeader } from "@/components/ui";
 import { requireAgent } from "@/lib/auth";
 import { LISTING_STATUS_LABEL } from "@/lib/constants";
 import { formatDate, formatNumber, formatPrice, timeAgo } from "@/lib/format";
+import { listingInterest } from "@/lib/interest";
 import { requestsMatchingListing } from "@/lib/matching";
 import type { Conversation, ListingPrivate, ListingWithAgent } from "@/lib/types";
 
@@ -24,7 +25,7 @@ export default async function ListingDetailPage({ params }: PageProps<"/listings
   const isOwner = listing.agent_id === agent.id;
 
   // RLS returns this row only to the owner or to the counterparty of an agreed Deal Room.
-  const [{ data: privateRow }, conversationsRes, matchingRequests] = await Promise.all([
+  const [{ data: privateRow }, conversationsRes, matchingRequests, interestMap] = await Promise.all([
     supabase.from("listing_private").select("*").eq("listing_id", id).maybeSingle(),
     isOwner
       ? supabase
@@ -34,8 +35,10 @@ export default async function ListingDetailPage({ params }: PageProps<"/listings
           .order("last_message_at", { ascending: false })
       : Promise.resolve({ data: null }),
     isOwner ? requestsMatchingListing(supabase, listing, { excludeAgentId: agent.id, limit: 6 }) : Promise.resolve([]),
+    listingInterest(supabase, [id]),
   ]);
   const privateDetails = privateRow as ListingPrivate | null;
+  const interest = interestMap[id] ?? { interested: 0, agents: null };
   const conversations = (conversationsRes.data ?? []) as (Conversation & { agents: { anon_code: string; verified: boolean } | null })[];
 
   const startChat = startConversation.bind(null, listing.id, null);
@@ -103,7 +106,17 @@ export default async function ListingDetailPage({ params }: PageProps<"/listings
             <CardBody>
               <div className="flex flex-wrap items-baseline justify-between gap-3">
                 <p className="text-3xl font-semibold">{formatPrice(listing.price, listing.currency)}</p>
-                <Badge tone="teal">{listing.buyer_agent_commission_pct}% commission to buyer agent</Badge>
+                <div className="flex flex-wrap items-center gap-2">
+                  {!isOwner && interest.interested > 0 && (
+                    <span
+                      style={{ animation: "glow 2.2s ease-in-out infinite" }}
+                      className="inline-flex items-center gap-1 rounded-full bg-orange-500 px-2.5 py-1 text-xs font-semibold text-white shadow"
+                    >
+                      <Flame className="h-3.5 w-3.5" /> {interest.interested} other agent{interest.interested === 1 ? "" : "s"} interested
+                    </span>
+                  )}
+                  <Badge tone="teal">{listing.buyer_agent_commission_pct}% commission to buyer agent</Badge>
+                </div>
               </div>
               <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-700">
                 {listing.bedrooms != null && (
@@ -192,6 +205,46 @@ export default async function ListingDetailPage({ params }: PageProps<"/listings
 
           {isOwner && (
             <>
+              <Card className={interest.interested >= 2 ? "border-orange-300 bg-gradient-to-br from-orange-50 to-amber-50/40" : undefined}>
+                <CardBody>
+                  <div className="flex items-center justify-between gap-2">
+                    <CardTitle>Interest from the network</CardTitle>
+                    {interest.interested >= 2 && (
+                      <span
+                        style={{ animation: "pop 500ms cubic-bezier(.2,.8,.2,1)" }}
+                        className="inline-flex items-center gap-1 rounded-full bg-orange-500 px-2.5 py-1 text-xs font-semibold text-white shadow"
+                      >
+                        <Flame className="h-3.5 w-3.5" /> More than one match
+                      </span>
+                    )}
+                  </div>
+                  {interest.interested === 0 ? (
+                    <p className="mt-2 text-sm text-slate-500">No agent has shortlisted this property yet. It appears in their swipe decks whenever it fits a brief.</p>
+                  ) : (
+                    <>
+                      <p className="mt-3 flex items-baseline gap-2" style={{ animation: "count-up 500ms cubic-bezier(.2,.8,.2,1)" }}>
+                        <span className={`text-4xl font-semibold tracking-tight ${interest.interested >= 2 ? "text-orange-600" : "text-slate-900"}`}>{interest.interested}</span>
+                        <span className="text-sm text-slate-600">
+                          agent{interest.interested === 1 ? " has" : "s have"} swiped <strong>Interested!</strong> on this property
+                        </span>
+                      </p>
+                      {interest.agents && interest.agents.length > 0 && (
+                        <div className="mt-3 flex flex-wrap gap-1.5">
+                          {interest.agents.map((a) => (
+                            <AnonBadge key={a.anon_code} code={a.anon_code} verified={a.verified} prefix="Buyer Agent" />
+                          ))}
+                        </div>
+                      )}
+                      <p className="mt-3 text-xs text-slate-500">
+                        {interest.interested >= 2
+                          ? "Competing interest — expect enquiries. Their identities are revealed only inside an agreed Deal Room."
+                          : "They can message you anonymously from their shortlist."}
+                      </p>
+                    </>
+                  )}
+                </CardBody>
+              </Card>
+
               <Card>
                 <CardBody>
                   <CardTitle>Enquiries</CardTitle>

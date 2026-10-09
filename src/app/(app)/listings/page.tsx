@@ -5,6 +5,7 @@ import { ListingCard } from "@/components/listing-card";
 import { Button, EmptyState, LinkButton, PageHeader } from "@/components/ui";
 import { requireAgent } from "@/lib/auth";
 import { PROPERTY_TYPES, REGIONS } from "@/lib/constants";
+import { listingInterest } from "@/lib/interest";
 import type { ListingWithAgent } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -41,6 +42,10 @@ export default async function ListingsPage({ searchParams }: PageProps<"/listing
 
   const { data } = await q;
   const listings = (data ?? []) as ListingWithAgent[];
+  const interest = await listingInterest(
+    supabase,
+    listings.map((l) => l.id),
+  );
 
   return (
     <>
@@ -106,7 +111,7 @@ export default async function ListingsPage({ searchParams }: PageProps<"/listing
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {listings.map((l) => (
-            <ListingCard key={l.id} listing={l} isOwn={l.agent_id === agent.id} />
+            <ListingCard key={l.id} listing={l} isOwn={l.agent_id === agent.id} interest={interest[l.id]?.interested} />
           ))}
         </div>
       )}

@@ -18,6 +18,11 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
           That confirmation link has expired or was already used. Try logging in.
         </p>
       )}
+      {params.error === "guest" && (
+        <p className="mt-4 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
+          The demo guest account isn&apos;t set up yet (run <code>node scripts/seed-demo.mjs</code>). Log in with your own account instead.
+        </p>
+      )}
       <div className="mt-6">
         <LoginForm next={next} />
       </div>

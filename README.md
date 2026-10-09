@@ -67,6 +67,13 @@ npm run dev
 
 Open <http://localhost:3000>. Create two accounts (use two browsers) to try the full flow: list → browse → message → Deal Room → accept on both sides → reveal.
 
+### 3a. Demo mode (no login)
+
+`NEXT_PUBLIC_DEMO_MODE` defaults to **on**: visitors who open an app page are signed in automatically as the shared
+guest agent (`guest@example.com`), and a **Demo · act as** switcher in the sidebar lets anyone become one of the seeded
+demo agents to try both sides of a swipe → match → chat → Deal Room flow. `/login` still works for real accounts.
+Set `NEXT_PUBLIC_DEMO_MODE=false` in Vercel to put the login wall back.
+
 ### 3b. Demo data (optional)
 
 ```bash

@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { DEMO_MODE } from "@/lib/demo";
 import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/env";
 
 const PROTECTED_PREFIXES = ["/dashboard", "/listings", "/discover", "/requests", "/messages", "/deals", "/settings"];
@@ -45,8 +46,10 @@ export async function updateSession(request: NextRequest) {
 
   if (!user && isProtected) {
     const url = request.nextUrl.clone();
-    url.pathname = "/login";
-    url.searchParams.set("next", pathname);
+    // Demo mode: no login wall — sign the visitor in as the guest agent instead.
+    url.pathname = DEMO_MODE ? "/auth/guest" : "/login";
+    url.search = "";
+    url.searchParams.set("next", pathname + request.nextUrl.search);
     return NextResponse.redirect(url);
   }
 

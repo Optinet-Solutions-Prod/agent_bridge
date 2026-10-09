@@ -1,10 +1,14 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import * as z from "zod";
+import { DEMO_AGENTS, DEMO_MODE } from "@/lib/demo";
+import { demoPassword } from "@/lib/demo-server";
 import { createClient } from "@/lib/supabase/server";
 import type { ActionState } from "@/lib/types";
+import { str } from "@/lib/utils";
 
 const SignInSchema = z.object({
   email: z.email({ error: "Enter a valid email address." }).trim(),
@@ -79,8 +83,34 @@ export async function signUp(_prev: ActionState, formData: FormData): Promise<Ac
 
 export async function signOut() {
   const supabase = await createClient();
-  await supabase.auth.signOut();
-  redirect("/login");
+  // Local scope: only this browser. The shared demo guest must not be logged
+  // out everywhere whenever one visitor leaves.
+  await supabase.auth.signOut({ scope: "local" });
+  redirect(DEMO_MODE ? "/" : "/login");
+}
+
+/**
+ * Demo mode: become one of the seeded demo agents in one click so the
+ * two-sided flows (swipe → match → chat → Deal Room) can be tried alone.
+ */
+export async function switchDemoAgent(formData: FormData) {
+  if (!DEMO_MODE) redirect("/login");
+  const email = str(formData, "email");
+  const next = safeNext(formData.get("next"));
+  const supabase = await createClient();
+
+  if (email === "__own") {
+    await supabase.auth.signOut({ scope: "local" });
+    redirect("/login");
+  }
+  if (!email || !DEMO_AGENTS.some((a) => a.email === email)) redirect(next);
+
+  await supabase.auth.signOut({ scope: "local" });
+  const { error } = await supabase.auth.signInWithPassword({ email, password: demoPassword() });
+  if (error) redirect(`/login?error=guest&next=${encodeURIComponent(next)}`);
+
+  revalidatePath("/", "layout");
+  redirect(next);
 }
 
 function flatten(error: z.ZodError): Record<string, string> {

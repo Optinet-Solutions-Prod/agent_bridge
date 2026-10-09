@@ -6,6 +6,7 @@ import { AnonBadge, Badge, Card, CardBody, CardTitle, LinkButton, PageHeader, St
 import { requireAgent } from "@/lib/auth";
 import { PLANS } from "@/lib/constants";
 import { timeAgo } from "@/lib/format";
+import { listingInterest } from "@/lib/interest";
 import { listingsMatchingRequest } from "@/lib/matching";
 import type { BuyerRequest, Conversation, DealRoom, ListingWithAgent } from "@/lib/types";
 
@@ -47,9 +48,13 @@ export default async function DashboardPage() {
 
   const liveListings = (myListings.data ?? []).filter((l) => l.status === "active" || l.status === "under_offer").length;
   const requests = (myRequests.data ?? []) as BuyerRequest[];
-  const matchCounts = await Promise.all(
-    requests.map(async (r) => (await listingsMatchingRequest(supabase, r, { excludeAgentId: agent.id, limit: 50 })).length),
-  );
+  const networkRows = (network.data ?? []) as ListingWithAgent[];
+  const myIds = (myListings.data ?? []).map((l) => l.id);
+  const [matchCounts, interest] = await Promise.all([
+    Promise.all(requests.map(async (r) => (await listingsMatchingRequest(supabase, r, { excludeAgentId: agent.id, limit: 50 })).length)),
+    listingInterest(supabase, [...myIds, ...networkRows.map((l) => l.id)]),
+  ]);
+  const interestedInMine = myIds.reduce((sum, id) => sum + (interest[id]?.interested ?? 0), 0);
 
   const dealRows = (deals.data ?? []) as DealRow[];
   const awaitingMe = dealRows.filter(
@@ -58,7 +63,6 @@ export default async function DashboardPage() {
   const activeDeals = dealRows.filter((d) => d.status === "active").length;
   const limit = PLANS[agent.plan].listingLimit;
   const conversationRows = (conversations.data ?? []) as ConversationRow[];
-  const networkRows = (network.data ?? []) as ListingWithAgent[];
 
   return (
     <>
@@ -114,10 +118,17 @@ export default async function DashboardPage() {
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Stat
-          icon={Building2}
+          icon={interestedInMine > 0 ? Flame : Building2}
+          tone={interestedInMine > 0 ? "amber" : "neutral"}
           label="Live listings"
           value={liveListings}
-          hint={limit ? `${Math.max(limit - liveListings, 0)} left on ${PLANS[agent.plan].name}` : "Unlimited on your plan"}
+          hint={
+            interestedInMine > 0
+              ? `${interestedInMine} agent${interestedInMine === 1 ? "" : "s"} interested in your stock`
+              : limit
+                ? `${Math.max(limit - liveListings, 0)} left on ${PLANS[agent.plan].name}`
+                : "Unlimited on your plan"
+          }
         />
         <Stat icon={Users} tone="teal" label="Active buyer briefs" value={requests.length} hint={requests.length ? `${matchCounts.reduce((a, b) => a + b, 0)} matching properties` : "Post one to start matching"} />
         <Stat icon={MessageSquare} label="Conversations" value={conversationRows.length} hint="most recent shown below" />
@@ -233,7 +244,7 @@ export default async function DashboardPage() {
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {networkRows.map((l) => (
-              <ListingCard key={l.id} listing={l} />
+              <ListingCard key={l.id} listing={l} interest={interest[l.id]?.interested} />
             ))}
           </div>
         )}

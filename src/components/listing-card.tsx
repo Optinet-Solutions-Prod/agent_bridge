@@ -1,12 +1,21 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, Bath, BedDouble, Camera, ImageOff, Ruler } from "lucide-react";
+import { ArrowUpRight, Bath, BedDouble, Camera, Flame, ImageOff, Ruler } from "lucide-react";
 import { AnonBadge, Badge } from "@/components/ui";
 import { LISTING_STATUS_LABEL } from "@/lib/constants";
 import { formatNumber, formatPrice } from "@/lib/format";
 import type { ListingWithAgent } from "@/lib/types";
 
-export function ListingCard({ listing, isOwn }: { listing: ListingWithAgent; isOwn?: boolean }) {
+export function ListingCard({
+  listing,
+  isOwn,
+  interest = 0,
+}: {
+  listing: ListingWithAgent;
+  isOwn?: boolean;
+  /** How many other agents shortlisted it (owner: how many want your stock). */
+  interest?: number;
+}) {
   const photo = listing.photo_urls[0];
   return (
     <Link
@@ -29,9 +38,17 @@ export function ListingCard({ listing, isOwn }: { listing: ListingWithAgent; isO
         )}
         <div className="absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-t from-black/75 via-black/25 to-transparent" />
 
-        <div className="absolute left-3 top-3 flex gap-1.5">
+        <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
           {isOwn && <Badge tone="blue">Yours</Badge>}
           {listing.status !== "active" && <Badge tone="amber">{LISTING_STATUS_LABEL[listing.status]}</Badge>}
+          {interest > 0 && (
+            <span
+              style={{ animation: "glow 2.2s ease-in-out infinite" }}
+              className="inline-flex items-center gap-1 rounded-full bg-orange-500 px-2 py-0.5 text-xs font-semibold text-white shadow"
+            >
+              <Flame className="h-3 w-3" /> {interest} interested
+            </span>
+          )}
         </div>
         <span className="absolute right-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-xs font-semibold text-teal-800 shadow-sm backdrop-blur">
           {listing.buyer_agent_commission_pct}% to buyer agent

@@ -92,6 +92,11 @@ function photos(kind, n) {
 
 const AGENTS = [
   {
+    // Demo mode signs anonymous visitors in as this account (src/lib/demo.ts).
+    email: "guest@example.com", full_name: "Guest Agent", agency_name: "Demo Agency", phone: null,
+    license_no: null, plan: "agency", verified: false,
+  },
+  {
     email: "maria.borg@example.com", full_name: "Maria Borg", agency_name: "Harbour Homes Malta", phone: "+356 7912 3456",
     license_no: "MT-REA-1042", plan: "agency", verified: true,
   },
@@ -175,6 +180,25 @@ const REQUESTS = {
   ],
 };
 
+// Who already swiped "Interested!" on what — makes the "more than one match"
+// celebration and the owner-side interest counts visible in the demo.
+// [liker email, owner email, listing title]
+const LIKES = [
+  ["maria.borg@example.com", "matthew.spiteri@example.com", "Brand-new 3-bed with sea glimpses"],
+  ["jeanpaul.zammit@example.com", "matthew.spiteri@example.com", "Brand-new 3-bed with sea glimpses"],
+  ["daniela.vella@example.com", "maria.borg@example.com", "Family maisonette with garden and garage"],
+  ["matthew.spiteri@example.com", "maria.borg@example.com", "Family maisonette with garden and garage"],
+  ["sarah.grech@example.com", "maria.borg@example.com", "Family maisonette with garden and garage"],
+  ["luke.camilleri@example.com", "jeanpaul.zammit@example.com", "Modern 3-bed penthouse in Mellieħa"],
+  ["maria.borg@example.com", "jeanpaul.zammit@example.com", "Spacious 4-bed apartment with views of Mosta Dome"],
+  ["daniela.vella@example.com", "sarah.grech@example.com", "Farmhouse with pool and country views"],
+  ["matthew.spiteri@example.com", "sarah.grech@example.com", "Farmhouse with pool and country views"],
+  ["jeanpaul.zammit@example.com", "matthew.spiteri@example.com", "Contemporary villa with infinity pool"],
+  ["luke.camilleri@example.com", "maria.borg@example.com", "Seafront 3-bed apartment with wraparound terrace"],
+];
+// Every listing the admin owns gets interest from these two demo agents.
+const ADMIN_LIKERS = ["maria.borg@example.com", "daniela.vella@example.com"];
+
 // ------------------------------------------------------------------- steps
 
 async function findUserByEmail(email) {
@@ -219,14 +243,29 @@ async function main() {
   if (admin) ids[ADMIN_EMAIL] = admin.id;
 
   // Replace demo listings so re-running gives a clean set.
+  const listingIdByTitle = {}; // `${owner email}|${title}` -> id
   for (const email of Object.keys(LISTINGS)) {
     const agentId = ids[email];
     await rest(`/listings?agent_id=eq.${agentId}`, { method: "DELETE", prefer: "return=minimal" });
     const rows = LISTINGS[email].map(({ kind, photos: n, priv, ...l }) => ({ ...l, agent_id: agentId, status: "active", currency: "EUR", photo_urls: photos(kind, n) }));
     const inserted = await rest("/listings", { method: "POST", body: rows });
+    inserted.forEach((row, i) => (listingIdByTitle[`${email}|${LISTINGS[email][i].title}`] = row.id));
     const privRows = inserted.map((row, i) => ({ listing_id: row.id, ...LISTINGS[email][i].priv }));
     await rest("/listing_private", { method: "POST", body: privRows, prefer: "return=minimal" });
     console.log(`  ${inserted.length} listings for ${email}`);
+  }
+
+  // Seed "Interested!" swipes (needs migration 0002). Upsert so re-runs are clean.
+  const likeRows = LIKES.map(([liker, owner, title]) => ({ agent_id: ids[liker], listing_id: listingIdByTitle[`${owner}|${title}`], decision: "like" })).filter((r) => r.agent_id && r.listing_id);
+  if (admin) {
+    const adminListings = await rest(`/listings?agent_id=eq.${admin.id}&select=id`);
+    for (const l of adminListings) for (const liker of ADMIN_LIKERS) likeRows.push({ agent_id: ids[liker], listing_id: l.id, decision: "like" });
+  }
+  try {
+    await rest("/listing_swipes?on_conflict=agent_id,buyer_request_id,listing_id", { method: "POST", body: likeRows, prefer: "resolution=merge-duplicates,return=minimal" });
+    console.log(`  ${likeRows.length} "Interested!" swipes seeded`);
+  } catch (e) {
+    console.warn("  skipped swipes — run supabase/migrations/0002_swipes.sql first:", String(e.message).slice(0, 120));
   }
 
   for (const email of Object.keys(REQUESTS)) {
