@@ -28,9 +28,12 @@ import type { ListingWithAgent, SwipeDecision } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 const THRESHOLD = 110; // px of horizontal drag that counts as a decision
-const EXIT_MS = 360;
+// A decision plays in two beats so it can actually be read: the card holds in
+// place while the stamp and splash pop in, then it flies off.
+const HOLD_MS = 650;
+const FLY_MS = 600;
 const TAP_SLOP = 6;
-const TOAST_MS = 1500;
+const TOAST_MS = 2400;
 
 type Gone = { listing: ListingWithAgent; decision: SwipeDecision };
 type Toast = { decision: SwipeDecision; id: number };
@@ -58,6 +61,7 @@ export function SwipeDeck({
   const [drag, setDrag] = useState({ x: 0, y: 0 });
   const [dragging, setDragging] = useState(false);
   const [exit, setExit] = useState<SwipeDecision | null>(null);
+  const [flying, setFlying] = useState(false);
   const [photo, setPhoto] = useState(0);
   const [info, setInfo] = useState(false);
   const [toast, setToast] = useState<Toast | null>(null);
@@ -74,17 +78,20 @@ export function SwipeDeck({
       if (!top || exit || match) return;
       const current = top;
       setExit(decision);
+      setFlying(false);
       recordSwipe(current.id, requestId, decision)
         .then((r) => {
           if (r.error) setSaveError(r.error);
         })
         .catch(() => setSaveError("That swipe could not be saved. Check your connection."));
 
+      window.setTimeout(() => setFlying(true), HOLD_MS);
       window.setTimeout(() => {
         setCards((c) => c.filter((l) => l.id !== current.id));
         setGone((g) => [...g, { listing: current, decision }]);
         if (decision === "like") setLiked((n) => n + 1);
         setExit(null);
+        setFlying(false);
         setDrag({ x: 0, y: 0 });
         setPhoto(0);
         setInfo(false);
@@ -95,7 +102,7 @@ export function SwipeDeck({
 
         const others = interest[current.id] ?? 0;
         if (decision === "like" && others > 0) setMatch({ listing: current, others });
-      }, EXIT_MS);
+      }, HOLD_MS + FLY_MS);
     },
     [top, exit, match, requestId, interest],
   );
@@ -185,11 +192,20 @@ export function SwipeDeck({
   const passOpacity = exit === "pass" ? 1 : Math.min(1, Math.max(0, -drag.x / 80));
   let transform = `translate3d(${drag.x}px, ${drag.y * 0.25}px, 0) rotate(${drag.x / 18}deg)`;
   let opacity = 1;
+  let transition = dragging ? "none" : "transform 320ms cubic-bezier(.2,.8,.2,1), opacity 320ms ease";
   if (exit) {
     const dir = exit === "like" ? 1 : -1;
-    const fly = typeof window === "undefined" ? 900 : window.innerWidth + 240;
-    transform = `translate3d(${dir * fly}px, ${drag.y * 0.25 - 60}px, 0) rotate(${dir * 30}deg)`;
-    opacity = 0;
+    if (!flying) {
+      // Beat 1: hold where the finger let go, nudged towards the decision, slightly lifted.
+      transform = `translate3d(${drag.x + dir * 24}px, ${drag.y * 0.25 - 10}px, 0) rotate(${drag.x / 18 + dir * 4}deg) scale(1.03)`;
+      transition = "transform 380ms cubic-bezier(.2,.8,.2,1)";
+    } else {
+      // Beat 2: fly off screen.
+      const fly = typeof window === "undefined" ? 900 : window.innerWidth + 240;
+      transform = `translate3d(${dir * fly}px, ${drag.y * 0.25 - 90}px, 0) rotate(${dir * 32}deg)`;
+      opacity = 0;
+      transition = `transform ${FLY_MS}ms cubic-bezier(.45,0,.85,.4), opacity ${FLY_MS}ms ease-in`;
+    }
   }
 
   return (
@@ -207,12 +223,7 @@ export function SwipeDeck({
                   <div
                     key={listing.id}
                     className={cn("absolute inset-0 will-change-transform", dragging ? "cursor-grabbing" : "cursor-grab")}
-                    style={{
-                      transform,
-                      opacity,
-                      transition: dragging ? "none" : `transform ${EXIT_MS}ms cubic-bezier(.2,.8,.2,1), opacity ${EXIT_MS}ms ease`,
-                      zIndex: 3,
-                    }}
+                    style={{ transform, opacity, transition, zIndex: 3 }}
                     onPointerDown={onPointerDown}
                     onPointerMove={onPointerMove}
                     onPointerUp={onPointerUp}
@@ -245,6 +256,23 @@ export function SwipeDeck({
                   </div>
                 ),
               )}
+
+            {/* Big centred verdict while the card holds and flies */}
+            {exit && (
+              <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center px-4">
+                <div
+                  role="status"
+                  style={{ animation: "splash-in 520ms cubic-bezier(.2,.9,.3,1.25) both" }}
+                  className={cn(
+                    "flex max-w-full items-center gap-3 rounded-3xl px-6 py-4 text-2xl font-black uppercase tracking-wide text-white shadow-2xl ring-4 ring-white/40 sm:text-3xl",
+                    exit === "like" ? "bg-emerald-500 shadow-emerald-900/50" : "bg-rose-500 shadow-rose-900/50",
+                  )}
+                >
+                  {exit === "like" ? <Check className="h-8 w-8 shrink-0 sm:h-9 sm:w-9" strokeWidth={3.5} /> : <X className="h-8 w-8 shrink-0 sm:h-9 sm:w-9" strokeWidth={3.5} />}
+                  {exit === "like" ? "Interested!" : "Not interested"}
+                </div>
+              </div>
+            )}
 
             {/* Decision toast, floating over the deck */}
             {toast && (
@@ -375,7 +403,7 @@ function Control({
 function Stamp({ tone, opacity, pop, children }: { tone: "green" | "red"; opacity: number; pop: boolean; children: React.ReactNode }) {
   return (
     <div
-      style={{ opacity, animation: pop ? "stamp-pop 280ms cubic-bezier(.2,.8,.2,1)" : undefined }}
+      style={{ opacity, animation: pop ? "stamp-pop 460ms cubic-bezier(.2,.8,.2,1)" : undefined }}
       className={cn("pointer-events-none absolute top-14 z-[2]", tone === "green" ? "left-4" : "right-4")}
     >
       <span
@@ -589,8 +617,8 @@ function Confetti() {
     <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
       {Array.from({ length: 42 }).map((_, i) => {
         const left = (i * 37 + 11) % 100;
-        const delay = (i % 9) * 90;
-        const duration = 1700 + (i % 6) * 220;
+        const delay = (i % 9) * 120;
+        const duration = 2400 + (i % 6) * 300;
         const size = 6 + (i % 3) * 3;
         const drift = ((i * 29) % 160) - 80;
         return (
@@ -618,7 +646,7 @@ function MatchOverlay({ match, requestId, onClose }: { match: Match; requestId: 
   return (
     <div role="dialog" aria-modal="true" aria-label="More than one match" className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/85 p-4 backdrop-blur-sm">
       <Confetti />
-      <div style={{ animation: "pop 460ms cubic-bezier(.2,.8,.2,1)" }} className="relative w-full max-w-sm overflow-hidden rounded-3xl bg-white p-6 text-center shadow-2xl">
+      <div style={{ animation: "pop 650ms cubic-bezier(.2,.8,.2,1) 150ms both" }} className="relative w-full max-w-sm overflow-hidden rounded-3xl bg-white p-6 text-center shadow-2xl">
         <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-gradient-to-br from-emerald-400 to-teal-600 text-white shadow-lg shadow-teal-900/30">
           <PartyPopper className="h-8 w-8" />
         </div>

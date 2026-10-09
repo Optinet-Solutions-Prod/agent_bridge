@@ -107,6 +107,20 @@ input[type="checkbox"] {
     transform: scale(1) translateY(0);
   }
 }
+@keyframes splash-in {
+  0% {
+    transform: scale(0.4) rotate(-6deg);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.06) rotate(1deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
 @keyframes toast-in {
   from {
     transform: translateY(14px) scale(0.96);
