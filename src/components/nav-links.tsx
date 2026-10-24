@@ -38,10 +38,10 @@ export function SidebarNav() {
               active ? "bg-white/10 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]" : "text-slate-400 hover:bg-white/5 hover:text-white",
             )}
           >
-            <Icon className={cn("h-[18px] w-[18px]", active ? "text-teal-300" : "")} />
+            <Icon className={cn("h-[18px] w-[18px]", active ? "text-brand-300" : "")} />
             {label}
             {href === "/discover" && !active && (
-              <span className="ml-auto rounded-full bg-teal-500/15 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-teal-300">
+              <span className="ml-auto rounded-full bg-brand-500/15 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-brand-300">
                 New
               </span>
             )}
@@ -66,14 +66,14 @@ export function TabBarNav() {
             href={href}
             className={cn(
               "flex flex-1 flex-col items-center justify-center gap-1 py-2 text-[11px] font-medium transition",
-              active ? "text-teal-700" : "text-slate-500",
+              active ? "text-brand-700" : "text-slate-500",
             )}
           >
             {primary ? (
               <span
                 className={cn(
-                  "-mt-6 grid h-12 w-12 place-items-center rounded-full text-white shadow-lg shadow-teal-900/25 ring-4 ring-[#f5f6f8]",
-                  active ? "bg-teal-800" : "bg-teal-700",
+                  "-mt-6 grid h-12 w-12 place-items-center rounded-full text-white shadow-lg shadow-brand-900/25 ring-4 ring-limestone",
+                  active ? "bg-brand-800" : "bg-brand-700",
                 )}
               >
                 <Icon className="h-5 w-5" />

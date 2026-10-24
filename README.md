@@ -67,6 +67,14 @@ npm run dev
 
 Open <http://localhost:3000>. Create two accounts (use two browsers) to try the full flow: list → browse → message → Deal Room → accept on both sides → reveal.
 
+### Landing page and sample homes
+
+The landing page (`src/app/page.tsx`, components in `src/components/landing/`) showcases homes across Portugal. Until the real listings
+feed is connected it renders the sample data in `src/data/portugal-showcase.ts`; replace that array (same shape) and set
+`SHOWCASE_IS_SAMPLE = false` to drop the "sample homes" note. Design decisions are recorded in `DESIGN.md`, product truth in `PRODUCT.md`.
+Design skills used during the build are vendored in `.claude/skills/` (Impeccable, Emil Kowalski's animation/mobile skills, Vercel's
+web design guidelines) plus Anthropic's `frontend-design` plugin.
+
 ### 3a. Demo mode (no login)
 
 `NEXT_PUBLIC_DEMO_MODE` defaults to **on**: visitors who open an app page are signed in automatically as the shared

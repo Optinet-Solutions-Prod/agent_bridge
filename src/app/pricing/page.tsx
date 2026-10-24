@@ -43,7 +43,7 @@ export default async function PricingPage() {
                 key={key}
                 className={
                   highlight
-                    ? "rounded-2xl border-2 border-teal-700 bg-white p-6 shadow-md"
+                    ? "rounded-2xl border-2 border-brand-700 bg-white p-6 shadow-md"
                     : "rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
                 }
               >
@@ -56,7 +56,7 @@ export default async function PricingPage() {
                 <ul className="mt-5 space-y-2 text-sm text-slate-700">
                   {plan.perks.map((perk) => (
                     <li key={perk} className="flex gap-2">
-                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-teal-700" /> {perk}
+                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand-700" /> {perk}
                     </li>
                   ))}
                 </ul>
@@ -94,11 +94,11 @@ export default async function PricingPage() {
               </div>
               <div className="flex justify-between border-t border-slate-200 pt-2">
                 <dt>{APP_NAME} fee per side ({PLATFORM_FEE_PCT}%)</dt>
-                <dd className="font-semibold text-teal-800">{formatPrice(EXAMPLE_FEE_PER_SIDE)}</dd>
+                <dd className="font-semibold text-brand-800">{formatPrice(EXAMPLE_FEE_PER_SIDE)}</dd>
               </div>
               <div className="flex justify-between">
                 <dt>Platform revenue on this deal</dt>
-                <dd className="font-semibold text-teal-800">{formatPrice(EXAMPLE_FEE_PER_SIDE * 2)}</dd>
+                <dd className="font-semibold text-brand-800">{formatPrice(EXAMPLE_FEE_PER_SIDE * 2)}</dd>
               </div>
             </dl>
           </div>

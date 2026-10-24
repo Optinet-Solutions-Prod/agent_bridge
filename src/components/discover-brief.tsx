@@ -110,7 +110,7 @@ export function DiscoverBrief({
           ))}
           <option value="none">Quick brief (no saved client)</option>
         </select>
-        <Link href="/requests/new" className="inline-flex items-center gap-1 text-sm font-medium text-teal-700 hover:underline">
+        <Link href="/requests/new" className="inline-flex items-center gap-1 text-sm font-medium text-brand-700 hover:underline">
           <Plus className="h-3.5 w-3.5" /> New client brief
         </Link>
         <div className="ml-auto flex items-center gap-2">
@@ -154,9 +154,9 @@ export function DiscoverBrief({
           <div className="flex flex-wrap items-center gap-1.5">
             {localities.length === 0 && <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600">Anywhere in Malta</span>}
             {localities.map((l) => (
-              <span key={l} className="inline-flex items-center gap-1 rounded-full bg-teal-50 py-1 pl-2.5 pr-1 text-xs font-medium text-teal-800 ring-1 ring-inset ring-teal-600/20">
+              <span key={l} className="inline-flex items-center gap-1 rounded-full bg-brand-50 py-1 pl-2.5 pr-1 text-xs font-medium text-brand-800 ring-1 ring-inset ring-brand-600/20">
                 {l}
-                <button type="button" onClick={() => removeLocality(l)} aria-label={`Remove ${l}`} className="grid h-5 w-5 place-items-center rounded-full hover:bg-teal-600/15">
+                <button type="button" onClick={() => removeLocality(l)} aria-label={`Remove ${l}`} className="grid h-5 w-5 place-items-center rounded-full hover:bg-brand-600/15">
                   <X className="h-3 w-3" />
                 </button>
               </span>
@@ -206,7 +206,7 @@ export function DiscoverBrief({
                   }}
                   className={cn(
                     "rounded-full border px-2.5 py-1 text-xs font-medium transition",
-                    active ? "border-teal-600 bg-teal-50 text-teal-800" : "border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-900",
+                    active ? "border-brand-600 bg-brand-50 text-brand-800" : "border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-900",
                   )}
                 >
                   {p.label}
@@ -218,7 +218,7 @@ export function DiscoverBrief({
 
         <div className="lg:col-span-3">
           <button type="button" onClick={() => setShowTypes((v) => !v)} className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-slate-500 hover:text-slate-800">
-            Property types {types.length > 0 && <span className="rounded-full bg-teal-700 px-1.5 text-[10px] text-white">{types.length}</span>}
+            Property types {types.length > 0 && <span className="rounded-full bg-brand-700 px-1.5 text-[10px] text-white">{types.length}</span>}
             <ChevronDown className={cn("h-3.5 w-3.5 transition", showTypes && "rotate-180")} />
           </button>
           {showTypes && (
@@ -232,7 +232,7 @@ export function DiscoverBrief({
                     onClick={() => toggleType(t)}
                     className={cn(
                       "rounded-full border px-2.5 py-1 text-xs font-medium transition",
-                      active ? "border-teal-600 bg-teal-50 text-teal-800" : "border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-900",
+                      active ? "border-brand-600 bg-brand-50 text-brand-800" : "border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-900",
                     )}
                   >
                     {t}

@@ -196,7 +196,7 @@ export default async function DealRoomPage({ params }: PageProps<"/deals/[id]">)
           {listing && (
             <Card>
               <CardBody>
-                <Link href={`/listings/${listing.id}`} className="font-semibold hover:text-teal-800">
+                <Link href={`/listings/${listing.id}`} className="font-semibold hover:text-brand-800">
                   {listing.title}
                 </Link>
                 <p className="mt-1 text-xl font-semibold">{formatPrice(listing.price, listing.currency)}</p>

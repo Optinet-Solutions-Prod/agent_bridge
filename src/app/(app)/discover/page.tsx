@@ -153,7 +153,7 @@ export default async function DiscoverPage({ searchParams }: { searchParams: Pro
           >
             <Heart className="h-4 w-4" /> Shortlist
             {likedIds.length > 0 && (
-              <span className={cn("rounded-full px-1.5 text-[11px]", tab === "shortlist" ? "bg-teal-700 text-white" : "bg-slate-300/70 text-slate-700")}>{likedIds.length}</span>
+              <span className={cn("rounded-full px-1.5 text-[11px]", tab === "shortlist" ? "bg-brand-700 text-white" : "bg-slate-300/70 text-slate-700")}>{likedIds.length}</span>
             )}
           </Link>
         </div>

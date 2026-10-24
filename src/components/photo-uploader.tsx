@@ -72,7 +72,7 @@ export function PhotoUploader({ agentId, initial = [] }: { agentId: string; init
         ))}
 
         {urls.length < MAX_FILES && (
-          <label className="flex aspect-square cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-slate-300 bg-white text-xs text-slate-500 hover:border-teal-600 hover:text-teal-700">
+          <label className="flex aspect-square cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-slate-300 bg-white text-xs text-slate-500 hover:border-brand-600 hover:text-brand-700">
             {busy ? <Loader2 className="h-5 w-5 animate-spin" /> : <ImagePlus className="h-5 w-5" />}
             {busy ? "Uploading…" : "Add photos"}
             <input

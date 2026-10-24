@@ -254,7 +254,7 @@ export default async function ListingDetailPage({ params }: PageProps<"/listings
                     <ul className="mt-3 divide-y divide-slate-100">
                       {conversations.map((c) => (
                         <li key={c.id}>
-                          <Link href={`/messages/${c.id}`} className="flex items-center justify-between py-2 text-sm hover:text-teal-800">
+                          <Link href={`/messages/${c.id}`} className="flex items-center justify-between py-2 text-sm hover:text-brand-800">
                             {c.agents && <AnonBadge code={c.agents.anon_code} verified={c.agents.verified} prefix="Buyer Agent" />}
                             <span className="text-xs text-slate-500">{timeAgo(c.last_message_at)}</span>
                           </Link>
@@ -274,7 +274,7 @@ export default async function ListingDetailPage({ params }: PageProps<"/listings
                     <ul className="mt-3 divide-y divide-slate-100">
                       {matchingRequests.map((r) => (
                         <li key={r.id}>
-                          <Link href={`/requests/${r.id}`} className="block py-2 text-sm hover:text-teal-800">
+                          <Link href={`/requests/${r.id}`} className="block py-2 text-sm hover:text-brand-800">
                             <p className="font-medium">{r.title}</p>
                             <p className="text-xs text-slate-500">
                               {r.agents ? `Agent #${r.agents.anon_code}` : ""} · up to {formatPrice(r.max_price)}

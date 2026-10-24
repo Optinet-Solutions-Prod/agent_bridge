@@ -55,7 +55,7 @@ export function AppShell({ agent, email, children }: { agent: Agent; email: stri
           <div className="flex items-center justify-between text-xs">
             <span className="text-slate-400">{plan.name} plan</span>
             {agent.plan === "free" && (
-              <Link href="/pricing" className="font-medium text-teal-300 hover:underline">
+              <Link href="/pricing" className="font-medium text-brand-300 hover:underline">
                 Upgrade
               </Link>
             )}

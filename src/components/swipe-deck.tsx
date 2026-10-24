@@ -325,7 +325,7 @@ export function SwipeDeck({
               onClick={() => decide("like")}
               disabled={!!exit}
               title="Interested (→)"
-              className="h-16 w-16 bg-gradient-to-br from-emerald-500 to-teal-700 text-white shadow-lg shadow-teal-900/30 hover:scale-105"
+              className="h-16 w-16 bg-gradient-to-br from-emerald-500 to-emerald-700 text-white shadow-lg shadow-emerald-900/30 hover:scale-105"
             >
               <Heart className="h-7 w-7" strokeWidth={2.5} />
             </Control>
@@ -335,7 +335,7 @@ export function SwipeDeck({
               title="Details (↑)"
               className={cn(
                 "h-12 w-12 border shadow-sm",
-                info ? "border-teal-600 bg-teal-50 text-teal-700" : "border-slate-200 bg-white text-slate-500 hover:bg-slate-50 hover:text-slate-800",
+                info ? "border-brand-600 bg-brand-50 text-brand-700" : "border-slate-200 bg-white text-slate-500 hover:bg-slate-50 hover:text-slate-800",
               )}
             >
               <Info className="h-5 w-5" />
@@ -344,7 +344,7 @@ export function SwipeDeck({
 
           <p className="mt-4 text-center text-xs text-slate-500">
             {cards.length} left ·{" "}
-            <Link href={shortlistHref} className="font-medium text-teal-700 hover:underline">
+            <Link href={shortlistHref} className="font-medium text-brand-700 hover:underline">
               {liked} shortlisted
             </Link>
             <span className="hidden sm:inline"> · drag the card or use ← → keys · tap a photo to see the next one</span>
@@ -353,7 +353,7 @@ export function SwipeDeck({
         </>
       ) : (
         <div className="rounded-3xl border border-dashed border-slate-300 bg-white/70 px-6 py-14 text-center" style={{ animation: "pop 400ms cubic-bezier(.2,.8,.2,1)" }}>
-          <div className="mx-auto mb-4 grid h-12 w-12 place-items-center rounded-2xl bg-teal-50 text-teal-700">
+          <div className="mx-auto mb-4 grid h-12 w-12 place-items-center rounded-2xl bg-brand-50 text-brand-700">
             <Heart className="h-6 w-6" />
           </div>
           <p className="text-base font-semibold text-slate-900">That&apos;s everything for this brief</p>
@@ -366,7 +366,7 @@ export function SwipeDeck({
                 <RotateCcw className="h-4 w-4" /> Undo last
               </button>
             )}
-            <Link href={shortlistHref} className="inline-flex h-10 items-center gap-2 rounded-xl bg-teal-700 px-4 text-sm font-medium text-white hover:bg-teal-800">
+            <Link href={shortlistHref} className="inline-flex h-10 items-center gap-2 rounded-xl bg-brand-700 px-4 text-sm font-medium text-white hover:bg-brand-800">
               <Heart className="h-4 w-4" /> View shortlist
             </Link>
           </div>
@@ -541,7 +541,7 @@ function CardFace({
         </div>
         <div className="mt-3 flex items-center justify-between gap-2">
           {listing.agents ? <AnonBadge code={listing.agents.anon_code} verified={listing.agents.verified} prefix="Listing Agent" light /> : <span />}
-          <span className="rounded-full bg-teal-500/90 px-2.5 py-1 text-xs font-semibold text-white">{listing.buyer_agent_commission_pct}% to buyer agent</span>
+          <span className="rounded-full bg-brand-500/90 px-2.5 py-1 text-xs font-semibold text-white">{listing.buyer_agent_commission_pct}% to buyer agent</span>
         </div>
       </div>
 
@@ -647,7 +647,7 @@ function MatchOverlay({ match, requestId, onClose }: { match: Match; requestId: 
     <div role="dialog" aria-modal="true" aria-label="More than one match" className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/85 p-4 backdrop-blur-sm">
       <Confetti />
       <div style={{ animation: "pop 650ms cubic-bezier(.2,.8,.2,1) 150ms both" }} className="relative w-full max-w-sm overflow-hidden rounded-3xl bg-white p-6 text-center shadow-2xl">
-        <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-gradient-to-br from-emerald-400 to-teal-600 text-white shadow-lg shadow-teal-900/30">
+        <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-gradient-to-br from-emerald-400 to-brand-600 text-white shadow-lg shadow-brand-900/30">
           <PartyPopper className="h-8 w-8" />
         </div>
         <p className="mt-4 text-xs font-semibold uppercase tracking-[0.22em] text-emerald-600">Interested!</p>

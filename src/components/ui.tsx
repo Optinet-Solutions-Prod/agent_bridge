@@ -8,7 +8,7 @@ type Variant = "primary" | "secondary" | "ghost" | "danger" | "dark";
 type Size = "sm" | "md" | "lg";
 
 const variantStyles: Record<Variant, string> = {
-  primary: "bg-teal-700 text-white shadow-sm shadow-teal-900/10 hover:bg-teal-800 focus-visible:ring-teal-600",
+  primary: "bg-brand-700 text-white shadow-sm shadow-brand-900/10 hover:bg-brand-800 focus-visible:ring-brand-600",
   secondary: "border border-slate-200 bg-white text-slate-800 shadow-sm hover:border-slate-300 hover:bg-slate-50 focus-visible:ring-slate-400",
   ghost: "text-slate-700 hover:bg-slate-900/5 focus-visible:ring-slate-400",
   danger: "bg-red-600 text-white shadow-sm hover:bg-red-700 focus-visible:ring-red-500",
@@ -134,7 +134,7 @@ export function PageHeader({
   return (
     <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between lg:mb-8">
       <div className="min-w-0">
-        {eyebrow && <p className="mb-1 text-xs font-semibold uppercase tracking-[0.14em] text-teal-700">{eyebrow}</p>}
+        {eyebrow && <p className="mb-1 text-xs font-semibold uppercase tracking-[0.14em] text-brand-700">{eyebrow}</p>}
         <h1 className="text-2xl font-semibold tracking-tight text-slate-900 lg:text-[28px]">{title}</h1>
         {description && <div className="mt-1.5 text-sm text-slate-600">{description}</div>}
       </div>
@@ -157,7 +157,7 @@ export function EmptyState({
   return (
     <div className="rounded-2xl border border-dashed border-slate-300 bg-white/70 px-6 py-14 text-center">
       {Icon && (
-        <div className="mx-auto mb-4 grid h-12 w-12 place-items-center rounded-2xl bg-teal-50 text-teal-700">
+        <div className="mx-auto mb-4 grid h-12 w-12 place-items-center rounded-2xl bg-brand-50 text-brand-700">
           <Icon className="h-6 w-6" />
         </div>
       )}
@@ -178,7 +178,7 @@ type Tone = "neutral" | "teal" | "amber" | "green" | "red" | "blue";
 
 const toneStyles: Record<Tone, string> = {
   neutral: "bg-slate-100 text-slate-700",
-  teal: "bg-teal-50 text-teal-800 ring-1 ring-inset ring-teal-600/20",
+  teal: "bg-brand-50 text-brand-800 ring-1 ring-inset ring-brand-600/20",
   amber: "bg-amber-50 text-amber-800 ring-1 ring-inset ring-amber-600/20",
   green: "bg-emerald-50 text-emerald-800 ring-1 ring-inset ring-emerald-600/20",
   red: "bg-red-50 text-red-700 ring-1 ring-inset ring-red-600/20",
@@ -225,7 +225,7 @@ export function AnonBadge({
     >
       {prefix} #{code}
       {verified && (
-        <span title="Verified agent" className="inline-block h-1.5 w-1.5 rounded-full bg-teal-400" aria-label="Verified" />
+        <span title="Verified agent" className="inline-block h-1.5 w-1.5 rounded-full bg-brand-400" aria-label="Verified" />
       )}
     </span>
   );
@@ -246,7 +246,7 @@ export function Stat({
   icon?: ComponentType<{ className?: string }>;
   tone?: "neutral" | "teal" | "amber";
 }) {
-  const iconTone = { neutral: "bg-slate-100 text-slate-600", teal: "bg-teal-50 text-teal-700", amber: "bg-amber-50 text-amber-700" }[tone];
+  const iconTone = { neutral: "bg-slate-100 text-slate-600", teal: "bg-brand-50 text-brand-700", amber: "bg-amber-50 text-amber-700" }[tone];
   return (
     <Card className="flex items-start gap-4 p-5">
       {Icon && (

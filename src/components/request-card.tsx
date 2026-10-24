@@ -23,7 +23,7 @@ export function RequestCard({ request, isOwn }: { request: BuyerRequestWithAgent
           {request.status !== "active" && <Badge tone="amber">{request.status}</Badge>}
         </div>
       </div>
-      <p className="mt-1 text-lg font-semibold text-teal-800">{budgetLabel(request.min_price, request.max_price)}</p>
+      <p className="mt-1 text-lg font-semibold text-brand-800">{budgetLabel(request.min_price, request.max_price)}</p>
       <p className="mt-2 text-sm text-slate-600">
         {request.property_types.length ? request.property_types.join(", ") : "Any property type"}
         {request.min_bedrooms != null ? ` · ${request.min_bedrooms}+ bed` : ""}

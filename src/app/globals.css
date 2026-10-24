@@ -1,8 +1,35 @@
 @import "tailwindcss";
 
+/* ------------------------------------------------------------------ Tokens
+   "Lisbon light": limestone ground, azulejo cobalt as the committed colour,
+   deep blue-black ink, warm sand for secondary surfaces. */
+@theme {
+  --color-limestone: #f8f7f3;
+  --color-sand: #ede6d8;
+  --color-glaze: #e4ebf7;
+  --color-ink: #14213d;
+
+  --color-brand-50: #f1f4fb;
+  --color-brand-100: #e4ebf7;
+  --color-brand-200: #c8d5ee;
+  --color-brand-300: #a3b7e1;
+  --color-brand-400: #7490cf;
+  --color-brand-500: #4a6bb8;
+  --color-brand-600: #2f52a4;
+  --color-brand-700: #1b3f8f;
+  --color-brand-800: #163376;
+  --color-brand-900: #0e2a66;
+  --color-brand-950: #0a1c45;
+
+  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
 @theme inline {
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-hanken), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-display: var(--font-young-serif), Georgia, "Times New Roman", serif;
 }
 
 :root {
@@ -11,14 +38,49 @@
 
 html {
   scroll-behavior: smooth;
+  /* Phone baseline: no grey flash on tap, no font inflation in landscape. */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  @apply bg-[#f5f6f8] text-slate-900 antialiased;
+  @apply bg-limestone text-ink antialiased;
+}
+
+/* No one-word last lines; headings balance across their lines. */
+p,
+li,
+dd {
+  text-wrap: pretty;
+}
+h1,
+h2,
+h3 {
+  text-wrap: balance;
 }
 
 ::selection {
-  @apply bg-teal-200 text-teal-950;
+  background: var(--color-brand-100);
+  color: var(--color-brand-950);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-brand-700);
+  outline-offset: 2px;
+}
+
+/* Controls: fire click immediately, never select their label on long-press.
+   Content text stays selectable. */
+button,
+a,
+[role="button"] {
+  touch-action: manipulation;
+}
+button,
+[role="button"] {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
 }
 
 /* Native form controls share one look app-wide. */
@@ -31,7 +93,7 @@ input[type="search"],
 input[type="url"],
 select,
 textarea {
-  @apply w-full rounded-xl border border-slate-200 bg-white px-3.5 text-sm text-slate-900 shadow-[0_1px_2px_rgba(16,24,40,0.04)] transition placeholder:text-slate-400 hover:border-slate-300 focus:border-teal-600 focus:outline-none focus:ring-4 focus:ring-teal-600/10 disabled:cursor-not-allowed disabled:bg-slate-100;
+  @apply w-full rounded-xl border border-slate-200 bg-white px-3.5 text-sm text-slate-900 shadow-[0_1px_2px_rgba(16,24,40,0.04)] transition placeholder:text-slate-400 hover:border-slate-300 focus:border-brand-600 focus:outline-none focus:ring-4 focus:ring-brand-600/10 disabled:cursor-not-allowed disabled:bg-slate-100;
 }
 
 input[type="text"],
@@ -43,6 +105,15 @@ input[type="search"],
 input[type="url"],
 select:not([multiple]) {
   @apply h-10;
+}
+
+/* iOS zooms into inputs under 16px and never zooms back. */
+@media (pointer: coarse) {
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
 }
 
 select:not([multiple]) {
@@ -58,10 +129,10 @@ textarea {
 }
 
 input[type="checkbox"] {
-  @apply h-4 w-4 cursor-pointer rounded border-slate-300 accent-teal-700;
+  @apply h-4 w-4 cursor-pointer rounded border-slate-300 accent-brand-700;
 }
 
-/* Hide scrollbars on horizontal pill rows while keeping them scrollable. */
+/* Hide scrollbars on horizontal rows while keeping them scrollable. */
 .no-scrollbar {
   scrollbar-width: none;
 }
@@ -69,7 +140,72 @@ input[type="checkbox"] {
   display: none;
 }
 
-/* Swipe feedback */
+/* ------------------------------------------------------- Landing: one reveal
+   The hero plays once on load: headline, then copy, then the first cards. */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 22px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translate3d(48px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+.rise-in {
+  animation: rise-in 760ms var(--ease-out-strong) both;
+}
+.slide-in-right {
+  animation: slide-in-right 760ms var(--ease-out-strong) both;
+}
+
+/* View transitions for the showcase re-sort. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 240ms;
+}
+
+/* Native <dialog> entrance (Emil: @starting-style, no JS mount flag). */
+dialog.sheet {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  transition:
+    opacity 260ms var(--ease-out-strong),
+    transform 260ms var(--ease-out-strong),
+    overlay 260ms allow-discrete,
+    display 260ms allow-discrete;
+}
+dialog.sheet::backdrop {
+  background: rgba(20, 33, 61, 0.55);
+  backdrop-filter: blur(6px);
+  transition:
+    background 260ms ease,
+    backdrop-filter 260ms ease,
+    overlay 260ms allow-discrete,
+    display 260ms allow-discrete;
+}
+@starting-style {
+  dialog.sheet[open] {
+    opacity: 0;
+    transform: translate3d(0, 24px, 0) scale(0.97);
+  }
+  dialog.sheet[open]::backdrop {
+    background: rgba(20, 33, 61, 0);
+    backdrop-filter: blur(0);
+  }
+}
+
+/* ------------------------------------------------------------ Swipe feedback */
 @keyframes stamp-in {
   from {
     transform: scale(1.4) rotate(-12deg);
@@ -158,5 +294,30 @@ input[type="checkbox"] {
   to {
     transform: translateY(0);
     opacity: 1;
+  }
+}
+
+/* Reduced motion: keep fades, drop movement. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .rise-in,
+  .slide-in-right {
+    animation: rise-in 200ms ease both;
+    transform: none;
+  }
+  @keyframes rise-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
   }
 }

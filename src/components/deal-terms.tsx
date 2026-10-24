@@ -35,7 +35,7 @@ export function DealEconomics({
       </div>
       <div className="flex justify-between">
         <dt className="text-slate-500">AgentBridge fee per side ({platformFeePct}%)</dt>
-        <dd className="font-medium text-teal-800">{formatPrice(e.platformFeePerSide)}</dd>
+        <dd className="font-medium text-brand-800">{formatPrice(e.platformFeePerSide)}</dd>
       </div>
       <div className="flex justify-between border-t border-slate-200 pt-2">
         <dt className="text-slate-500">Buyer agent receives (net)</dt>

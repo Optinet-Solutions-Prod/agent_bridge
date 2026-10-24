@@ -50,7 +50,7 @@ export function ListingCard({
             </span>
           )}
         </div>
-        <span className="absolute right-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-xs font-semibold text-teal-800 shadow-sm backdrop-blur">
+        <span className="absolute right-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-xs font-semibold text-brand-800 shadow-sm backdrop-blur">
           {listing.buyer_agent_commission_pct}% to buyer agent
         </span>
 
@@ -70,7 +70,7 @@ export function ListingCard({
       </div>
 
       <div className="flex flex-1 flex-col p-4">
-        <p className="line-clamp-1 font-medium text-slate-900 group-hover:text-teal-800">{listing.title}</p>
+        <p className="line-clamp-1 font-medium text-slate-900 group-hover:text-brand-800">{listing.title}</p>
         <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-600">
           {listing.bedrooms != null && (
             <span className="inline-flex items-center gap-1">
@@ -90,7 +90,7 @@ export function ListingCard({
         </div>
         <div className="mt-auto flex items-center justify-between pt-4">
           {listing.agents ? <AnonBadge code={listing.agents.anon_code} verified={listing.agents.verified} prefix="Listing Agent" /> : <span />}
-          <span className="inline-flex items-center gap-0.5 text-xs font-medium text-slate-400 transition group-hover:text-teal-700">
+          <span className="inline-flex items-center gap-0.5 text-xs font-medium text-slate-400 transition group-hover:text-brand-700">
             View <ArrowUpRight className="h-3.5 w-3.5" />
           </span>
         </div>

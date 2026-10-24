@@ -7,7 +7,7 @@ export function LogoMark({ className }: { className?: string }) {
   return (
     <span
       className={cn(
-        "relative grid h-8 w-8 shrink-0 place-items-center overflow-hidden rounded-[10px] bg-gradient-to-br from-teal-500 to-teal-800 text-white shadow-sm shadow-teal-900/20",
+        "relative grid h-8 w-8 shrink-0 place-items-center overflow-hidden rounded-[10px] bg-gradient-to-br from-brand-500 to-brand-800 text-white shadow-sm shadow-brand-900/20",
         className,
       )}
       aria-hidden

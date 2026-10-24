@@ -81,11 +81,11 @@ export function Chat({
               <div
                 className={cn(
                   "max-w-[80%] rounded-2xl px-4 py-2 text-sm shadow-sm",
-                  mine ? "rounded-br-sm bg-teal-700 text-white" : "rounded-bl-sm bg-slate-100 text-slate-900",
+                  mine ? "rounded-br-sm bg-brand-700 text-white" : "rounded-bl-sm bg-slate-100 text-slate-900",
                 )}
               >
                 <p className="whitespace-pre-wrap break-words">{m.body}</p>
-                <p className={cn("mt-1 text-[10px]", mine ? "text-teal-100" : "text-slate-500")}>
+                <p className={cn("mt-1 text-[10px]", mine ? "text-brand-100" : "text-slate-500")}>
                   {mine ? "You" : counterpartyLabel} · {formatDateTime(m.created_at)}
                 </p>
               </div>

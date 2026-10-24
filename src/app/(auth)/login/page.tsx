@@ -28,7 +28,7 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
       </div>
       <p className="mt-6 text-center text-sm text-slate-600">
         New to the network?{" "}
-        <Link href="/signup" className="font-medium text-teal-700 hover:underline">
+        <Link href="/signup" className="font-medium text-brand-700 hover:underline">
           Create an agent profile
         </Link>
       </p>

@@ -44,7 +44,7 @@ export default async function SettingsPage() {
                   const plan = PLANS[key];
                   const current = key === agent.plan;
                   return (
-                    <div key={key} className={current ? "rounded-xl border-2 border-teal-700 p-4" : "rounded-xl border border-slate-200 p-4"}>
+                    <div key={key} className={current ? "rounded-xl border-2 border-brand-700 p-4" : "rounded-xl border border-slate-200 p-4"}>
                       <div className="flex items-center justify-between">
                         <p className="font-medium">{plan.name}</p>
                         {current && <Badge tone="teal">Current</Badge>}
@@ -56,7 +56,7 @@ export default async function SettingsPage() {
                       <ul className="mt-3 space-y-1 text-xs text-slate-600">
                         {plan.perks.slice(0, 3).map((p) => (
                           <li key={p} className="flex gap-1.5">
-                            <Check className="mt-0.5 h-3 w-3 shrink-0 text-teal-700" /> {p}
+                            <Check className="mt-0.5 h-3 w-3 shrink-0 text-brand-700" /> {p}
                           </li>
                         ))}
                       </ul>

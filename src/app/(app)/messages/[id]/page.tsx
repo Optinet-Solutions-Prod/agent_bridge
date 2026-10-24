@@ -53,7 +53,7 @@ export default async function ConversationPage({ params }: PageProps<"/messages/
               {other && <AnonBadge code={other.anon_code} verified={other.verified} prefix={iAmBuyer ? "Listing Agent" : "Buyer Agent"} />}
               <span className="text-sm text-slate-500">about</span>
               {listing && (
-                <Link href={`/listings/${listing.id}`} className="text-sm font-medium text-teal-800 hover:underline">
+                <Link href={`/listings/${listing.id}`} className="text-sm font-medium text-brand-800 hover:underline">
                   {listing.title}
                 </Link>
               )}
@@ -79,10 +79,10 @@ export default async function ConversationPage({ params }: PageProps<"/messages/
             </Card>
           )}
 
-          <Card className={deal ? "" : "border-teal-200 bg-teal-50/50"}>
+          <Card className={deal ? "" : "border-brand-200 bg-brand-50/50"}>
             <CardBody>
               <div className="flex items-center gap-2">
-                <Handshake className="h-5 w-5 text-teal-700" />
+                <Handshake className="h-5 w-5 text-brand-700" />
                 <CardTitle>Deal Room</CardTitle>
               </div>
               {deal ? (
