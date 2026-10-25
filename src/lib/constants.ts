@@ -1,4 +1,4 @@
-import type { DealStatus, ListingStatus, PlanTier } from "@/lib/types";
+import type { DealStatus, LeadStatus, ListingStatus, PlanTier } from "@/lib/types";
 
 export const APP_NAME = "AgentBridge";
 export const APP_TAGLINE = "The private MLS for real-estate agents.";
@@ -110,6 +110,16 @@ export const LISTING_STATUS_LABEL: Record<ListingStatus, string> = {
   sold: "Sold",
   withdrawn: "Withdrawn",
 };
+
+export const LEAD_STATUS_LABEL: Record<LeadStatus, string> = {
+  new: "New",
+  contacted: "Contacted",
+  appointment: "Appointment",
+  listed: "Listed with us",
+  not_interested: "Not interested",
+};
+
+export const LEAD_STATUSES: LeadStatus[] = ["new", "contacted", "appointment", "listed", "not_interested"];
 
 export const DEAL_STATUS_LABEL: Record<DealStatus, string> = {
   proposed: "Awaiting acceptance",

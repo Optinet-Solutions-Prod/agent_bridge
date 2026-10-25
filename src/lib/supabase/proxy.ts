@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { DEMO_MODE } from "@/lib/demo";
 import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/env";
 
-const PROTECTED_PREFIXES = ["/dashboard", "/listings", "/discover", "/requests", "/messages", "/deals", "/settings"];
+const PROTECTED_PREFIXES = ["/dashboard", "/listings", "/discover", "/leads", "/requests", "/messages", "/deals", "/settings"];
 const AUTH_ONLY_PATHS = ["/login", "/signup"];
 
 /**

@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Building2, Flame, Handshake, LayoutDashboard, MessageSquare, Settings, Users } from "lucide-react";
+import { Building2, Flame, Handshake, LayoutDashboard, MessageSquare, Settings, UserSearch, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export const NAV_LINKS = [
   { href: "/dashboard", label: "Dashboard", short: "Home", icon: LayoutDashboard },
   { href: "/listings", label: "Inventory", short: "Inventory", icon: Building2 },
   { href: "/discover", label: "Swipe matches", short: "Swipe", icon: Flame },
+  { href: "/leads", label: "Owner leads", short: "Leads", icon: UserSearch },
   { href: "/requests", label: "Buyer requests", short: "Buyers", icon: Users },
   { href: "/messages", label: "Messages", short: "Messages", icon: MessageSquare },
   { href: "/deals", label: "Deal Rooms", short: "Deals", icon: Handshake },

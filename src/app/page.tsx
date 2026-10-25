@@ -1,5 +1,6 @@
 import { AgentsBand } from "@/components/landing/agents-band";
 import { Featured } from "@/components/landing/featured";
+import { OwnerMarket } from "@/components/landing/owner-market";
 import { Showcase } from "@/components/landing/showcase";
 import { SiteFooter } from "@/components/landing/site-footer";
 import { SiteHeader } from "@/components/landing/site-header";
@@ -36,6 +37,7 @@ export default async function HomePage() {
 
         <Featured home={featured} />
         <AgentsBand sample={sampleForAgents} />
+        <OwnerMarket />
         <Steps />
       </main>
 

@@ -87,6 +87,63 @@ export type MatchCriteria = Pick<
   "property_types" | "localities" | "min_price" | "max_price" | "min_bedrooms" | "min_size_sqm" | "must_have_features"
 >;
 
+export type LeadOffer = "sale" | "rent";
+export type LeadStatus = "new" | "contacted" | "appointment" | "listed" | "not_interested";
+
+/** A private-owner listing supplied as data (see scripts/import-owner-leads.mjs). */
+export interface OwnerLead {
+  id: string;
+  platform: string;
+  listing_id: string;
+  offer: LeadOffer;
+  typology: string | null;
+  area: string;
+  district: string;
+  price_eur: number | null;
+  size_sqm: number | null;
+  evidence_url: string | null;
+  advertiser_evidence: string | null;
+  owner_status: string | null;
+  phone_visibility: string | null;
+  extra: Record<string, unknown>;
+  source_checked_on: string | null;
+  imported_at: string;
+  updated_at: string;
+}
+
+export interface LeadTracking {
+  lead_id: string;
+  agent_id: string;
+  status: LeadStatus;
+  notes: string | null;
+  updated_at: string;
+}
+
+export type OwnerLeadWithTracking = OwnerLead & { owner_lead_tracking: Pick<LeadTracking, "status" | "notes" | "updated_at">[] };
+
+export interface OwnerLeadAreaStat {
+  district: string;
+  area: string;
+  listings: number;
+  sale: number;
+  rent: number;
+  median_sale_eur: number | null;
+  median_sale_eur_sqm: number | null;
+  median_rent_eur: number | null;
+}
+
+export interface OwnerLeadOverview {
+  total: number;
+  sale: number;
+  rent: number;
+  areas: number;
+  median_sale_eur: number | null;
+  median_sale_eur_sqm: number | null;
+  median_rent_eur: number | null;
+  checked_on: string | null;
+  by_area: OwnerLeadAreaStat[];
+}
+
 export type SwipeDecision = "like" | "pass";
 
 export interface ListingSwipe {

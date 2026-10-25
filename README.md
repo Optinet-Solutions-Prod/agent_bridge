@@ -75,6 +75,21 @@ feed is connected it renders the sample data in `src/data/portugal-showcase.ts`;
 Design skills used during the build are vendored in `.claude/skills/` (Impeccable, Emil Kowalski's animation/mobile skills, Vercel's
 web design guidelines) plus Anthropic's `frontend-design` plugin.
 
+### Owner leads (private-owner listings supplied as data)
+
+Spreadsheets of listings placed directly by private owners (e.g. `data/Portugal_Owners_Sample.xlsx`) are imported — never
+scraped by the app — with:
+
+```bash
+node scripts/import-owner-leads.mjs path/to/file.xlsx            # add --dry-run to preview the column mapping
+node scripts/import-owner-leads.mjs file.csv --district Porto --platform Idealista
+```
+
+Rows upsert on `(platform, listing_id)`, known columns map to typed fields and anything else is kept in the `extra` JSON column,
+so a feed can grow without a migration. Needs `supabase/migrations/0004_owner_leads.sql`. Agents browse and filter leads at
+`/leads`, keeping a private status (New → Contacted → Appointment → Listed / Not interested) and notes per lead; the landing page
+shows only aggregates per area via `owner_lead_overview()`.
+
 ### 3a. Demo mode (no login)
 
 `NEXT_PUBLIC_DEMO_MODE` defaults to **on**: visitors who open an app page are signed in automatically as the shared
