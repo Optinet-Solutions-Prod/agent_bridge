@@ -38,10 +38,15 @@ Rules: cobalt owns whole regions (a full band, a primary button), never scattere
   flick cannot skip slides. The header goes transparent over photographic and cobalt slides and solid limestone over
   light ones; its 2px line shows deck progress. Dots are hidden on phones (swipe is the gesture; the header line remains).
 - Each slide owns one intro that replays every time it becomes active (`useSlideIntro`, reverted on leave): Ken Burns
-  push-in and a masked word reveal on the hero; a push-in, copy rise and price count-up on every home slide; cards that
+  push-in and a masked word reveal on the hero; a push-in, copy rise and price count-up on each featured home; cards that
   slide in from the right and tilt in 3D under the pointer in the gallery; a map that draws itself with pulsing district
   dots and count-ups; the live swipe deck rising with a 3° settle; a connecting line that draws across the steps; a slow
   push-in on the closing photograph.
+- Sideways is the carousel axis (`cinematic/film.tsx`): the six featured homes share one slide and move with a
+  horizontal wheel (48px/220ms), a drag or swipe of 44px, ArrowLeft/Right or the arrows beside the `01 / 06` counter.
+  The outgoing frame slides 14% away and fades while the incoming one arrives from the other side with a 1.12 push-in
+  (0.85s, `power3`), then a 350ms lock. The gallery row scrolls natively and also follows a mouse drag (snap is paused
+  during the drag and the row settles on the nearest card); on phones the four steps are a snapping row as well.
 - Slides whose content is taller than the screen (map, agents and the gallery on short phones) scroll inside themselves;
   the deck only advances once that inner scroll has reached its end, so nothing is unreachable. Horizontal carousels,
   dialogs and the swipe deck's card drag (`data-no-slide`) never change slides.

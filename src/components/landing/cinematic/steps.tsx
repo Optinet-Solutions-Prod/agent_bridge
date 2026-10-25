@@ -33,9 +33,9 @@ export function Steps({ slide }: { slide: number }) {
           <div aria-hidden className="absolute left-0 right-0 top-0 hidden h-px bg-brand-700/15 lg:block">
             <div data-steps-line className="h-full w-full origin-left bg-brand-700" />
           </div>
-          <ol className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+          <ol className="no-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-6 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4">
             {STEPS.map((s, i) => (
-              <li key={s.title} data-step className="relative border-l border-brand-700/20 pl-5 lg:border-l-0 lg:pl-0 lg:pt-7">
+              <li key={s.title} data-step className="relative w-[76vw] shrink-0 snap-start rounded-[20px] bg-sand/70 p-5 sm:w-auto sm:shrink sm:rounded-none sm:border-l sm:border-brand-700/20 sm:bg-transparent sm:p-0 sm:pl-5 lg:border-l-0 lg:pl-0 lg:pt-7">
                 <span data-step-num className="inline-grid h-10 w-10 place-items-center rounded-full bg-brand-700 font-display text-lg text-limestone lg:absolute lg:-top-5 lg:left-0" aria-hidden>
                   {i + 1}
                 </span>
@@ -47,6 +47,7 @@ export function Steps({ slide }: { slide: number }) {
               </li>
             ))}
           </ol>
+          <p className="mt-2 text-[12px] text-ink/60 sm:hidden">Swipe sideways for the next step.</p>
         </div>
       </div>
     </div>

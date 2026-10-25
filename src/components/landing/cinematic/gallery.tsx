@@ -55,6 +55,41 @@ export function Gallery({
 }) {
   const root = useRef<HTMLDivElement>(null);
   const track = useRef<HTMLDivElement>(null);
+  // Mouse drag scrolls the row (touch already pans natively); a drag must not count as a click on a card.
+  const dragging = useRef<{ x: number; left: number; moved: boolean } | null>(null);
+  const suppressClick = useRef(false);
+  function onTrackPointerDown(e: ReactPointerEvent<HTMLDivElement>) {
+    if (e.pointerType !== "mouse" || e.button !== 0) return;
+    dragging.current = { x: e.clientX, left: e.currentTarget.scrollLeft, moved: false };
+  }
+  function onTrackPointerMove(e: ReactPointerEvent<HTMLDivElement>) {
+    const d = dragging.current;
+    if (!d) return;
+    const dx = e.clientX - d.x;
+    if (!d.moved) {
+      if (Math.abs(dx) < 6) return;
+      d.moved = true;
+      e.currentTarget.style.scrollSnapType = "none";
+      e.currentTarget.setPointerCapture(e.pointerId);
+    }
+    e.currentTarget.scrollLeft = d.left - dx;
+  }
+  function onTrackPointerEnd(e: ReactPointerEvent<HTMLDivElement>) {
+    const d = dragging.current;
+    dragging.current = null;
+    if (!d?.moved) return;
+    suppressClick.current = true;
+    window.setTimeout(() => (suppressClick.current = false), 0);
+    // Settle on the nearest card, then hand snapping back to the browser.
+    const el = e.currentTarget;
+    const base = el.getBoundingClientRect().left;
+    const pad = parseFloat(getComputedStyle(el).scrollPaddingLeft) || 0;
+    const cards = Array.from(el.querySelectorAll<HTMLElement>("[data-card]"));
+    const pos = (c: HTMLElement) => c.getBoundingClientRect().left - base + el.scrollLeft - pad;
+    const nearest = cards.reduce<HTMLElement | null>((best, c) => (!best || Math.abs(pos(c) - el.scrollLeft) < Math.abs(pos(best) - el.scrollLeft) ? c : best), null);
+    if (nearest) el.scrollTo({ left: pos(nearest), behavior: reduced ? "auto" : "smooth" });
+    window.setTimeout(() => (el.style.scrollSnapType = ""), 600);
+  }
   const [budget, setBudget] = useState<number | null>(null);
   const { reduced } = useMotion();
 
@@ -224,6 +259,16 @@ export function Gallery({
       >
         <div
           ref={track}
+          onPointerDown={onTrackPointerDown}
+          onPointerMove={onTrackPointerMove}
+          onPointerUp={onTrackPointerEnd}
+          onPointerCancel={onTrackPointerEnd}
+          onClickCapture={(e) => {
+            if (suppressClick.current) {
+              e.preventDefault();
+              e.stopPropagation();
+            }
+          }}
           className="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-px-4 px-4 pb-2 sm:scroll-px-6 sm:px-6 lg:scroll-px-8 lg:px-8 lg:[perspective:1400px]"
         >
           {filtered.map((home) => (

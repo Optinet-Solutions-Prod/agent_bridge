@@ -22,7 +22,7 @@ export function BrandButton({ light }: { light?: boolean }) {
 export function CinematicHeader({ signedIn }: { signedIn: boolean }) {
   const { index, count, ids, goTo } = useSlides();
   const id = ids[index] ?? "hero";
-  const solid = !(id === "hero" || id === "agents" || id === "closing" || id.startsWith("home-"));
+  const solid = !(id === "hero" || id === "agents" || id === "closing" || id === "featured");
   const link = cn("rounded-lg px-3 py-2 text-[15px] transition-colors", solid ? "text-ink/75 hover:text-ink" : "text-limestone/80 hover:text-limestone");
 
   return (
