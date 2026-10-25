@@ -1,62 +1,54 @@
 "use client";
 
 import Link from "next/link";
-import { useRef, useState } from "react";
-import { Logo } from "@/components/logo";
+import { LogoMark } from "@/components/logo";
+import { APP_NAME } from "@/lib/constants";
 import { DEMO_MODE } from "@/lib/demo";
 import { cn } from "@/lib/utils";
-import { ScrollTrigger, gsap, useGSAP } from "./motion";
+import { useSlides } from "./slides";
 
-/** Transparent over the hero, solid limestone once the hero has scrolled away. */
-export function CinematicHeader({ signedIn, heroId }: { signedIn: boolean; heroId: string }) {
-  const [solid, setSolid] = useState(false);
-  const ref = useRef<HTMLElement>(null);
+/** The wordmark as a button: takes the deck back to the first slide. */
+export function BrandButton({ light }: { light?: boolean }) {
+  const { goTo } = useSlides();
+  return (
+    <button type="button" onClick={() => goTo(0)} aria-label={`${APP_NAME}, back to the start`} className="inline-flex items-center gap-2.5 rounded-lg">
+      <LogoMark />
+      <span className={cn("font-display text-[1.25rem] leading-none tracking-tight", light ? "text-white" : "text-ink")}>{APP_NAME}</span>
+    </button>
+  );
+}
 
-  useGSAP(() => {
-    // Active from the moment the hero has scrolled past the bar until the end of
-    // the page, so a jump straight to a lower section still gets a solid header.
-    const trigger = ScrollTrigger.create({
-      trigger: `#${heroId}`,
-      start: "bottom 72px",
-      end: "max",
-      onToggle: (self) => setSolid(self.isActive),
-      onRefresh: (self) => setSolid(self.isActive),
-    });
-    // One thin line tracks progress through the whole page.
-    const progress = ScrollTrigger.create({
-      start: 0,
-      end: "max",
-      onUpdate: (self) => gsap.set("[data-page-progress]", { scaleX: self.progress }),
-    });
-    return () => {
-      trigger.kill();
-      progress.kill();
-    };
-  }, [heroId]);
-
-  const link = cn("rounded-lg px-3 py-2 text-[15px] transition", solid ? "text-ink/75 hover:text-ink" : "text-limestone/80 hover:text-limestone");
+/** Transparent with light text over photographic and cobalt slides, solid limestone over light ones; a thin line shows deck progress. */
+export function CinematicHeader({ signedIn }: { signedIn: boolean }) {
+  const { index, count, ids, goTo } = useSlides();
+  const id = ids[index] ?? "hero";
+  const solid = !(id === "hero" || id === "agents" || id === "closing" || id.startsWith("home-"));
+  const link = cn("rounded-lg px-3 py-2 text-[15px] transition-colors", solid ? "text-ink/75 hover:text-ink" : "text-limestone/80 hover:text-limestone");
 
   return (
     <header
-      ref={ref}
       className={cn(
         "fixed inset-x-0 top-0 z-40 transition-[background-color,box-shadow,backdrop-filter] duration-300",
         solid ? "bg-limestone/85 shadow-[0_1px_0_rgba(20,33,61,0.06)] backdrop-blur-md" : "bg-transparent",
       )}
     >
-      <div data-page-progress aria-hidden className={cn("absolute inset-x-0 top-0 h-[2px] origin-left scale-x-0", solid ? "bg-brand-700" : "bg-limestone/80")} />
+      <div
+        aria-hidden
+        className={cn("absolute inset-x-0 top-0 h-[2px] origin-left transition-transform duration-700 ease-out", solid ? "bg-brand-700" : "bg-limestone/80")}
+        style={{ transform: `scaleX(${count > 1 ? index / (count - 1) : 0})` }}
+      />
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:h-16 sm:px-6 lg:px-8">
-        <Logo light={!solid} />
+        <BrandButton light={!solid} />
         <nav aria-label="Site" className="flex items-center gap-1 sm:gap-2">
-          <a href="#homes" className={cn("hidden sm:inline", link)}>
+          <button type="button" onClick={() => goTo("homes")} className={cn("hidden sm:inline", link)}>
             Homes
-          </a>
-          <a href="#map" className={cn("hidden sm:inline", link)}>
+          </button>
+          <button type="button" onClick={() => goTo("map")} className={cn("hidden sm:inline", link)}>
             Portugal
-          </a>
-          <a href="#agents" className={cn("hidden sm:inline", link)}>
+          </button>
+          <button type="button" onClick={() => goTo("agents")} className={cn("hidden sm:inline", link)}>
             For agents
-          </a>
+          </button>
           {!signedIn && (
             <Link href="/login" className={cn("hidden sm:inline", link)}>
               Log in

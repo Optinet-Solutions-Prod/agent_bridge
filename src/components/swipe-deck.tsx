@@ -137,6 +137,8 @@ export function SwipeDeck({
         if (e.key === "Escape") setMatch(null);
         return;
       }
+      // On the landing page the slide deck owns vertical keys and space.
+      if (demo && (e.key === "ArrowUp" || e.key === "ArrowDown" || e.key === " ")) return;
       if (e.key === "ArrowRight") decide("like");
       else if (e.key === "ArrowLeft") decide("pass");
       else if (e.key === "ArrowUp") {
@@ -153,7 +155,7 @@ export function SwipeDeck({
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [decide, undo, top, match]);
+  }, [decide, undo, top, match, demo]);
 
   function onPointerDown(e: ReactPointerEvent<HTMLDivElement>) {
     if (exit) return;

@@ -1,41 +1,70 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import {
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type PointerEvent as ReactPointerEvent,
+} from "react";
 import { flushSync } from "react-dom";
-import { Bath, BedDouble, Ruler } from "lucide-react";
-import { BUDGETS, DISTRICTS, SHOWCASE_IS_SAMPLE, type ShowcaseHome } from "@/data/portugal-showcase";
+import {
+  Bath,
+  BedDouble,
+  ChevronLeft,
+  ChevronRight,
+  Ruler,
+} from "lucide-react";
+import {
+  BUDGETS,
+  DISTRICTS,
+  SHOWCASE_IS_SAMPLE,
+  type ShowcaseHome,
+} from "@/data/portugal-showcase";
 import { formatNumber, formatPrice } from "@/lib/format";
 import { unsplashBlur } from "@/lib/image-loader";
 import { cn } from "@/lib/utils";
-import { EASE, ScrollTrigger, gsap, useGSAP, useMotion } from "./motion";
+import { EASE, gsap, revealLines, useMotion } from "./motion";
+import { useSlideIntro } from "./slides";
 
-type DocWithVT = Document & { startViewTransition?: (cb: () => void) => { finished: Promise<void> } };
+type DocWithVT = Document & {
+  startViewTransition?: (cb: () => void) => { finished: Promise<void> };
+};
+
+/** Card height follows the viewport so the whole slide fits without scrolling. */
+const CARD_H = "clamp(240px, 42dvh, 520px)";
 
 /**
- * Every home on the network. A snap carousel on phones, a bento grid with
- * 3D tilt on larger screens; filter changes re-sort in place with View
- * Transitions, and cards rise in as they enter the viewport.
+ * Every home on the network, in one screen: filters on top, a horizontal
+ * row of photo cards sized to the viewport height below. Filter changes
+ * re-sort in place with View Transitions; cards tilt in 3D under a mouse.
  */
 export function Gallery({
-  id,
+  slide,
   homes,
   district,
   onDistrict,
   onOpen,
 }: {
-  id: string;
+  slide: number;
   homes: ShowcaseHome[];
   district: string;
   onDistrict: (d: string) => void;
   onOpen: (home: ShowcaseHome) => void;
 }) {
-  const root = useRef<HTMLElement>(null);
+  const root = useRef<HTMLDivElement>(null);
+  const track = useRef<HTMLDivElement>(null);
   const [budget, setBudget] = useState<number | null>(null);
   const { reduced } = useMotion();
 
   const filtered = useMemo(
-    () => homes.filter((h) => (district === "All" || h.district === district) && (budget == null || h.price <= budget)),
+    () =>
+      homes.filter(
+        (h) =>
+          (district === "All" || h.district === district) &&
+          (budget == null || h.price <= budget),
+      ),
     [homes, district, budget],
   );
   const counts = useMemo(() => {
@@ -44,54 +73,98 @@ export function Gallery({
     return c;
   }, [homes]);
 
-  useGSAP(
-    () => {
-      if (reduced) return;
-      gsap.from("[data-gallery-head] > :not(h2)", {
-        y: 28,
-        autoAlpha: 0,
-        duration: 0.9,
-        ease: EASE.out,
-        stagger: 0.08,
-        scrollTrigger: { trigger: root.current, start: "top 75%", once: true },
-      });
-      const batch = ScrollTrigger.batch("[data-card]", {
-        start: "top 92%",
-        once: true,
-        onEnter: (els) => gsap.fromTo(els, { y: 40, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.9, ease: EASE.out, stagger: 0.07, overwrite: true }),
-      });
-      return () => batch.forEach((t) => t.kill());
-    },
-    { scope: root, dependencies: [reduced] },
-  );
+  useSlideIntro(slide, root, () => {
+    const tl = gsap.timeline({ delay: 0.2, defaults: { ease: EASE.out } });
+    revealLines(root.current?.querySelector("h2") ?? null, 0, tl);
+    tl.from(
+      "[data-gallery-sub], [data-gallery-filters]",
+      { y: 24, autoAlpha: 0, duration: 0.9, stagger: 0.08 },
+      0.25,
+    );
+    tl.from(
+      "[data-card]",
+      { x: 60, autoAlpha: 0, duration: 0.9, stagger: 0.06 },
+      0.35,
+    );
+  });
 
   function apply(fn: () => void) {
     const doc = document as DocWithVT;
-    if (doc.startViewTransition && !reduced) doc.startViewTransition(() => flushSync(fn));
+    if (doc.startViewTransition && !reduced)
+      doc.startViewTransition(() => flushSync(fn));
     else fn();
+    track.current?.scrollTo({ left: 0, behavior: reduced ? "auto" : "smooth" });
+  }
+  function page(dir: 1 | -1) {
+    const el = track.current;
+    if (!el) return;
+    const card = el.querySelector<HTMLElement>("[data-card]");
+    const step = card ? card.offsetWidth + 16 : el.clientWidth * 0.8;
+    el.scrollBy({
+      left: dir * step * (window.innerWidth >= 1024 ? 2 : 1),
+      behavior: "smooth",
+    });
   }
 
   return (
-    <section
-      id={id}
+    <div
       ref={root}
-      data-section="gallery"
-      aria-labelledby="gallery-heading"
-      className="relative z-20 -mt-[100vh] overflow-hidden bg-limestone py-20 text-ink shadow-[0_-40px_80px_-40px_rgba(20,33,61,0.7)] sm:py-28"
-      style={{ borderTopLeftRadius: 40, borderTopRightRadius: 40 }}
+      className="flex min-h-full flex-col justify-center bg-limestone pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-16 text-ink sm:pt-20"
     >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div data-gallery-head className="max-w-3xl">
-          <h2 id="gallery-heading" data-reveal className="font-display text-[2.2rem] leading-[1.04] tracking-tight sm:text-[3rem] lg:text-[3.6rem]">
-            Every home on the network, in one place.
-          </h2>
-          <p className="mt-4 max-w-[52ch] text-[17px] leading-relaxed text-ink/75">
-            Pick a region and a budget. Each card is a home an agency is holding right now; the exact address stays private until an agent agrees terms.
-          </p>
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <div className="max-w-2xl">
+            <h2 className="font-display text-[min(2.1rem,5vh)] leading-[1.04] tracking-tight sm:text-[min(2.8rem,6vh)] lg:text-[min(3.2rem,6.5vh)]">
+              Every home on the network, in one place.
+            </h2>
+            <p
+              data-gallery-sub
+              className="mt-2 hidden max-w-[52ch] text-[clamp(14px,2vh,17px)] leading-relaxed text-ink/75 sm:block"
+            >
+              Pick a region and a budget. Each card is a home an agency is
+              holding right now; the exact address stays private until an agent
+              agrees terms.
+            </p>
+          </div>
+          <div className="hidden items-center gap-2 lg:flex lg:pb-1">
+            <p
+              className="whitespace-nowrap text-[14px] text-ink/75 tabular-nums"
+              aria-live="polite"
+            >
+              {filtered.length} home{filtered.length === 1 ? "" : "s"}
+            </p>
+            {filtered.length > 2 && (
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => page(-1)}
+                  aria-label="Previous homes"
+                  className="grid h-10 w-10 place-items-center rounded-full border border-ink/15 bg-white/70 text-ink transition hover:border-ink/35 active:scale-95"
+                >
+                  <ChevronLeft className="h-5 w-5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => page(1)}
+                  aria-label="Next homes"
+                  className="grid h-10 w-10 place-items-center rounded-full border border-ink/15 bg-white/70 text-ink transition hover:border-ink/35 active:scale-95"
+                >
+                  <ChevronRight className="h-5 w-5" />
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
-        <div className="mt-8 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-          <div role="group" aria-label="District" className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 lg:mx-0 lg:flex-wrap lg:px-0">
+        <div
+          data-gallery-filters
+          className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center"
+        >
+          <div
+            role="group"
+            aria-label="District"
+            className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0"
+          >
             {["All", ...DISTRICTS].map((d) => {
               const active = district === d;
               return (
@@ -101,22 +174,35 @@ export function Gallery({
                   aria-pressed={active}
                   onClick={() => apply(() => onDistrict(d))}
                   className={cn(
-                    "chip inline-flex h-10 shrink-0 items-center gap-2 rounded-full border px-4 text-[15px] transition-[background-color,color,border-color,transform] duration-150 ease-out active:scale-[0.97]",
-                    active ? "border-brand-700 bg-brand-700 text-white" : "border-ink/15 bg-white/60 text-ink hover:border-ink/35",
+                    "chip inline-flex h-9 shrink-0 items-center gap-2 rounded-full border px-3.5 text-[14px] transition-[background-color,color,border-color,transform] duration-150 ease-out active:scale-[0.97]",
+                    active
+                      ? "border-brand-700 bg-brand-700 text-white"
+                      : "border-ink/15 bg-white/60 text-ink hover:border-ink/35",
                   )}
                 >
                   {d === "All" ? "All of Portugal" : d}
-                  <span className={cn("text-[13px] tabular-nums", active ? "text-white/80" : "text-ink/65")}>{counts[d] ?? 0}</span>
+                  <span
+                    className={cn(
+                      "text-[12px] tabular-nums",
+                      active ? "text-white/80" : "text-ink/65",
+                    )}
+                  >
+                    {counts[d] ?? 0}
+                  </span>
                 </button>
               );
             })}
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center justify-between gap-3">
             <select
               aria-label="Budget"
               value={budget ?? ""}
-              onChange={(e) => apply(() => setBudget(e.target.value ? Number(e.target.value) : null))}
-              className="!h-10 !w-auto !rounded-full !border-ink/15 !bg-white/60 !pl-4 !text-[15px] !text-ink !shadow-none hover:!border-ink/35"
+              onChange={(e) =>
+                apply(() =>
+                  setBudget(e.target.value ? Number(e.target.value) : null),
+                )
+              }
+              className="!h-9 !w-auto shrink-0 !rounded-full !border-ink/15 !bg-white/60 !pl-3.5 !text-[14px] !text-ink !shadow-none hover:!border-ink/35"
             >
               {BUDGETS.map((b) => (
                 <option key={b.label} value={b.max ?? ""}>
@@ -124,44 +210,89 @@ export function Gallery({
                 </option>
               ))}
             </select>
-            <p className="whitespace-nowrap text-[15px] text-ink/75 tabular-nums" aria-live="polite">
+            <p className="whitespace-nowrap text-[14px] text-ink/75 tabular-nums lg:hidden">
               {filtered.length} home{filtered.length === 1 ? "" : "s"}
             </p>
           </div>
         </div>
       </div>
 
-      <div className="mx-auto mt-8 max-w-7xl lg:px-8">
-        <div className="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-px-4 px-4 pb-2 sm:scroll-px-6 sm:px-6 lg:grid lg:auto-rows-[minmax(0,1fr)] lg:grid-cols-3 lg:gap-5 lg:overflow-visible lg:px-0 lg:[perspective:1400px]">
-          {filtered.map((home, i) => (
-            <Card key={home.id} home={home} featured={i % 7 === 0} onOpen={() => onOpen(home)} tilt={!reduced} />
+      {/* The row: horizontal, snapping, sized by viewport height */}
+      <div
+        className="mx-auto mt-4 w-full max-w-7xl"
+        style={{ ["--card-h" as string]: CARD_H } as CSSProperties}
+      >
+        <div
+          ref={track}
+          className="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-px-4 px-4 pb-2 sm:scroll-px-6 sm:px-6 lg:scroll-px-8 lg:px-8 lg:[perspective:1400px]"
+        >
+          {filtered.map((home) => (
+            <Card
+              key={home.id}
+              home={home}
+              onOpen={() => onOpen(home)}
+              tilt={!reduced}
+            />
           ))}
           {filtered.length === 0 && (
-            <div className="flex min-h-[320px] w-full flex-col items-start justify-center rounded-[20px] bg-sand/60 p-6 lg:col-span-3">
-              <p className="font-display text-2xl text-ink">Nothing in {district === "All" ? "Portugal" : district} at this budget yet.</p>
-              <p className="mt-2 max-w-md text-[15px] text-ink/70">Raise the budget or pick another region. Agencies add homes every week.</p>
-              <button type="button" onClick={() => apply(() => setBudget(null))} className="mt-5 inline-flex h-10 items-center rounded-full bg-ink px-4 text-[15px] font-medium text-limestone active:scale-[0.97]">
+            <div className="flex h-[var(--card-h)] w-full flex-col items-start justify-center rounded-[20px] bg-sand/60 p-6">
+              <p className="font-display text-2xl text-ink">
+                Nothing in {district === "All" ? "Portugal" : district} at this
+                budget yet.
+              </p>
+              <p className="mt-2 max-w-md text-[15px] text-ink/70">
+                Raise the budget or pick another region. Agencies add homes
+                every week.
+              </p>
+              <button
+                type="button"
+                onClick={() => apply(() => setBudget(null))}
+                className="mt-5 inline-flex h-10 items-center rounded-full bg-ink px-4 text-[15px] font-medium text-limestone active:scale-[0.97]"
+              >
                 Show any budget
               </button>
             </div>
           )}
         </div>
-        {SHOWCASE_IS_SAMPLE && <p className="mt-4 px-4 text-[13px] text-ink/70 sm:px-6 lg:px-0">Sample homes shown while the Portugal listings feed is connected.</p>}
+        {SHOWCASE_IS_SAMPLE && (
+          <p className="mt-1.5 px-4 text-[12px] text-ink/70 sm:px-6 lg:px-8">
+            Sample homes shown while the Portugal listings feed is connected.
+          </p>
+        )}
       </div>
-    </section>
+    </div>
   );
 }
 
-function Card({ home, featured, onOpen, tilt }: { home: ShowcaseHome; featured: boolean; onOpen: () => void; tilt: boolean }) {
+function Card({
+  home,
+  onOpen,
+  tilt,
+}: {
+  home: ShowcaseHome;
+  onOpen: () => void;
+  tilt: boolean;
+}) {
   const ref = useRef<HTMLDivElement>(null);
-  const setters = useRef<{ rx: (v: number) => void; ry: (v: number) => void; gx: (v: number) => void; gy: (v: number) => void } | null>(null);
+  const setters = useRef<{
+    rx: (v: number) => void;
+    ry: (v: number) => void;
+    gx: (v: number) => void;
+    gy: (v: number) => void;
+  } | null>(null);
 
   function ensure() {
     if (!setters.current && ref.current) {
       const el = ref.current;
       setters.current = {
-        rx: gsap.quickTo(el, "rotationX", { duration: 0.5, ease: "power3.out" }),
-        ry: gsap.quickTo(el, "rotationY", { duration: 0.5, ease: "power3.out" }),
+        rx: gsap.quickTo(el, "rotationX", {
+          duration: 0.5,
+          ease: "power3.out",
+        }),
+        ry: gsap.quickTo(el, "rotationY", {
+          duration: 0.5,
+          ease: "power3.out",
+        }),
         gx: gsap.quickTo(el, "--gx", { duration: 0.5, ease: "power3.out" }),
         gy: gsap.quickTo(el, "--gy", { duration: 0.5, ease: "power3.out" }),
       };
@@ -189,48 +320,62 @@ function Card({ home, featured, onOpen, tilt }: { home: ShowcaseHome; featured: 
     <article
       data-card
       style={{ viewTransitionName: `home-${home.id}` }}
-      className={cn("w-[78vw] max-w-[340px] shrink-0 snap-start lg:w-auto lg:max-w-none", featured && "lg:col-span-2 lg:row-span-2")}
+      className="h-[var(--card-h)] w-[calc(var(--card-h)*0.8)] shrink-0 snap-start"
     >
       <div
         ref={ref}
         onPointerMove={onMove}
         onPointerLeave={onLeave}
-        style={{ transformStyle: "preserve-3d", ["--gx" as string]: "50", ["--gy" as string]: "50" } as React.CSSProperties}
-        className="group relative h-full will-change-transform"
+        style={
+          {
+            transformStyle: "preserve-3d",
+            ["--gx" as string]: "50",
+            ["--gy" as string]: "50",
+          } as CSSProperties
+        }
+        className="group relative h-full w-full will-change-transform"
       >
         <button
           type="button"
           onClick={onOpen}
           aria-label={`${home.title}, ${formatPrice(home.price)}, ${home.locality}`}
-          className={cn(
-            "relative block h-full w-full overflow-hidden rounded-[22px] bg-sand text-left shadow-[0_1px_2px_rgba(20,33,61,0.06)] transition-shadow duration-300 hover:shadow-[0_28px_60px_-28px_rgba(20,33,61,0.55)] active:scale-[0.99]",
-            featured ? "aspect-[4/5] lg:aspect-auto lg:min-h-[560px]" : "aspect-[4/5]",
-          )}
+          className="relative block h-full w-full overflow-hidden rounded-[22px] bg-sand text-left shadow-[0_1px_2px_rgba(20,33,61,0.06)] transition-shadow duration-300 hover:shadow-[0_28px_60px_-28px_rgba(20,33,61,0.55)] active:scale-[0.99]"
         >
           <Image
             src={home.photos[0]}
             alt=""
             fill
-            sizes={featured ? "(min-width: 1024px) 760px, 78vw" : "(min-width: 1024px) 380px, 78vw"}
+            sizes="(min-width: 1024px) 420px, 80vw"
             className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
             placeholder="blur"
             blurDataURL={unsplashBlur(home.photos[0])}
           />
           <div className="absolute inset-x-0 bottom-0 h-[62%] bg-gradient-to-t from-ink/85 via-ink/35 to-transparent" />
-          {/* Glare that follows the pointer */}
           <div
             aria-hidden
             className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-            style={{ background: "radial-gradient(420px circle at calc(var(--gx) * 1%) calc(var(--gy) * 1%), rgba(248,247,243,0.18), transparent 60%)" }}
+            style={{
+              background:
+                "radial-gradient(420px circle at calc(var(--gx) * 1%) calc(var(--gy) * 1%), rgba(248,247,243,0.18), transparent 60%)",
+            }}
           />
-          <span className="absolute right-3 top-3 rounded-full bg-limestone/90 px-2.5 py-1 text-[12px] font-medium text-ink backdrop-blur">{home.type}</span>
-          <div className="absolute inset-x-0 bottom-0 p-4 text-limestone sm:p-5" style={{ transform: "translateZ(30px)" }}>
-            <p className={cn("font-display leading-none tracking-tight", featured ? "text-[28px] lg:text-[40px]" : "text-[28px]")}>{formatPrice(home.price)}</p>
-            <p className={cn("mt-2 font-medium", featured ? "line-clamp-2 text-[15px] lg:text-lg" : "line-clamp-1 text-[15px]")}>{home.title}</p>
-            <p className="text-[14px] text-limestone/75">
+          <span className="absolute right-3 top-3 rounded-full bg-limestone/90 px-2.5 py-1 text-[12px] font-medium text-ink backdrop-blur">
+            {home.type}
+          </span>
+          <div
+            className="absolute inset-x-0 bottom-0 p-4 text-limestone"
+            style={{ transform: "translateZ(30px)" }}
+          >
+            <p className="font-display text-[min(1.75rem,3.4vh)] leading-none tracking-tight">
+              {formatPrice(home.price)}
+            </p>
+            <p className="mt-2 line-clamp-1 text-[14px] font-medium">
+              {home.title}
+            </p>
+            <p className="text-[13px] text-limestone/75">
               {home.locality}, {home.district}
             </p>
-            <ul className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-[13px] text-limestone/85">
+            <ul className="mt-2.5 flex flex-wrap gap-x-3 gap-y-1 text-[12px] text-limestone/85">
               {home.beds != null && (
                 <li className="inline-flex items-center gap-1">
                   <BedDouble className="h-3.5 w-3.5" /> {home.beds}
@@ -243,7 +388,8 @@ function Card({ home, featured, onOpen, tilt }: { home: ShowcaseHome; featured: 
               )}
               {home.sqm != null && (
                 <li className="inline-flex items-center gap-1">
-                  <Ruler className="h-3.5 w-3.5" /> {formatNumber(home.sqm, " m²")}
+                  <Ruler className="h-3.5 w-3.5" />{" "}
+                  {formatNumber(home.sqm, " m²")}
                 </li>
               )}
             </ul>

@@ -30,23 +30,28 @@ Rules: cobalt owns whole regions (a full band, a primary button), never scattere
 - Photos are the material: full-bleed hero and film frames, 4:5 cards (featured cards 2×2 in the bento), gradients from `ink` to transparent for legibility. Unsplash photos are served from Unsplash's CDN via `src/lib/image-loader.ts` with a 24px blur placeholder.
 
 ## Motion
-- The landing page is a scroll film (GSAP ScrollTrigger + Lenis smooth scroll, `src/components/landing/cinematic/`):
-  a Ken Burns hero with a masked word reveal, a pinned sequence where one home dissolves into the next with its price
-  counting up, a bento gallery whose cards rise in and tilt in 3D under the pointer, a map of Portugal that draws itself
-  with pulsing district dots and count-ups, a live swipe deck, steps whose connecting line draws with scroll, and a
-  parallax closing. Lenis leaves touch scrolling native; wheel/keyboard scroll is eased.
-- Between sections the page never cuts (`cinematic/transitions.tsx`, all scrubbed to scroll): the hero stays pinned and
-  dims while the film slides over it; the film's last frame recedes under the gallery, which arrives as a rounded sheet;
-  the map rises as a sheet; cobalt wells up out of the map as an expanding circle; the steps enter as a slanted curtain
-  that straightens; the closing photograph zooms from an inset frame to full bleed. Section headings share the hero's
-  masked line reveal, and a 2px progress line in the header threads the whole scroll together.
+- The landing page is a deck of full-screen slides (`src/components/landing/cinematic/slides.tsx`, GSAP only, no
+  smooth-scroll library): `html`/`body` are locked and show no scrollbars, each slide is exactly the viewport, and a wheel
+  tick (48px within 220ms), a vertical swipe (44px), ArrowUp/Down, PageUp/Down, Space, Home/End or a side dot moves exactly
+  one slide. The transition is a crossfade with the outgoing content easing 7% away and shrinking to 0.96 while the
+  incoming content arrives from 9% the other way at 1.03 (0.95s, `power3.inOut`/`power3.out`), then a 500ms lock so a
+  flick cannot skip slides. The header goes transparent over photographic and cobalt slides and solid limestone over
+  light ones; its 2px line shows deck progress. Dots are hidden on phones (swipe is the gesture; the header line remains).
+- Each slide owns one intro that replays every time it becomes active (`useSlideIntro`, reverted on leave): Ken Burns
+  push-in and a masked word reveal on the hero; a push-in, copy rise and price count-up on every home slide; cards that
+  slide in from the right and tilt in 3D under the pointer in the gallery; a map that draws itself with pulsing district
+  dots and count-ups; the live swipe deck rising with a 3° settle; a connecting line that draws across the steps; a slow
+  push-in on the closing photograph.
+- Slides whose content is taller than the screen (map, agents and the gallery on short phones) scroll inside themselves;
+  the deck only advances once that inner scroll has reached its end, so nothing is unreachable. Horizontal carousels,
+  dialogs and the swipe deck's card drag (`data-no-slide`) never change slides.
 - Inside the app: one orchestrated moment per screen at most; otherwise motion only answers a user action (filter
   re-sorts via View Transitions, sheets via `@starting-style`, press feedback `scale(0.97–0.985)` at 100–160ms).
 - Curves: `power4.out` for entrances, `power3.inOut` for on-screen movement, `back.out(1.6)` for pops; CSS tokens
   `--ease-out-strong` / `--ease-in-out-strong` mirror them. UI motion under 300ms; the swipe verdict (hold 650ms, fly
   600ms) is deliberately slower because it must be read.
-- `prefers-reduced-motion`: Lenis, pinning and parallax switch off (`useMotion().reduced`), the film stacks, fades stay.
-- Every GSAP block lives in `useGSAP` with a scope so it cleans up on unmount; `gsap.matchMedia` gates motion tiers.
+- `prefers-reduced-motion`: slides switch instantly and the per-slide intros are skipped (`useMotion().reduced`); press feedback stays.
+- Every GSAP block lives in `useGSAP` with a scope so it cleans up on unmount or when its slide leaves.
 
 ## Mobile baseline
 `viewport-fit=cover`, `interactive-widget=resizes-content`, theme-color = limestone, tap highlight off, 16px inputs on coarse pointers, `touch-action: manipulation` on controls, hover styles gated by Tailwind's `hover:` (hover-capable only). Carousels use native scroll-snap. Tap targets ≥ 40px.

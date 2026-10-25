@@ -135,19 +135,12 @@ input[type="checkbox"] {
   @apply h-4 w-4 cursor-pointer rounded border-slate-300 accent-brand-700;
 }
 
-/* Lenis smooth scroll (landing page only) */
-html.lenis,
-html.lenis body {
-  height: auto;
-}
-.lenis.lenis-smooth {
-  scroll-behavior: auto !important;
-}
-.lenis.lenis-smooth [data-lenis-prevent] {
-  overscroll-behavior: contain;
-}
-.lenis.lenis-stopped {
+/* Full-screen slide deck (landing page): the document itself never scrolls. */
+html.slides-on,
+html.slides-on body {
+  height: 100%;
   overflow: hidden;
+  overscroll-behavior: none;
 }
 
 /* Map dots breathe */

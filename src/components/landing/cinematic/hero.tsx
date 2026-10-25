@@ -4,86 +4,53 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
 import { DISTRICTS, type ShowcaseHome } from "@/data/portugal-showcase";
+import { APP_NAME } from "@/lib/constants";
 import { DEMO_MODE } from "@/lib/demo";
 import { unsplashBlur } from "@/lib/image-loader";
 import { cn } from "@/lib/utils";
-import { EASE, SplitText, gsap, useGSAP, useMotion } from "./motion";
+import { EASE, SplitText, gsap } from "./motion";
+import { useSlideIntro, useSlides } from "./slides";
 
 export function Hero({
-  id,
+  slide,
   home,
   counts,
   agencies,
   district,
   onPickDistrict,
 }: {
-  id: string;
+  slide: number;
   home: ShowcaseHome;
   counts: Record<string, number>;
   agencies: number;
   district: string;
   onPickDistrict: (d: string) => void;
 }) {
-  const root = useRef<HTMLElement>(null);
-  const { reduced } = useMotion();
+  const root = useRef<HTMLDivElement>(null);
+  const { next } = useSlides();
 
-  useGSAP(
-    () => {
-      if (reduced) return;
-      const mm = gsap.matchMedia();
-      mm.add("(prefers-reduced-motion: no-preference)", () => {
-        // Slow push-in on the photograph, then a parallax drift as the hero scrolls away.
-        gsap.fromTo("[data-hero-photo]", { scale: 1.14 }, { scale: 1, duration: 9, ease: "power2.out" });
-        gsap.to("[data-hero-photo]", {
-          yPercent: 16,
-          ease: "none",
-          scrollTrigger: { trigger: root.current, start: "top top", end: "bottom top", scrub: true },
-        });
-        gsap.to("[data-hero-copy]", {
-          yPercent: -14,
-          autoAlpha: 0.35,
-          ease: "none",
-          scrollTrigger: { trigger: root.current, start: "top top", end: "70% top", scrub: true },
-        });
-
-        // Headline rises word by word out of a mask once the display font is ready.
-        const run = () => {
-          const split = SplitText.create("[data-hero-title]", { type: "words,lines", mask: "lines", linesClass: "line" });
-          const tl = gsap.timeline({ defaults: { ease: EASE.out } });
-          tl.from(split.words, { yPercent: 115, duration: 1.15, stagger: 0.045 }, 0.25)
-            .from("[data-hero-sub]", { y: 26, autoAlpha: 0, duration: 1 }, 0.85)
-            .from("[data-hero-cta]", { y: 20, autoAlpha: 0, duration: 0.8 }, 1.0)
-            .from("[data-hero-bar]", { yPercent: 100, autoAlpha: 0, duration: 1, ease: "power3.out" }, 1.05)
-            .from("[data-hero-cue]", { autoAlpha: 0, duration: 0.8 }, 1.4);
-          gsap.to("[data-hero-cue-line]", { scaleY: 0, transformOrigin: "top", repeat: -1, yoyo: true, duration: 1.1, ease: "power2.inOut" });
-        };
-        if ("fonts" in document) document.fonts.ready.then(run);
-        else run();
-      });
-      return () => mm.revert();
-    },
-    { scope: root, dependencies: [reduced] },
-  );
+  useSlideIntro(slide, root, () => {
+    // One orchestrated moment: slow push-in on the photograph, headline out of a mask, then the rest.
+    gsap.fromTo("[data-hero-photo]", { scale: 1.14 }, { scale: 1, duration: 9, ease: "power2.out" });
+    const split = SplitText.create("[data-hero-title]", { type: "words,lines", mask: "lines" });
+    const tl = gsap.timeline({ defaults: { ease: EASE.out } });
+    tl.from(split.words, { yPercent: 115, duration: 1.15, stagger: 0.045 }, 0.3)
+      .from("[data-hero-sub]", { y: 26, autoAlpha: 0, duration: 1 }, 0.9)
+      .from("[data-hero-cta]", { y: 20, autoAlpha: 0, duration: 0.8 }, 1.05)
+      .from("[data-hero-bar]", { yPercent: 100, autoAlpha: 0, duration: 1, ease: "power3.out" }, 1.1)
+      .from("[data-hero-cue]", { autoAlpha: 0, duration: 0.8 }, 1.45);
+    gsap.to("[data-hero-cue-line]", { scaleY: 0, transformOrigin: "top", repeat: -1, yoyo: true, duration: 1.1, ease: "power2.inOut" });
+  });
 
   return (
-    <section id={id} ref={root} data-section="hero" aria-labelledby="hero-heading" className="sticky top-0 z-0 h-[100svh] min-h-[560px] overflow-hidden bg-ink text-limestone">
-      <div data-hero-inner className="relative flex h-full flex-col justify-end will-change-transform">
+    <div ref={root} className="relative flex min-h-full flex-col justify-end overflow-hidden bg-ink text-limestone">
       <div data-hero-photo className="absolute inset-[-6%] will-change-transform">
-        <Image
-          src={home.photos[0]}
-          alt={`${home.title} in ${home.locality}`}
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
-          placeholder="blur"
-          blurDataURL={unsplashBlur(home.photos[0])}
-        />
+        <Image src={home.photos[0]} alt={`${home.title} in ${home.locality}`} fill priority sizes="100vw" className="object-cover" placeholder="blur" blurDataURL={unsplashBlur(home.photos[0])} />
       </div>
       <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/30 to-ink/10" />
       <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-ink/75 via-ink/30 to-transparent" />
 
-      <div data-hero-copy className="relative mx-auto w-full max-w-7xl px-4 pb-[min(2.5rem,4vh)] pt-20 sm:px-6 sm:pb-[min(3rem,4.5vh)] sm:pt-24 lg:px-8">
+      <div className="relative mx-auto w-full max-w-7xl px-4 pb-[min(2.5rem,4vh)] pt-20 sm:px-6 sm:pb-[min(3rem,4.5vh)] sm:pt-24 lg:px-8">
         <h1
           id="hero-heading"
           data-hero-title
@@ -92,16 +59,12 @@ export function Hero({
           Homes across Portugal, shared by the agents who hold them.
         </h1>
         <p data-hero-sub className="mt-[min(1.5rem,2.4vh)] max-w-[46ch] text-[clamp(15px,2.1vh,17px)] leading-relaxed text-limestone/85 sm:text-[clamp(15px,2.2vh,18px)]">
-          Agencies pool their stock on Ponte. Browse what is on the market from Lisboa to the Algarve; when a home fits, the listing agent is
-          one message away.
+          Agencies pool their stock on {APP_NAME}. Browse what is on the market from Lisboa to the Algarve; when a home fits, the listing agent is one message away.
         </p>
         <div data-hero-cta className="mt-[min(2rem,3vh)] flex flex-wrap gap-3">
-          <a
-            href="#homes"
-            className="inline-flex h-12 items-center rounded-full bg-limestone px-6 text-[15px] font-medium text-ink transition hover:bg-white active:scale-[0.98]"
-          >
-            Browse the homes
-          </a>
+          <button type="button" onClick={next} className="inline-flex h-12 items-center rounded-full bg-limestone px-6 text-[15px] font-medium text-ink transition hover:bg-white active:scale-[0.98]">
+            See the homes
+          </button>
           <Link
             href={DEMO_MODE ? "/discover" : "/signup"}
             className="inline-flex h-12 items-center rounded-full border border-limestone/40 px-6 text-[15px] font-medium text-limestone backdrop-blur transition hover:border-limestone/80 active:scale-[0.98]"
@@ -111,7 +74,7 @@ export function Hero({
         </div>
       </div>
 
-      {/* Glass district bar: the working part of the hero */}
+      {/* Glass district bar: jumps straight to the gallery, filtered */}
       <div data-hero-bar className="relative border-t border-limestone/15 bg-limestone/10 backdrop-blur-md">
         <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3 sm:px-6 lg:px-8">
           <div role="group" aria-label="District" className="no-scrollbar flex min-w-0 flex-1 gap-2 overflow-x-auto">
@@ -140,12 +103,16 @@ export function Hero({
         </div>
       </div>
 
-      <div data-hero-cue aria-hidden className="pointer-events-none absolute bottom-24 right-6 hidden flex-col items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-limestone/60 lg:flex">
+      <button
+        type="button"
+        onClick={next}
+        data-hero-cue
+        aria-label="Next"
+        className="absolute bottom-24 right-8 hidden flex-col items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-limestone/60 transition-colors hover:text-limestone lg:flex"
+      >
         <span>Scroll</span>
         <span data-hero-cue-line className="block h-12 w-px bg-limestone/60" />
-      </div>
-      </div>
-      <div data-hero-dim aria-hidden className="pointer-events-none absolute inset-0 bg-ink opacity-0" />
-    </section>
+      </button>
+    </div>
   );
 }

@@ -66,7 +66,7 @@ Open <http://localhost:3000>. Create two accounts (use two browsers) to try the 
 
 ### Landing page and sample homes
 
-The landing page (`src/app/page.tsx`, components in `src/components/landing/cinematic/`) is a scroll-driven film of homes across Portugal built with GSAP ScrollTrigger and Lenis (hero, pinned home sequence, bento gallery, Portugal map, live swipe demo, steps, closing). Until the real listings
+The landing page (`src/app/page.tsx`, components in `src/components/landing/cinematic/`) is a full-screen slide deck built with GSAP (`cinematic/slides.tsx`): the document never scrolls and shows no scrollbars; a wheel tick, a vertical swipe, an arrow key or a side dot moves exactly one slide (hero, six homes full screen, gallery row, Portugal map, live swipe demo, steps, closing with footer). A slide taller than a phone screen scrolls inside itself and hands off at its end; `#hash` links open a slide directly. Until the real listings
 feed is connected it renders the sample data in `src/data/portugal-showcase.ts`; replace that array (same shape) and set
 `SHOWCASE_IS_SAMPLE = false` to drop the "sample homes" note. Design decisions are recorded in `DESIGN.md`, product truth in `PRODUCT.md`.
 Design skills used during the build are vendored in `.claude/skills/` (Impeccable, Emil Kowalski's animation/mobile skills, Vercel's
