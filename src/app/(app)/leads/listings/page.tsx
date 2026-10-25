@@ -4,8 +4,8 @@ import { Search, UserSearch } from "lucide-react";
 import { LeadRow } from "@/components/lead-row";
 import { LeadsTabs } from "@/components/leads-tabs";
 import { MobileCollapse } from "@/components/mobile-collapse";
+import { Pagination, SortSelect, applyOrderParam, readTableParams, type SortDir } from "@/components/table-controls";
 import {
-  Badge,
   Button,
   Card,
   CardBody,
@@ -24,7 +24,20 @@ import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Portal listings" };
 
-const PAGE_SIZE = 50;
+const SORTS = {
+  newest: { column: "source_checked_on", defaultDir: "desc" },
+  price: { column: "price_eur", defaultDir: "asc" },
+  size: { column: "size_sqm", defaultDir: "desc" },
+  area: { column: "area", defaultDir: "asc" },
+} as const satisfies Record<string, { column: string; defaultDir: SortDir }>;
+type SortKey = keyof typeof SORTS;
+const SORT_OPTIONS: { key: SortKey; dir: SortDir; label: string }[] = [
+  { key: "newest", dir: "desc", label: "Newest" },
+  { key: "price", dir: "asc", label: "Price, low to high" },
+  { key: "price", dir: "desc", label: "Price, high to low" },
+  { key: "size", dir: "desc", label: "Largest" },
+  { key: "area", dir: "asc", label: "Area A–Z" },
+];
 type Param = string | string[] | undefined;
 const first = (v: Param) => (Array.isArray(v) ? v[0] : v) ?? "";
 
@@ -33,8 +46,9 @@ export default async function LeadsPage({
 }: {
   searchParams: Promise<Record<string, Param>>;
 }) {
-  const params = await searchParams;
+  const params = applyOrderParam(await searchParams);
   const { supabase, agent } = await requireAgent();
+  const { sort, dir, size, page, isDefault } = readTableParams<SortKey>(params, SORTS, "newest");
 
   const offer =
     first(params.offer) === "rent"
@@ -50,7 +64,6 @@ export default async function LeadsPage({
   const status = (LEAD_STATUSES as string[]).includes(first(params.status))
     ? (first(params.status) as LeadStatus)
     : "";
-  const page = Math.max(1, Number(first(params.page)) || 1);
 
   // My tracking rows (small: one per lead I've touched) drive the status filter and the counters.
   const [{ data: trackingRows, error: trackingError }, overviewRes] =
@@ -75,9 +88,9 @@ export default async function LeadsPage({
     .select("*, owner_lead_tracking(status, notes, updated_at)", {
       count: "exact",
     })
-    .order("source_checked_on", { ascending: false, nullsFirst: false })
+    .order(SORTS[sort].column, { ascending: dir === "asc", nullsFirst: false })
     .order("imported_at", { ascending: false })
-    .range((page - 1) * PAGE_SIZE, page * PAGE_SIZE - 1);
+    .range((page - 1) * size, page * size - 1);
   if (offer) query = query.eq("offer", offer);
   if (area) query = query.eq("area", area);
   if (typology) query = query.eq("typology", typology);
@@ -101,7 +114,6 @@ export default async function LeadsPage({
   const { data, count } = needsMigration ? { data: [], count: 0 } : await query;
   const leads = (data ?? []) as OwnerLeadWithTracking[];
   const total = count ?? 0;
-  const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
   const counters = LEAD_STATUSES.map((s) => ({
     status: s,
@@ -121,6 +133,9 @@ export default async function LeadsPage({
       max: max ? String(max) : "",
       q,
       status,
+      sort: isDefault ? "" : sort,
+      dir: isDefault ? "" : dir,
+      size: size === 50 ? "" : String(size),
       page: page > 1 ? String(page) : "",
     };
     for (const [k, v] of Object.entries({ ...current, ...overrides }))
@@ -215,10 +230,11 @@ export default async function LeadsPage({
         }
         openLabel="Hide filters"
         className="mb-6"
-        panelClassName="grid gap-3 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm sm:grid-cols-2 lg:grid-cols-7"
+        panelClassName="grid gap-3 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm sm:grid-cols-2 lg:grid-cols-4"
       >
         <form method="get" className="contents">
           {status && <input type="hidden" name="status" value={status} />}
+          {size !== 50 && <input type="hidden" name="size" value={size} />}
           <select name="offer" defaultValue={offer} aria-label="Sale or rent">
             <option value="">Sale and rent</option>
             <option value="sale">For sale</option>
@@ -265,6 +281,7 @@ export default async function LeadsPage({
             defaultValue={q}
             aria-label="Search"
           />
+          <SortSelect options={SORT_OPTIONS} sort={sort} dir={dir} />
           <Button type="submit" variant="secondary">
             <Search className="h-4 w-4" /> Filter
           </Button>
@@ -288,8 +305,8 @@ export default async function LeadsPage({
       ) : (
         <>
           <p className="mb-3 text-sm text-slate-500">
-            Showing {(page - 1) * PAGE_SIZE + 1}–
-            {Math.min(page * PAGE_SIZE, total)} of {total}
+            {total} listing{total === 1 ? "" : "s"} · sorted by{" "}
+            {SORT_OPTIONS.find((o) => o.key === sort && o.dir === dir)?.label.toLowerCase()}
             {overview?.median_sale_eur_sqm && !offer ? (
               <>
                 {" "}
@@ -304,36 +321,7 @@ export default async function LeadsPage({
               <LeadRow key={lead.id} lead={lead} />
             ))}
           </ul>
-          {pages > 1 && (
-            <nav
-              aria-label="Pages"
-              className="mt-6 flex items-center justify-between text-sm"
-            >
-              {page > 1 ? (
-                <Link
-                  href={href({ page: page - 1 })}
-                  className="font-medium text-brand-700 hover:underline"
-                >
-                  Previous
-                </Link>
-              ) : (
-                <span />
-              )}
-              <Badge>
-                Page {page} of {pages}
-              </Badge>
-              {page < pages ? (
-                <Link
-                  href={href({ page: page + 1 })}
-                  className="font-medium text-brand-700 hover:underline"
-                >
-                  Next
-                </Link>
-              ) : (
-                <span />
-              )}
-            </nav>
-          )}
+          <Pagination page={page} size={size} total={total} href={href} />
         </>
       )}
     </>
