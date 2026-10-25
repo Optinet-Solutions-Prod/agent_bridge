@@ -1,6 +1,6 @@
 import type { DealStatus, LeadStatus, ListingStatus, PlanTier } from "@/lib/types";
 
-export const APP_NAME = "AgentBridge";
+export const APP_NAME = "Ponte";
 export const APP_TAGLINE = "The private property network for Portugal.";
 
 /** Share of the buyer-side commission the platform takes on a closed deal. */
@@ -146,7 +146,7 @@ export const CO_BROKER_TERMS = [
   "The Listing Agent confirms they hold a valid mandate to market the property described in this Deal Room.",
   "The Buyer Agent confirms they represent a genuine, identifiable buyer for whom this property is being introduced.",
   "If this property is purchased by the Buyer Agent's client (or any party introduced through them), the Listing Agent will pay the Buyer Agent the buyer-agent commission stated in this Deal Room, calculated on the final sale price.",
-  `The AgentBridge platform fee of ${PLATFORM_FEE_PCT}% of the buyer-agent commission is payable by each participating side on completion, regardless of whether subsequent communication, viewings or negotiations take place outside AgentBridge.`,
-  "Both agents agree that this introduction was made through AgentBridge and will not circumvent, directly or indirectly, the terms above for a period of 12 months from the date of agreement.",
+  `The ${APP_NAME} platform fee of ${PLATFORM_FEE_PCT}% of the buyer-agent commission is payable by each participating side on completion, regardless of whether subsequent communication, viewings or negotiations take place outside ${APP_NAME}.`,
+  `Both agents agree that this introduction was made through ${APP_NAME} and will not circumvent, directly or indirectly, the terms above for a period of 12 months from the date of agreement.`,
   "Identities, contact details and the exact location of the property are revealed only once both parties have accepted these terms.",
 ];

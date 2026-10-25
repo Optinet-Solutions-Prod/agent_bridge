@@ -52,7 +52,7 @@ export function Hero({
           const tl = gsap.timeline({ defaults: { ease: EASE.out } });
           tl.from(split.words, { yPercent: 115, duration: 1.15, stagger: 0.045 }, 0.25)
             .from("[data-hero-sub]", { y: 26, autoAlpha: 0, duration: 1 }, 0.85)
-            .from("[data-hero-cta] > *", { y: 20, autoAlpha: 0, duration: 0.8, stagger: 0.08 }, 1.0)
+            .from("[data-hero-cta]", { y: 20, autoAlpha: 0, duration: 0.8 }, 1.0)
             .from("[data-hero-bar]", { yPercent: 100, autoAlpha: 0, duration: 1, ease: "power3.out" }, 1.05)
             .from("[data-hero-cue]", { autoAlpha: 0, duration: 0.8 }, 1.4);
           gsap.to("[data-hero-cue-line]", { scaleY: 0, transformOrigin: "top", repeat: -1, yoyo: true, duration: 1.1, ease: "power2.inOut" });
@@ -66,7 +66,7 @@ export function Hero({
   );
 
   return (
-    <section id={id} ref={root} data-section="hero" aria-labelledby="hero-heading" className="sticky top-0 z-0 h-[100svh] min-h-[640px] overflow-hidden bg-ink text-limestone">
+    <section id={id} ref={root} data-section="hero" aria-labelledby="hero-heading" className="sticky top-0 z-0 h-[100svh] min-h-[560px] overflow-hidden bg-ink text-limestone">
       <div data-hero-inner className="relative flex h-full flex-col justify-end will-change-transform">
       <div data-hero-photo className="absolute inset-[-6%] will-change-transform">
         <Image
@@ -83,19 +83,19 @@ export function Hero({
       <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/30 to-ink/10" />
       <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-ink/75 via-ink/30 to-transparent" />
 
-      <div data-hero-copy className="relative mx-auto w-full max-w-7xl px-4 pb-10 pt-24 sm:px-6 sm:pb-12 lg:px-8 lg:pb-14">
+      <div data-hero-copy className="relative mx-auto w-full max-w-7xl px-4 pb-[min(2.5rem,4vh)] pt-20 sm:px-6 sm:pb-[min(3rem,4.5vh)] sm:pt-24 lg:px-8">
         <h1
           id="hero-heading"
           data-hero-title
-          className="max-w-[16ch] font-display text-[2.75rem] leading-[0.98] tracking-[-0.02em] [text-shadow:0_2px_28px_rgba(20,33,61,0.55)] sm:text-[4.2rem] lg:text-[5.2rem]"
+          className="max-w-[16ch] font-display text-[min(2.75rem,6.6vh)] leading-[0.98] tracking-[-0.02em] [text-shadow:0_2px_28px_rgba(20,33,61,0.55)] sm:text-[min(4.2rem,8.2vh)] lg:text-[min(5.2rem,9.2vh)]"
         >
           Homes across Portugal, shared by the agents who hold them.
         </h1>
-        <p data-hero-sub className="mt-6 max-w-[46ch] text-[17px] leading-relaxed text-limestone/85 sm:text-lg">
-          Agencies pool their stock on AgentBridge. Browse what is on the market from Lisboa to the Algarve; when a home fits, the listing agent is
+        <p data-hero-sub className="mt-[min(1.5rem,2.4vh)] max-w-[46ch] text-[clamp(15px,2.1vh,17px)] leading-relaxed text-limestone/85 sm:text-[clamp(15px,2.2vh,18px)]">
+          Agencies pool their stock on Ponte. Browse what is on the market from Lisboa to the Algarve; when a home fits, the listing agent is
           one message away.
         </p>
-        <div data-hero-cta className="mt-8 flex flex-wrap gap-3">
+        <div data-hero-cta className="mt-[min(2rem,3vh)] flex flex-wrap gap-3">
           <a
             href="#homes"
             className="inline-flex h-12 items-center rounded-full bg-limestone px-6 text-[15px] font-medium text-ink transition hover:bg-white active:scale-[0.98]"

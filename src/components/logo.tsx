@@ -26,7 +26,7 @@ export function Logo({ href = "/", className, light }: { href?: string; classNam
   return (
     <Link href={href} className={cn("inline-flex items-center gap-2.5 font-semibold tracking-tight", className)}>
       <LogoMark />
-      <span className={light ? "text-white" : "text-slate-900"}>{APP_NAME}</span>
+      <span className={cn("font-display text-[1.25rem] leading-none tracking-tight", light ? "text-white" : "text-slate-900")}>{APP_NAME}</span>
     </Link>
   );
 }

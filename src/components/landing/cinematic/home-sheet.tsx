@@ -80,7 +80,7 @@ export function HomeSheet({ home, onClose }: { home: ShowcaseHome; onClose: () =
             </div>
           </dl>
           <p className="mt-5 text-[15px] leading-relaxed text-ink/85">{home.blurb}</p>
-          <p className="mt-4 text-[13px] text-ink/70">Listed by a verified agency on AgentBridge. The exact address is shared once terms are agreed.</p>
+          <p className="mt-4 text-[13px] text-ink/70">Listed by a verified agency on Ponte. The exact address is shared once terms are agreed.</p>
           <div className="mt-auto flex flex-col gap-2 pt-6 sm:flex-row">
             <Link href="/dashboard" className="inline-flex h-11 flex-1 items-center justify-center rounded-full bg-brand-700 px-5 text-[15px] font-medium text-white transition hover:bg-brand-800 active:scale-[0.98]">
               Ask about this home

@@ -1,4 +1,4 @@
-# AgentBridge
+# Ponte (formerly Ponte)
 
 **The private MLS for real-estate agents.** Agents share the inventory they hold with every other agency — without exposing the exact location, the owner or their own identity. Agents match buyers to stock, chat anonymously, and only after both sides accept co-broker terms in a **Deal Room** are names, contact details and the address revealed. The platform's success fee is locked in *before* the reveal, so nobody can take the deal offline to avoid it.
 

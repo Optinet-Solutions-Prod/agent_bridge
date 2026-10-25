@@ -56,7 +56,8 @@ export function MotionProvider({ children }: { children: ReactNode }) {
     document.documentElement.classList.add("lenis-on");
     lenis.current = instance;
     // Exposed for browser automation (scroll-position screenshots) and debugging.
-    (window as Window & { __lenis?: Lenis }).__lenis = instance;
+    (window as Window & { __lenis?: Lenis; __gsap?: typeof gsap }).__lenis = instance;
+    (window as Window & { __gsap?: typeof gsap }).__gsap = gsap;
     const refresh = () => ScrollTrigger.refresh();
     window.addEventListener("load", refresh);
     return () => {

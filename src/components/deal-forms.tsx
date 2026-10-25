@@ -12,7 +12,7 @@ function AgreeCheckbox({ id = "agree" }: { id?: string }) {
       <input id={id} name="agree" type="checkbox" required className="mt-0.5" />
       <span>
         I have read and accept the co-broker terms above on behalf of myself and my agency. I understand the agreed commission and
-        AgentBridge fee apply even if we continue outside the platform.
+        Ponte fee apply even if we continue outside the platform.
       </span>
     </label>
   );

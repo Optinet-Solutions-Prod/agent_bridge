@@ -1,4 +1,4 @@
-# AgentBridge — product truth
+# Ponte (formerly Ponte) — product truth
 
 ## What it is
 A private property network for Portugal. Real-estate agencies pool the homes they hold so every agency's buyers can find them, without exposing the exact address, the owner or the agent's identity until co-broker terms are agreed. Public visitors can browse what is on the market; agents use the app behind it.
@@ -17,7 +17,7 @@ A private property network for Portugal. Real-estate agencies pool the homes the
 - Agents' own listings come from the app.
 
 ## Brand commitments
-- Name: **AgentBridge** (kept for Portugal).
+- Name: **Ponte** — "bridge" in Portuguese; chosen 2026-10-25 to replace AgentBridge for the Portugal launch (keeps the bridge idea, one word, sets well in the display serif). Code identifiers, the GitHub repo and the Vercel project URL still say agentbridge.
 - Language: English first; Portuguese version planned.
 - Visual direction chosen on 2026-10-25: **"Lisbon light"** — limestone-white ground, deep azulejo cobalt as the committed colour, warm golden-hour photography, a warm low-contrast display serif. Calm and premium; Portuguese without tile-pattern clichés.
 - Mobile first. Animations welcome when they explain or confirm; no scattered decorative motion.

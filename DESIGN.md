@@ -1,4 +1,4 @@
-# AgentBridge — design system ("Lisbon light")
+# Ponte (formerly Ponte) — design system ("Lisbon light")
 
 Chosen 2026-10-25 for the Portugal relaunch. Tokens live in `src/app/globals.css` (`@theme`); this file explains the intent so later work extends the world instead of replacing it.
 
