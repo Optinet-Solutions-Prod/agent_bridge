@@ -1,5 +1,5 @@
 -- ============================================================================
--- Ponte — indexes for sorting the holiday-rental table (~112k rows)
+-- Ponte — faster owner-leads pages: sort indexes and cacheable counts
 --
 -- The table sorts by a column, nulls last, then by register number (newest
 -- first). Without these, sorting by name or municipality scans and sorts the
@@ -21,6 +21,14 @@ create index if not exists register_rentals_sort_opened_asc     on public.regist
 create index if not exists register_rentals_district_nr         on public.register_rentals (district, nr_num desc);
 
 analyze public.register_rentals;
+
+-- The page-header counts are the same for everyone, so the app caches them for
+-- a few minutes with a sign-in-free client. They are aggregates only (totals per
+-- district and type), like owner_lead_overview() on the landing page.
+alter function public.register_overview() security definer set search_path = public;
+alter function public.tourism_overview()  security definer set search_path = public;
+grant execute on function public.register_overview() to anon;
+grant execute on function public.tourism_overview()  to anon;
 
 -- Sanity check: should list 11 indexes.
 select indexname from pg_indexes where tablename = 'register_rentals' and indexname like 'register_rentals_sort_%' or indexname = 'register_rentals_district_nr';

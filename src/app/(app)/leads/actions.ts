@@ -1,7 +1,8 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { requireAgent } from "@/lib/auth";
+import { REGISTER_OVERVIEW_TAG } from "@/lib/leads-data";
 import { LEAD_STATUSES } from "@/lib/constants";
 import { decodeRnalPage, parseRnal, RNAL_RECORD_URL } from "@/lib/rnal";
 import type { LeadStatus } from "@/lib/types";
@@ -113,5 +114,6 @@ export async function fetchOperator(formData: FormData): Promise<void> {
       operators: rec.operators.map(({ role, role_en, kind, name, email, phone }) => ({ role, role_en, kind, name, email, phone })),
     },
   });
+  revalidateTag(REGISTER_OVERVIEW_TAG, { expire: 0 });
   revalidatePath("/leads");
 }
