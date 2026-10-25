@@ -209,11 +209,11 @@ export function SwipeDeck({
   }
 
   return (
-    <div className="mx-auto w-full max-w-[440px]">
+    <div className="mx-auto flex min-h-0 w-full max-w-[440px] flex-1 flex-col lg:block lg:flex-none">
       {top ? (
         <>
           {/* Deck */}
-          <div className="relative h-[min(70dvh,620px)] w-full touch-none select-none">
+          <div className="relative min-h-0 w-full flex-1 touch-none select-none lg:h-[min(70dvh,620px)] lg:flex-none">
             {cards
               .slice(0, 3)
               .map((listing, i) => ({ listing, i }))
@@ -301,7 +301,7 @@ export function SwipeDeck({
           </div>
 
           {/* Controls */}
-          <div className="mt-5 flex items-start justify-center gap-4">
+          <div className="mt-3 flex shrink-0 items-start justify-center gap-4 lg:mt-5">
             <Control
               label="Undo"
               onClick={undo}
@@ -342,7 +342,7 @@ export function SwipeDeck({
             </Control>
           </div>
 
-          <p className="mt-4 text-center text-xs text-slate-500">
+          <p className="mt-2 shrink-0 text-center text-xs text-slate-500 lg:mt-4">
             {cards.length} left ·{" "}
             <Link href={shortlistHref} className="font-medium text-brand-700 hover:underline">
               {liked} shortlisted

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { ChevronDown, Loader2, Plus, X } from "lucide-react";
 import { PROPERTY_TYPES, REGIONS } from "@/lib/constants";
-import { formatPrice } from "@/lib/format";
+import { briefSummary } from "@/lib/brief-summary";
 import type { MatchCriteria } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -19,18 +19,6 @@ const PRICE_PRESETS: { label: string; min: number | null; max: number | null }[]
   { label: "€1.2M+", min: 1200000, max: null },
 ];
 
-function summary(c: MatchCriteria) {
-  const parts: string[] = [];
-  parts.push(c.min_bedrooms ? `${c.min_bedrooms}+ beds` : "Any beds");
-  parts.push(c.localities.length === 0 ? "anywhere in Malta" : c.localities.length <= 2 ? c.localities.join(", ") : `${c.localities.length} localities`);
-  if (c.min_price && c.max_price) parts.push(`${formatPrice(c.min_price)}–${formatPrice(c.max_price)}`);
-  else if (c.max_price) parts.push(`up to ${formatPrice(c.max_price)}`);
-  else if (c.min_price) parts.push(`from ${formatPrice(c.min_price)}`);
-  else parts.push("any budget");
-  if (c.property_types.length) parts.push(c.property_types.length <= 2 ? c.property_types.join(" / ") : `${c.property_types.length} types`);
-  return parts.join(" · ");
-}
-
 /**
  * The client's brief that drives the deck. Edits are written to the URL so the
  * server re-queries; the page remounts this component (via key) when they land.
@@ -39,10 +27,13 @@ export function DiscoverBrief({
   requests,
   selectedId,
   criteria,
+  alwaysOpen = false,
 }: {
   requests: { id: string; title: string }[];
   selectedId: string | null;
   criteria: MatchCriteria;
+  /** Inside the settings sheet: no collapse toggle, every control visible. */
+  alwaysOpen?: boolean;
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
@@ -115,21 +106,23 @@ export function DiscoverBrief({
         </Link>
         <div className="ml-auto flex items-center gap-2">
           {pending && <Loader2 className="h-4 w-4 animate-spin text-slate-400" />}
-          <span className="hidden text-xs text-slate-500 md:inline">{summary(criteria)}</span>
-          <button
-            type="button"
-            onClick={() => setOpen((v) => !v)}
-            className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium text-slate-600 hover:bg-slate-100 lg:hidden"
-            aria-expanded={open}
-          >
-            {open ? "Hide" : "Edit"} brief <ChevronDown className={cn("h-3.5 w-3.5 transition", open && "rotate-180")} />
-          </button>
+          {!alwaysOpen && <span className="hidden text-xs text-slate-500 md:inline">{briefSummary(criteria)}</span>}
+          {!alwaysOpen && (
+            <button
+              type="button"
+              onClick={() => setOpen((v) => !v)}
+              className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium text-slate-600 hover:bg-slate-100 lg:hidden"
+              aria-expanded={open}
+            >
+              {open ? "Hide" : "Edit"} brief <ChevronDown className={cn("h-3.5 w-3.5 transition", open && "rotate-180")} />
+            </button>
+          )}
         </div>
       </div>
-      <p className="px-4 pt-2 text-xs text-slate-500 md:hidden">{summary(criteria)}</p>
+      {!alwaysOpen && <p className="px-4 pt-2 text-xs text-slate-500 md:hidden">{briefSummary(criteria)}</p>}
 
       {/* Criteria */}
-      <div className={cn("grid gap-5 px-4 py-4 sm:px-5 lg:grid-cols-[auto_1fr_auto]", !open && "hidden lg:grid")}>
+      <div className={cn("grid gap-5 px-4 py-4 sm:px-5 lg:grid-cols-[auto_1fr_auto]", !open && !alwaysOpen && "hidden lg:grid")}>
         <div>
           <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-slate-500">Bedrooms</p>
           <div className="flex gap-1 rounded-xl bg-slate-100 p-1">
@@ -152,7 +145,7 @@ export function DiscoverBrief({
         <div className="min-w-0">
           <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-slate-500">Localities</p>
           <div className="flex flex-wrap items-center gap-1.5">
-            {localities.length === 0 && <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600">Anywhere in Malta</span>}
+            {localities.length === 0 && <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600">Anywhere</span>}
             {localities.map((l) => (
               <span key={l} className="inline-flex items-center gap-1 rounded-full bg-brand-50 py-1 pl-2.5 pr-1 text-xs font-medium text-brand-800 ring-1 ring-inset ring-brand-600/20">
                 {l}

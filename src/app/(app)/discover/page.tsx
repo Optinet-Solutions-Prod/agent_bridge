@@ -1,19 +1,19 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Flame, Heart, MessageSquare, RotateCcw, SlidersHorizontal, Trash2 } from "lucide-react";
 import { startConversation } from "@/app/(app)/listings/actions";
 import { removeFromShortlist, resetPasses } from "@/app/(app)/discover/actions";
 import { DiscoverBrief } from "@/components/discover-brief";
+import { DiscoverScreen } from "@/components/discover-screen";
 import { ListingCard } from "@/components/listing-card";
 import { SubmitButton } from "@/components/submit-button";
 import { SwipeDeck } from "@/components/swipe-deck";
 import { Button, Card, CardBody, EmptyState, LinkButton, PageHeader } from "@/components/ui";
 import { requireAgent } from "@/lib/auth";
+import { briefSummary } from "@/lib/brief-summary";
 import { formatPrice } from "@/lib/format";
 import { interestCounts, listingInterest } from "@/lib/interest";
 import { listingsMatchingRequest } from "@/lib/matching";
 import type { BuyerRequest, ListingWithAgent, MatchCriteria, SwipeDecision } from "@/lib/types";
-import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Swipe matches" };
 
@@ -119,113 +119,111 @@ export default async function DiscoverPage({ searchParams }: { searchParams: Pro
 
   return (
     <>
-      <PageHeader
-        eyebrow="Match"
-        title="Swipe through the network's stock"
-        description="Set your client's brief, then swipe right on anything worth a viewing. Likes build a shortlist you can message from — still anonymously."
-      />
-
-      {needsMigration && (
-        <Card className="mb-6 border-amber-300 bg-amber-50/80">
-          <CardBody className="text-sm text-amber-900">
-            <p className="font-semibold">One database step is missing.</p>
-            <p className="mt-1">
-              Swipes can&apos;t be saved yet. In Supabase open <strong>SQL Editor</strong>, paste the contents of{" "}
-              <code className="rounded bg-amber-100 px-1">supabase/migrations/0002_swipes.sql</code> and run it. Then reload this page.
-            </p>
-          </CardBody>
-        </Card>
-      )}
-
-      <DiscoverBrief key={deckKey} requests={requests.map((r) => ({ id: r.id, title: r.title }))} selectedId={requestId} criteria={criteria} />
-
-      <div className="mb-5 flex items-center justify-between gap-3">
-        <div className="flex w-fit gap-1 rounded-xl bg-slate-200/60 p-1 text-sm font-medium">
-          <Link
-            href={href({ tab: null })}
-            className={cn("inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 transition", tab === "swipe" ? "bg-white text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-900")}
-          >
-            <Flame className="h-4 w-4" /> Swipe
-          </Link>
-          <Link
-            href={href({ tab: "shortlist" })}
-            className={cn("inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 transition", tab === "shortlist" ? "bg-white text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-900")}
-          >
-            <Heart className="h-4 w-4" /> Shortlist
-            {likedIds.length > 0 && (
-              <span className={cn("rounded-full px-1.5 text-[11px]", tab === "shortlist" ? "bg-brand-700 text-white" : "bg-slate-300/70 text-slate-700")}>{likedIds.length}</span>
-            )}
-          </Link>
-        </div>
-        {passedCount > 0 && tab === "swipe" && (
-          <form action={resetPasses.bind(null, requestId)}>
-            <Button type="submit" variant="ghost" size="sm">
-              <RotateCcw className="h-3.5 w-3.5" /> Bring back {passedCount} passed
-            </Button>
-          </form>
+      <div className="hidden lg:block">
+        <PageHeader
+          eyebrow="Match"
+          title="Swipe through the network's stock"
+          description="Set your client's brief, then swipe right on anything worth a viewing. Likes build a shortlist you can message from — still anonymously."
+        />
+        {needsMigration && (
+          <Card className="mb-6 border-amber-300 bg-amber-50/80">
+            <CardBody className="text-sm text-amber-900">
+              <p className="font-semibold">One database step is missing.</p>
+              <p className="mt-1">
+                Swipes can&apos;t be saved yet. In Supabase open <strong>SQL Editor</strong>, paste the contents of{" "}
+                <code className="rounded bg-amber-100 px-1">supabase/migrations/0002_swipes.sql</code> and run it. Then reload this page.
+              </p>
+            </CardBody>
+          </Card>
         )}
       </div>
 
-      {tab === "swipe" ? (
-        deck.length > 0 ? (
-          <SwipeDeck key={deckKey} listings={deck} requestId={requestId} likedCount={likedIds.length} shortlistHref={href({ tab: "shortlist" })} interest={interest} />
-        ) : (
+      <DiscoverScreen
+        tab={tab}
+        briefTitle={selected?.title ?? "Quick brief"}
+        summary={briefSummary(criteria)}
+        likedCount={likedIds.length}
+        shortlistHref={href({ tab: "shortlist" })}
+        swipeHref={href({ tab: null })}
+        settings={
+          <>
+            <DiscoverBrief key={deckKey} requests={requests.map((r) => ({ id: r.id, title: r.title }))} selectedId={requestId} criteria={criteria} alwaysOpen />
+            {passedCount > 0 && (
+              <form action={resetPasses.bind(null, requestId)} className="mt-4 flex items-center justify-between gap-3 rounded-2xl border border-slate-200/80 bg-white px-4 py-3">
+                <p className="text-sm text-slate-600">
+                  {passedCount} propert{passedCount === 1 ? "y" : "ies"} you passed on {passedCount === 1 ? "is" : "are"} hidden for this brief.
+                </p>
+                <Button type="submit" variant="secondary" size="sm">
+                  <RotateCcw className="h-3.5 w-3.5" /> Bring back
+                </Button>
+              </form>
+            )}
+          </>
+        }
+      >
+        {tab === "swipe" ? (
+          deck.length > 0 ? (
+            <SwipeDeck key={deckKey} listings={deck} requestId={requestId} likedCount={likedIds.length} shortlistHref={href({ tab: "shortlist" })} interest={interest} />
+          ) : (
+            <div className="my-auto">
+              <EmptyState
+                icon={SlidersHorizontal}
+                title={seenIds.length ? "You've seen everything that matches this brief" : "Nothing matches this brief yet"}
+                description={
+                  seenIds.length
+                    ? "Widen the budget or the localities, bring back the ones you passed on, or message the agents on your shortlist."
+                    : "Try a wider price range, more localities, or fewer must-have features. New stock is added by agents every day."
+                }
+                action={
+                  <>
+                    {widerMax && (
+                      <LinkButton href={href({ max: String(widerMax), tab: null })} variant="secondary">
+                        Raise budget to {formatPrice(widerMax)}
+                      </LinkButton>
+                    )}
+                    {likedIds.length > 0 && (
+                      <LinkButton href={href({ tab: "shortlist" })}>
+                        <Heart className="h-4 w-4" /> View shortlist ({likedIds.length})
+                      </LinkButton>
+                    )}
+                  </>
+                }
+              />
+            </div>
+          )
+        ) : shortlist.length === 0 ? (
           <EmptyState
-            icon={SlidersHorizontal}
-            title={seenIds.length ? "You've seen everything that matches this brief" : "Nothing matches this brief yet"}
-            description={
-              seenIds.length
-                ? "Widen the budget or the localities to see more, bring back the ones you passed on, or message the agents on your shortlist."
-                : "Try a wider price range, more localities, or fewer must-have features. New stock is added by agents every day."
-            }
+            icon={Heart}
+            title="No properties shortlisted for this brief yet"
+            description="Swipe right on a property to add it here. From the shortlist you can message each listing agent in one tap."
             action={
-              <>
-                {widerMax && (
-                  <LinkButton href={href({ max: String(widerMax), tab: null })} variant="secondary">
-                    Raise budget to {formatPrice(widerMax)}
-                  </LinkButton>
-                )}
-                {likedIds.length > 0 && (
-                  <LinkButton href={href({ tab: "shortlist" })}>
-                    <Heart className="h-4 w-4" /> View shortlist ({likedIds.length})
-                  </LinkButton>
-                )}
-              </>
+              <LinkButton href={href({ tab: null })}>
+                <Flame className="h-4 w-4" /> Start swiping
+              </LinkButton>
             }
           />
-        )
-      ) : shortlist.length === 0 ? (
-        <EmptyState
-          icon={Heart}
-          title="No properties shortlisted for this brief yet"
-          description="Swipe right on a property to add it here. From the shortlist you can message each listing agent in one tap."
-          action={
-            <LinkButton href={href({ tab: null })}>
-              <Flame className="h-4 w-4" /> Start swiping
-            </LinkButton>
-          }
-        />
-      ) : (
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {shortlist.map((l) => (
-            <div key={l.id} className="flex flex-col gap-2">
-              <ListingCard listing={l} interest={interest[l.id]} />
-              <div className="flex gap-2">
-                <form action={startConversation.bind(null, l.id, requestId)} className="flex-1">
-                  <SubmitButton size="sm" className="w-full" pendingText="Opening chat…">
-                    <MessageSquare className="h-4 w-4" /> Message listing agent
-                  </SubmitButton>
-                </form>
-                <form action={removeFromShortlist.bind(null, l.id, requestId)}>
-                  <Button type="submit" variant="secondary" size="sm" aria-label="Remove from shortlist" title="Remove from shortlist">
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </form>
+        ) : (
+          <div className="grid gap-5 pt-2 sm:grid-cols-2 lg:grid-cols-3 lg:pt-0">
+            {shortlist.map((l) => (
+              <div key={l.id} className="flex flex-col gap-2">
+                <ListingCard listing={l} interest={interest[l.id]} />
+                <div className="flex gap-2">
+                  <form action={startConversation.bind(null, l.id, requestId)} className="flex-1">
+                    <SubmitButton size="sm" className="w-full" pendingText="Opening chat…">
+                      <MessageSquare className="h-4 w-4" /> Message listing agent
+                    </SubmitButton>
+                  </form>
+                  <form action={removeFromShortlist.bind(null, l.id, requestId)}>
+                    <Button type="submit" variant="secondary" size="sm" aria-label="Remove from shortlist" title="Remove from shortlist">
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </form>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </DiscoverScreen>
     </>
   );
 }

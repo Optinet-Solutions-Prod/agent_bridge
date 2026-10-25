@@ -43,6 +43,12 @@
       "skillPath": "skills/review-animations/SKILL.md",
       "computedHash": "8c2befeb28bb484bf2de7b2fc228774857e266d32a65d76895e78651a536d8cf"
     },
+    "unsplash-asset-images": {
+      "source": "mengto/skills",
+      "sourceType": "github",
+      "skillPath": "agent-skills/media/unsplash-asset-images/SKILL.md",
+      "computedHash": "ea2d503576887d523309a700a8c9b728ca14c59f99b05c49806d63dd218b28c7"
+    },
     "web-design-guidelines": {
       "source": "vercel-labs/agent-skills",
       "sourceType": "github",
