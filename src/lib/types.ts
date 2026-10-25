@@ -216,11 +216,18 @@ export interface RegisterRental {
   opened_on: string | null;
   operator_role: string | null;
   operator_kind: "person" | "company" | null;
-  operators: number;
+  operators: number | null;
   has_email: boolean;
   has_phone: boolean;
   source_url: string;
   checked_on: string | null;
+  address: string | null;
+  locality: string | null;
+  region: string | null;
+  source: string;
+  /** When the operator was read from the official record; null until someone fetches it. */
+  enriched_at: string | null;
+  nipc: string | null;
 }
 
 export interface RegisterOperator {
@@ -242,3 +249,71 @@ export interface RegisterContact {
 export type RegisterRentalWithTracking = RegisterRental & {
   register_tracking: { status: LeadStatus; notes: string | null; updated_at: string }[];
 };
+
+export interface RegisterOverview {
+  total: number;
+  enriched: number;
+  owners: number;
+  with_email: number;
+  with_phone: number;
+  checked_on: string | null;
+  by_district: { district: string; n: number }[];
+}
+
+/** A property from the tourist-property register (RNET open data). */
+export interface TourismProperty {
+  rnet_nr: string;
+  name: string | null;
+  type: string | null;
+  category: number | null;
+  units: number | null;
+  beds: number | null;
+  rooms: number | null;
+  owner_entity: string | null;
+  operator_entity: string | null;
+  email: string | null;
+  website: string | null;
+  address: string | null;
+  postcode: string | null;
+  locality: string | null;
+  parish: string | null;
+  municipality: string | null;
+  district: string | null;
+  region: string | null;
+  golf: boolean | null;
+  spa: boolean | null;
+  listed_building: boolean | null;
+  opened_on: string | null;
+  source: string;
+  source_url: string;
+  checked_on: string | null;
+}
+
+export type TourismPropertyWithTracking = TourismProperty & {
+  tourism_tracking: { status: LeadStatus; notes: string | null; updated_at: string }[];
+};
+
+export interface TourismOverview {
+  total: number;
+  with_website: number;
+  owner_differs: number;
+  checked_on: string | null;
+  by_type: { type: string; n: number }[];
+  by_district: { district: string; n: number }[];
+}
+
+/** Public company facts (company directory). */
+export interface Company {
+  name_key: string;
+  name: string;
+  found: boolean;
+  nif: string | null;
+  address: string | null;
+  legal_form: string | null;
+  capital: string | null;
+  activity: string | null;
+  founded_on: string | null;
+  source: string;
+  source_url: string | null;
+  checked_on: string | null;
+}

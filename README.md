@@ -87,21 +87,32 @@ so a feed can grow without a migration. Needs `supabase/migrations/0004_owner_le
 `/leads/listings`, keeping a private status (New → Contacted → Appointment → Listed / Not interested) and notes per lead; the landing page
 shows only aggregates per area via `owner_lead_overview()`.
 
-### Registered owners (holiday-rental register, demo sample)
+### Owner leads: sources
 
-`/leads` opens on owners from Turismo de Portugal's public holiday-rental register (RNAL). Each record names the operator,
-says whether they own the property, a tenant runs it or it is lent to them, and usually gives an email and sometimes a phone.
-The register publishes this under DL 128/2014, art. 10.
+`/leads` has four tabs; every row links to its official record and the Sources tab documents each source.
+
+| Tab | Source | In the database |
+| --- | --- | --- |
+| Holiday rentals | Turismo de Portugal, holiday-rental register (RNAL) open dataset | all ~112k rentals (no personal data) |
+| | RNAL individual records (operator name, role, email, phone; DL 128/2014 art. 10) | read one at a time by the admin ("Get operator details"); contacts visible to the admin only |
+| Tourist properties | Turismo de Portugal, tourist-property register (RNET) open dataset | all ~5.7k properties with owning and operating entity, email, website |
+| | Racius company directory | facts for companies that own or run them: NIF, head office, legal form, capital, activity, founded |
+| Portal listings | OLX private-seller adverts collected by the team | sample; owner not verified |
+| (link only) | Land registry (Predial Online) | not imported: paid per property, no bulk access |
 
 ```bash
-node scripts/scrape-rnal.mjs --count 150        # walks register numbers downwards, ~1 request/second, resumable
-node scripts/import-rnal.mjs                    # loads data/private/rnal-owners.json (add --dry-run to preview)
+# 1. downloads (git-ignored, data/open/)
+curl -L -o data/open/rnal-all.csv "https://dadosabertos.turismodeportugal.pt/api/download/v1/items/4e62eb1977564991bd01e61d7aa8266f/csv?redirect=true&layers=6"
+curl -L -o data/open/rnet-all.csv "https://dadosabertos.turismodeportugal.pt/api/download/v1/items/84912bbcfc7041eba5722a6f52b6bddf/csv?redirect=true&layers=0"
+# 2. company facts for RNET owners/operators (~1 request/second, resumable)
+node scripts/enrich-companies.mjs
+# 3. load everything (needs migrations 0006 and 0007)
+node scripts/import-open-data.mjs            # or --only rnal|rnet|companies, --dry-run
 ```
 
-Needs `supabase/migrations/0006_register_owners.sql`. Rental details are visible to every signed-in agent; operator names,
-emails, phones and street addresses live in `register_contacts`, which row level security opens **only to the admin login**,
-because demo mode lets anyone sign in as a guest. The scraped file holds personal data and is git-ignored (`data/private/`).
-This is a feasibility sample for the demo, not a production data pipeline.
+Operator contacts for individual rentals are deliberately not bulk-copied: most operators are private individuals.
+`scripts/scrape-rnal.mjs` + `scripts/import-rnal.mjs` collected the first 150-record demo sample (output in git-ignored
+`data/private/`); after that, the admin reads records one at a time in the app.
 
 ### 3a. Demo mode (no login)
 
