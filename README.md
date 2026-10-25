@@ -100,18 +100,21 @@ Set `NEXT_PUBLIC_DEMO_MODE=false` in Vercel to put the login wall back.
 node scripts/seed-demo.mjs
 ```
 
-Needs `SUPABASE_SERVICE_KEY` in `.env` (server-side only — never `NEXT_PUBLIC_`). Creates six demo agencies with ~24 live listings
-(Unsplash photos) and a few buyer briefs, and upgrades `admin@optinetsolutions.com` to the Agency plan. Safe to re-run.
+Needs `SUPABASE_SERVICE_KEY` in `.env` (server-side only — never `NEXT_PUBLIC_`). Creates six Portuguese demo agencies whose live listings are the showcase homes, plus buyer briefs and some
+"Interested!" swipes, and upgrades `admin@optinetsolutions.com` to the Agency plan. Safe to re-run (Node 22.6+).
 Every demo login uses the password `Demo123456`:
 
-| Email | Agency | Plan |
-| --- | --- | --- |
-| maria.borg@example.com | Harbour Homes Malta | Agency |
-| matthew.spiteri@example.com | Prime Residences | Agency |
-| jeanpaul.zammit@example.com | Zammit & Co Estates | Pro |
-| daniela.vella@example.com | Coastline Property | Pro |
-| luke.camilleri@example.com | Camilleri Realty | Free |
-| sarah.grech@example.com | Gozo Living | Free |
+| Email | Agent # | Agency | Plan |
+| --- | --- | --- | --- |
+| guest@example.com | — | Demo Agency (what visitors use) | Agency |
+| ines.carvalho@example.com | PT21184 | Carvalho & Sousa Imobiliária, Lisboa | Agency |
+| tiago.ferreira@example.com | PT18833 | Atlântico Properties, Cascais & Sintra | Agency |
+| rita.almeida@example.com | PT61175 | Comporta Living, Comporta & Alentejo | Pro |
+| joao.pinto@example.com | PT27306 | Douro Estates, Porto | Free |
+| sofia.mendes@example.com | PT70044 | Costa Sul Properties, Algarve | Pro |
+| miguel.santos@example.com | PT90512 | Ilha Homes, Madeira | Free |
+
+The listings are the 21 showcase homes from `src/data/portugal-showcase.ts`, so the landing page and the app show the same stock.
 
 ### 4. Deploy to Vercel
 

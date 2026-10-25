@@ -10,7 +10,7 @@ export default function SignupPage() {
       <h1 className="text-xl font-semibold">Join the network</h1>
       <p className="mt-1 text-sm text-slate-600">
         Your name and agency are stored privately and only shown to a counterparty after a Deal Room is agreed. Everyone else
-        sees you as <span className="font-mono">Agent #MT…</span>
+        sees you as <span className="font-mono">Agent #PT…</span>
       </p>
       <div className="mt-6">
         <SignupForm />

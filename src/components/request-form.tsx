@@ -24,7 +24,7 @@ export function RequestForm({ request }: { request?: BuyerRequest }) {
             it.
           </p>
 
-          <Field label="Headline" htmlFor="title" error={fe.title} hint="e.g. Cash buyer seeking 3-bed penthouse in Sliema under €900k">
+          <Field label="Headline" htmlFor="title" error={fe.title} hint="e.g. Cash buyer seeking 3-bed apartment with sea view in Cascais under €1.2M">
             <input id="title" name="title" type="text" defaultValue={request?.title} required maxLength={120} />
           </Field>
 

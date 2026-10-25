@@ -2,7 +2,7 @@ export function formatPrice(value: number | string | null | undefined, currency 
   if (value === null || value === undefined || value === "") return "—";
   const n = typeof value === "string" ? Number(value) : value;
   if (Number.isNaN(n)) return "—";
-  return new Intl.NumberFormat("en-MT", {
+  return new Intl.NumberFormat("en-IE", {
     style: "currency",
     currency,
     maximumFractionDigits: 0,
@@ -13,7 +13,7 @@ export function formatNumber(value: number | string | null | undefined, suffix =
   if (value === null || value === undefined || value === "") return "—";
   const n = typeof value === "string" ? Number(value) : value;
   if (Number.isNaN(n)) return "—";
-  return `${new Intl.NumberFormat("en-MT", { maximumFractionDigits: 0 }).format(n)}${suffix}`;
+  return `${new Intl.NumberFormat("en-IE", { maximumFractionDigits: 0 }).format(n)}${suffix}`;
 }
 
 export function formatDate(value: string | null | undefined) {

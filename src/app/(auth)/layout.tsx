@@ -20,7 +20,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         <div aria-hidden className="pointer-events-none absolute -bottom-40 right-0 h-[420px] w-[420px] rounded-full bg-sky-500/10 blur-3xl" />
         <Logo light className="relative text-lg" />
         <div className="relative max-w-md">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-300">Malta · agents only</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-300">Portugal · agents only</p>
           <h2 className="mt-3 text-3xl font-semibold leading-tight tracking-tight">The private MLS where nobody gets bypassed.</h2>
           <ul className="mt-8 space-y-4">
             {POINTS.map(({ icon: Icon, text }) => (

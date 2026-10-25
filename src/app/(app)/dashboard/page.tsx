@@ -20,7 +20,7 @@ type ConversationRow = Conversation & {
 type DealRow = DealRoom & { listings: { title: string; price: number } | null };
 
 function greeting() {
-  const hour = Number(new Intl.DateTimeFormat("en-GB", { hour: "numeric", hour12: false, timeZone: "Europe/Malta" }).format(new Date()));
+  const hour = Number(new Intl.DateTimeFormat("en-GB", { hour: "numeric", hour12: false, timeZone: "Europe/Lisbon" }).format(new Date()));
   return hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
 }
 

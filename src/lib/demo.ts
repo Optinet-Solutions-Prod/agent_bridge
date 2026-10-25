@@ -10,14 +10,15 @@ export const DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE !== "false";
 
 export const GUEST_EMAIL = "guest@example.com";
 
+/** Seeded by scripts/seed-demo.mjs; anon codes match the agencies on the landing page. */
 export const DEMO_AGENTS = [
   { email: GUEST_EMAIL, name: "Guest Agent", agency: "Demo Agency" },
-  { email: "maria.borg@example.com", name: "Maria Borg", agency: "Harbour Homes Malta" },
-  { email: "matthew.spiteri@example.com", name: "Matthew Spiteri", agency: "Prime Residences" },
-  { email: "jeanpaul.zammit@example.com", name: "Jean-Paul Zammit", agency: "Zammit & Co Estates" },
-  { email: "daniela.vella@example.com", name: "Daniela Vella", agency: "Coastline Property" },
-  { email: "luke.camilleri@example.com", name: "Luke Camilleri", agency: "Camilleri Realty" },
-  { email: "sarah.grech@example.com", name: "Sarah Grech", agency: "Gozo Living" },
+  { email: "ines.carvalho@example.com", name: "Inês Carvalho", agency: "Carvalho & Sousa Imobiliária" },
+  { email: "tiago.ferreira@example.com", name: "Tiago Ferreira", agency: "Atlântico Properties" },
+  { email: "rita.almeida@example.com", name: "Rita Almeida", agency: "Comporta Living" },
+  { email: "joao.pinto@example.com", name: "João Pinto", agency: "Douro Estates" },
+  { email: "sofia.mendes@example.com", name: "Sofia Mendes", agency: "Costa Sul Properties" },
+  { email: "miguel.santos@example.com", name: "Miguel Santos", agency: "Ilha Homes" },
 ] as const;
 
 export type DemoAgent = (typeof DEMO_AGENTS)[number];

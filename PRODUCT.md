@@ -25,5 +25,5 @@ A private property network for Portugal. Real-estate agencies pool the homes the
 
 ## Constraints
 - Next.js 16 App Router, Tailwind v4, Supabase, Vercel. Images via next/image (Unsplash allowed for samples).
-- Demo mode is on: "Open the app" signs visitors in as a guest agent.
+- Demo mode is on: "Open the app" signs visitors in as a guest agent. Anonymous handles are `#PT…` (migration 0005); demo inventory, regions, property types and features are Portuguese.
 - Pricing is deliberately not shown in the product for now (decision 2026-10-25); plan tiers remain in the database.

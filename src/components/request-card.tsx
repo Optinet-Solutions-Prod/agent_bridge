@@ -30,7 +30,7 @@ export function RequestCard({ request, isOwn }: { request: BuyerRequestWithAgent
         {request.min_size_sqm != null ? ` · ${request.min_size_sqm}+ m²` : ""}
       </p>
       <p className="mt-1 line-clamp-1 text-sm text-slate-500">
-        {request.localities.length ? request.localities.join(", ") : "Anywhere in Malta & Gozo"}
+        {request.localities.length ? request.localities.join(", ") : "Anywhere in Portugal"}
       </p>
       <div className="mt-4 flex items-center justify-between">
         {request.agents ? <AnonBadge code={request.agents.anon_code} verified={request.agents.verified} prefix="Buyer Agent" /> : <span />}

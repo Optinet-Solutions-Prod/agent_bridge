@@ -204,7 +204,7 @@ export function Chip({ className, ...props }: ComponentProps<"span">) {
   );
 }
 
-/** Anonymous agent handle, e.g. "Agent #MT18472". */
+/** Anonymous agent handle, e.g. "Agent #PT18472". */
 export function AnonBadge({
   code,
   verified,

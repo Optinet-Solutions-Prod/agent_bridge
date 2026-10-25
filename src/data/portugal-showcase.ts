@@ -113,7 +113,7 @@ export const SHOWCASE: ShowcaseHome[] = [
     features: ["Courtyard", "Roof terrace"],
     photos: [u("1597175531876-39237f5b154a"), u("1778159279527-f09a5a66173d"), u("1770887445858-12076144eb03")],
     blurb: "The classic Alentejo house: white walls, blue trim, thick doors and a shaded courtyard. Three bedrooms, a roof terrace and a ten-minute drive to Évora's old town.",
-    agency: "PT47720",
+    agency: "PT61175",
     commissionPct: 2.5,
   },
   {
@@ -214,7 +214,7 @@ export const SHOWCASE: ShowcaseHome[] = [
     features: ["Vineyard", "Pool", "Guest house"],
     photos: [u("1652003187045-e7b871d9c78e"), u("1741287540983-a5acfcbb4cf5"), u("1782939355626-8df602c595fb")],
     blurb: "A working Colares vineyard with a main house, a two-bedroom guest house and a pool set in eight thousand square metres of terraces facing the ocean.",
-    agency: "PT55210",
+    agency: "PT18833",
     commissionPct: 2,
   },
   {
@@ -231,7 +231,7 @@ export const SHOWCASE: ShowcaseHome[] = [
     features: ["Pool", "Cork oaks", "Guest house"],
     photos: [u("1786380167115-c225266a3644"), u("1778159100935-b1aaff454159"), u("1788398882568-62c336043c72")],
     blurb: "A whitewashed Alentejo monte restored with lime plaster and terracotta floors. Four bedrooms, a separate guest house and a pool looking out over twelve thousand square metres of cork oaks.",
-    agency: "PT47720",
+    agency: "PT61175",
     commissionPct: 2.5,
   },
   {
@@ -297,7 +297,7 @@ export const SHOWCASE: ShowcaseHome[] = [
     features: ["Courtyard", "Roof terrace"],
     photos: [u("1594111386578-91ea0f8fe672"), u("1779653449220-d519e2721433"), u("1723006289522-80d4884006fe")],
     blurb: "A yellow-and-white townhouse in the old centre with a shaded courtyard and a roof terrace looking over the church towers to the Ria Formosa.",
-    agency: "PT82361",
+    agency: "PT70044",
     commissionPct: 2.5,
   },
   {
@@ -330,7 +330,7 @@ export const SHOWCASE: ShowcaseHome[] = [
     features: ["Azulejo façade", "Balcony"],
     photos: [u("1505819244306-ef53954f9648"), u("1533421821268-87e42c1d70b0"), u("1522708323590-d24dbb6b0267")],
     blurb: "Fully renovated last year behind a blue-tiled façade. Two bedrooms, a street-side balcony and a kitchen open to the living room. Two minutes from the Graça viewpoint.",
-    agency: "PT30471",
+    agency: "PT21184",
     commissionPct: 2.5,
   },
   {
@@ -362,7 +362,7 @@ export const SHOWCASE: ShowcaseHome[] = [
     features: ["Golf view", "Pool", "Parking"],
     photos: [u("1717167398870-510c1c99cafe"), u("1717167398830-05e70ed34b67"), u("1778159134430-030646d981bd")],
     blurb: "Ground floor with a terrace onto the fairway in a gated resort with two pools. Sold furnished; strong winter rental history.",
-    agency: "PT82361",
+    agency: "PT70044",
     commissionPct: 3,
   },
   {
@@ -378,7 +378,7 @@ export const SHOWCASE: ShowcaseHome[] = [
     features: ["River view", "Parking", "New build"],
     photos: [u("1581887469434-5dacb946ab56"), u("1785487117014-375d4342d0ef"), u("1613643043796-a370ee99ecbe")],
     blurb: "Completed this spring in a small block above the river. Floor-to-ceiling glass towards Porto's skyline, two parking spaces and a communal garden.",
-    agency: "PT39958",
+    agency: "PT27306",
     commissionPct: 3,
   },
   {
@@ -394,7 +394,7 @@ export const SHOWCASE: ShowcaseHome[] = [
     features: ["Furnished", "Short-let licence"],
     photos: [u("1565468989092-628a74e52428"), u("1623838912579-ec42e9156ede"), u("1560448204-e02f11c3d0e2")],
     blurb: "A calm pocket of the neighbourhood, away from the bars. Sold furnished with an active short-let licence; currently earning a steady season.",
-    agency: "PT44902",
+    agency: "PT21184",
     commissionPct: 3,
   },
 ];

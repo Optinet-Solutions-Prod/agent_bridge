@@ -1,7 +1,7 @@
 import type { DealStatus, LeadStatus, ListingStatus, PlanTier } from "@/lib/types";
 
 export const APP_NAME = "AgentBridge";
-export const APP_TAGLINE = "The private MLS for real-estate agents.";
+export const APP_TAGLINE = "The private property network for Portugal.";
 
 /** Share of the buyer-side commission the platform takes on a closed deal. */
 export const PLATFORM_FEE_PCT = 7.5;
@@ -9,62 +9,74 @@ export const PLATFORM_FEE_PCT = 7.5;
 export const PROPERTY_TYPES = [
   "Apartment",
   "Penthouse",
-  "Maisonette",
+  "Duplex",
   "Townhouse",
-  "Terraced House",
+  "House",
   "Villa",
-  "Bungalow",
+  "Quinta",
   "Farmhouse",
-  "House of Character",
-  "Palazzo",
   "Plot",
   "Office",
   "Retail",
   "Garage",
-  "Development Site",
+  "Development site",
+  "Building",
 ] as const;
 
 export const FEATURES = [
   "Sea view",
+  "River view",
   "Country view",
   "Pool",
   "Garden",
   "Terrace",
+  "Balcony",
   "Garage",
   "Parking",
   "Lift",
-  "Airspace",
   "Furnished",
-  "Highly finished",
-  "Shell form",
   "New build",
-  "Pet friendly",
-  "Home office",
+  "Renovated",
+  "Needs work",
+  "Air conditioning",
+  "Beach access",
+  "Golf",
+  "Guest house",
+  "Short-let licence",
+  "Courtyard",
+  "Roof terrace",
 ] as const;
 
-/** Malta localities grouped by region. Launch market is Malta; extend as you expand. */
+/**
+ * Portuguese localities grouped by the regions the landing page uses. A
+ * listing stores one locality; its region is derived with regionOf().
+ */
 export const REGIONS: Record<string, string[]> = {
-  "Northern Harbour": [
-    "Sliema",
-    "St Julian's",
-    "Gżira",
-    "Msida",
-    "Swieqi",
-    "Pembroke",
-    "Ta' Xbiex",
-    "San Ġwann",
-    "Kappara",
-    "Madliena",
-    "Birkirkara",
-    "Ħamrun",
-    "Santa Venera",
-    "Pietà",
+  Lisboa: [
+    "Alfama",
+    "Graça",
+    "Príncipe Real",
+    "Bairro Alto",
+    "Chiado",
+    "Lapa",
+    "Estrela",
+    "Campo de Ourique",
+    "Avenidas Novas",
+    "Parque das Nações",
+    "Belém",
+    "Restelo",
+    "Alvalade",
+    "Oeiras",
+    "Carcavelos",
+    "Almada",
   ],
-  "Southern Harbour": ["Valletta", "Floriana", "Marsa", "Paola", "Tarxien", "Cospicua", "Senglea", "Vittoriosa", "Kalkara", "Żabbar"],
-  Northern: ["St Paul's Bay", "Qawra", "Buġibba", "Xemxija", "Mellieħa", "Mġarr", "Mosta", "Naxxar", "Għargħur", "Burmarrad"],
-  Western: ["Attard", "Balzan", "Lija", "Iklin", "Rabat", "Mdina", "Dingli", "Żebbuġ", "Siġġiewi", "Mtarfa"],
-  "South Eastern": ["Marsaskala", "Marsaxlokk", "Birżebbuġa", "Żejtun", "Għaxaq", "Gudja", "Qormi", "Luqa", "Żurrieq", "Mqabba", "Safi", "Kirkop"],
-  Gozo: ["Victoria", "Xagħra", "Nadur", "Marsalforn", "Xlendi", "Għarb", "Sannat", "Munxar", "Qala", "Għajnsielem", "Kerċem", "Żebbuġ Gozo"],
+  Cascais: ["Cascais", "Estoril", "Monte Estoril", "Birre", "Guincho", "Quinta da Marinha", "Parede", "Alcabideche"],
+  Sintra: ["Sintra", "Colares", "Praia das Maçãs", "Azenhas do Mar", "Malveira da Serra", "Queluz"],
+  Comporta: ["Comporta", "Carvalhal", "Melides", "Grândola", "Tróia", "Brejos da Carregueira"],
+  Alentejo: ["Évora", "Montemor-o-Novo", "Estremoz", "Monsaraz", "Arraiolos", "Beja", "Vila Nova de Milfontes", "Zambujeira do Mar"],
+  Porto: ["Porto", "Ribeira", "Foz do Douro", "Boavista", "Cedofeita", "Matosinhos", "Vila Nova de Gaia", "Leça da Palmeira"],
+  Algarve: ["Lagos", "Praia da Luz", "Carvoeiro", "Quinta do Lago", "Vale do Lobo", "Vilamoura", "Albufeira", "Tavira", "Faro", "Loulé", "Portimão", "Sagres", "Aljezur"],
+  Madeira: ["Funchal", "Calheta", "Ponta do Sol", "Câmara de Lobos", "Caniço", "Santa Cruz", "Porto Moniz"],
 };
 
 export const LOCALITIES = Object.values(REGIONS).flat();
