@@ -6,6 +6,10 @@ const nextConfig: NextConfig = {
     return [{ source: "/pricing", destination: "/", permanent: false }];
   },
   images: {
+    // Unsplash photos are served from Unsplash's CDN directly; everything else
+    // still goes through Vercel's optimiser (see src/lib/image-loader.ts).
+    loader: "custom",
+    loaderFile: "./src/lib/image-loader.ts",
     // Listing photos live in Supabase Storage.
     remotePatterns: [
       { protocol: "https", hostname: "**.supabase.co" },

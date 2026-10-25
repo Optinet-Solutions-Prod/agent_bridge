@@ -47,16 +47,19 @@ body {
   @apply bg-limestone text-ink antialiased;
 }
 
-/* No one-word last lines; headings balance across their lines. */
-p,
-li,
-dd {
-  text-wrap: pretty;
-}
-h1,
-h2,
-h3 {
-  text-wrap: balance;
+/* No one-word last lines; headings balance across their lines.
+   In @layer base so utilities like whitespace-nowrap still win. */
+@layer base {
+  p,
+  li,
+  dd {
+    text-wrap: pretty;
+  }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
 }
 
 ::selection {
@@ -130,6 +133,42 @@ textarea {
 
 input[type="checkbox"] {
   @apply h-4 w-4 cursor-pointer rounded border-slate-300 accent-brand-700;
+}
+
+/* Lenis smooth scroll (landing page only) */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Map dots breathe */
+@keyframes map-pulse {
+  0%,
+  100% {
+    transform: scale(0.85);
+    opacity: 0.55;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+}
+.map-pulse {
+  animation: map-pulse 2.8s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .map-pulse {
+    animation: none;
+  }
 }
 
 /* Hide scrollbars on horizontal rows while keeping them scrollable. */

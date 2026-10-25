@@ -47,6 +47,7 @@ export function SwipeDeck({
   likedCount: initialLiked,
   shortlistHref,
   interest,
+  demo = false,
 }: {
   listings: ListingWithAgent[];
   requestId: string | null;
@@ -54,6 +55,8 @@ export function SwipeDeck({
   shortlistHref: string;
   /** listingId -> how many OTHER agents already shortlisted it. */
   interest: Record<string, number>;
+  /** Landing-page demo: nothing is saved and links point at the app, not at listings. */
+  demo?: boolean;
 }) {
   const [cards, setCards] = useState(listings);
   const [gone, setGone] = useState<Gone[]>([]);
@@ -79,11 +82,13 @@ export function SwipeDeck({
       const current = top;
       setExit(decision);
       setFlying(false);
-      recordSwipe(current.id, requestId, decision)
+      if (!demo) {
+        recordSwipe(current.id, requestId, decision)
         .then((r) => {
-          if (r.error) setSaveError(r.error);
-        })
-        .catch(() => setSaveError("That swipe could not be saved. Check your connection."));
+            if (r.error) setSaveError(r.error);
+          })
+          .catch(() => setSaveError("That swipe could not be saved. Check your connection."));
+      }
 
       window.setTimeout(() => setFlying(true), HOLD_MS);
       window.setTimeout(() => {
@@ -104,7 +109,7 @@ export function SwipeDeck({
         if (decision === "like" && others > 0) setMatch({ listing: current, others });
       }, HOLD_MS + FLY_MS);
     },
-    [top, exit, match, requestId, interest],
+    [top, exit, match, requestId, interest, demo],
   );
 
   const undo = useCallback(() => {
@@ -116,8 +121,8 @@ export function SwipeDeck({
     setPhoto(0);
     setInfo(false);
     setToast(null);
-    undoSwipe(last.listing.id, requestId).catch(() => {});
-  }, [gone, exit, requestId]);
+    if (!demo) undoSwipe(last.listing.id, requestId).catch(() => {});
+  }, [gone, exit, requestId, demo]);
 
   useEffect(() => () => {
     if (toastTimer.current) window.clearTimeout(toastTimer.current);
@@ -243,6 +248,7 @@ export function SwipeDeck({
                       passOpacity={passOpacity}
                       flash={exit}
                       priority
+                      demo={demo}
                     />
                   </div>
                 ) : (
@@ -252,7 +258,7 @@ export function SwipeDeck({
                     style={{ transform: `scale(${1 - i * 0.05}) translateY(${i * 16}px)`, opacity: 1 - i * 0.2, zIndex: 3 - i }}
                     aria-hidden
                   >
-                    <CardFace listing={listing} photo={0} info={false} others={interest[listing.id] ?? 0} likeOpacity={0} passOpacity={0} flash={null} />
+                    <CardFace listing={listing} photo={0} info={false} others={interest[listing.id] ?? 0} likeOpacity={0} passOpacity={0} flash={null} demo={demo} />
                   </div>
                 ),
               )}
@@ -342,7 +348,7 @@ export function SwipeDeck({
             </Control>
           </div>
 
-          <p className="mt-2 shrink-0 text-center text-xs text-slate-500 lg:mt-4">
+          <p data-deck-hint className="mt-2 shrink-0 text-center text-xs text-slate-500 lg:mt-4">
             {cards.length} left ·{" "}
             <Link href={shortlistHref} className="font-medium text-brand-700 hover:underline">
               {liked} shortlisted
@@ -374,7 +380,7 @@ export function SwipeDeck({
       )}
 
       {/* Match celebration */}
-      {match && <MatchOverlay match={match} requestId={requestId} onClose={() => setMatch(null)} />}
+      {match && <MatchOverlay match={match} requestId={requestId} demo={demo} onClose={() => setMatch(null)} />}
     </div>
   );
 }
@@ -428,6 +434,7 @@ function CardFace({
   passOpacity,
   flash,
   priority,
+  demo = false,
 }: {
   listing: ListingWithAgent;
   photo: number;
@@ -438,6 +445,7 @@ function CardFace({
   passOpacity: number;
   flash: SwipeDecision | null;
   priority?: boolean;
+  demo?: boolean;
 }) {
   const url = listing.photo_urls[photo] ?? null;
   const n = listing.photo_urls.length;
@@ -597,13 +605,15 @@ function CardFace({
           )}
           {listing.description && <p className="mt-4 whitespace-pre-line text-sm leading-relaxed text-white/85">{listing.description}</p>}
           <p className="mt-4 text-xs text-white/50">Exact address and the agent&apos;s identity are revealed only inside an agreed Deal Room.</p>
-          <Link
-            href={`/listings/${listing.id}`}
-            target="_blank"
-            className="mt-4 inline-flex h-10 items-center gap-1.5 rounded-xl bg-white px-4 text-sm font-medium text-slate-900 hover:bg-slate-100"
-          >
-            Open full listing <ArrowUpRight className="h-4 w-4" />
-          </Link>
+          {!demo && (
+            <Link
+              href={`/listings/${listing.id}`}
+              target="_blank"
+              className="mt-4 inline-flex h-10 items-center gap-1.5 rounded-xl bg-white px-4 text-sm font-medium text-slate-900 hover:bg-slate-100"
+            >
+              Open full listing <ArrowUpRight className="h-4 w-4" />
+            </Link>
+          )}
         </div>
       )}
     </div>
@@ -640,7 +650,7 @@ function Confetti() {
   );
 }
 
-function MatchOverlay({ match, requestId, onClose }: { match: Match; requestId: string | null; onClose: () => void }) {
+function MatchOverlay({ match, requestId, demo = false, onClose }: { match: Match; requestId: string | null; demo?: boolean; onClose: () => void }) {
   const { listing, others } = match;
   const photo = listing.photo_urls[0];
   return (
@@ -674,11 +684,17 @@ function MatchOverlay({ match, requestId, onClose }: { match: Match; requestId: 
         </div>
 
         <div className="mt-5 flex flex-col gap-2">
-          <form action={startConversation.bind(null, listing.id, requestId)}>
-            <SubmitButton className="w-full" pendingText="Opening chat…">
-              <MessageSquare className="h-4 w-4" /> Message listing agent
-            </SubmitButton>
-          </form>
+          {demo ? (
+            <Link href="/dashboard" className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-brand-700 px-4 text-sm font-medium text-white transition hover:bg-brand-800">
+              <MessageSquare className="h-4 w-4" /> Open the app to message the agent
+            </Link>
+          ) : (
+            <form action={startConversation.bind(null, listing.id, requestId)}>
+              <SubmitButton className="w-full" pendingText="Opening chat…">
+                <MessageSquare className="h-4 w-4" /> Message listing agent
+              </SubmitButton>
+            </form>
+          )}
           <button type="button" onClick={onClose} className="h-10 rounded-xl text-sm font-medium text-slate-600 transition hover:bg-slate-100">
             Keep swiping
           </button>

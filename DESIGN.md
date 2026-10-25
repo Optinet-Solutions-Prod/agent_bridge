@@ -27,13 +27,21 @@ Rules: cobalt owns whole regions (a full band, a primary button), never scattere
 ## Shape and depth
 - Radii: 20–28px for photo cards and sheets, full pills for controls, 12–16px inside the app.
 - One elevation language: hairline `ink/15` borders on controls, soft offset shadows only on floating cards. No coloured glows.
-- Photos are the material: 4:5 cards, 16:11 features, gradients from `ink` to transparent for legibility.
+- Photos are the material: full-bleed hero and film frames, 4:5 cards (featured cards 2×2 in the bento), gradients from `ink` to transparent for legibility. Unsplash photos are served from Unsplash's CDN via `src/lib/image-loader.ts` with a 24px blur placeholder.
 
 ## Motion
-- One orchestrated moment per page: the landing's hero rises in once (headline → copy → first cards, 70ms stagger). Nothing else auto-animates.
-- User-triggered motion only otherwise: filter re-sorts via View Transitions, the detail sheet via `@starting-style`, press feedback `scale(0.97–0.985)` at 100–160ms.
-- Curves from the tokens: `--ease-out-strong` for entrances, `--ease-in-out-strong` for on-screen movement. UI motion under 300ms; the swipe verdict (hold 650ms, fly 600ms) is deliberately slower because it must be read.
-- `prefers-reduced-motion`: keep fades, drop movement (already in `globals.css`).
+- The landing page is a scroll film (GSAP ScrollTrigger + Lenis smooth scroll, `src/components/landing/cinematic/`):
+  a Ken Burns hero with a masked word reveal, a pinned sequence where one home dissolves into the next with its price
+  counting up, a bento gallery whose cards rise in and tilt in 3D under the pointer, a map of Portugal that draws itself
+  with pulsing district dots and count-ups, a live swipe deck, steps whose connecting line draws with scroll, and a
+  parallax closing. Lenis leaves touch scrolling native; wheel/keyboard scroll is eased.
+- Inside the app: one orchestrated moment per screen at most; otherwise motion only answers a user action (filter
+  re-sorts via View Transitions, sheets via `@starting-style`, press feedback `scale(0.97–0.985)` at 100–160ms).
+- Curves: `power4.out` for entrances, `power3.inOut` for on-screen movement, `back.out(1.6)` for pops; CSS tokens
+  `--ease-out-strong` / `--ease-in-out-strong` mirror them. UI motion under 300ms; the swipe verdict (hold 650ms, fly
+  600ms) is deliberately slower because it must be read.
+- `prefers-reduced-motion`: Lenis, pinning and parallax switch off (`useMotion().reduced`), the film stacks, fades stay.
+- Every GSAP block lives in `useGSAP` with a scope so it cleans up on unmount; `gsap.matchMedia` gates motion tiers.
 
 ## Mobile baseline
 `viewport-fit=cover`, `interactive-widget=resizes-content`, theme-color = limestone, tap highlight off, 16px inputs on coarse pointers, `touch-action: manipulation` on controls, hover styles gated by Tailwind's `hover:` (hover-capable only). Carousels use native scroll-snap. Tap targets ≥ 40px.
