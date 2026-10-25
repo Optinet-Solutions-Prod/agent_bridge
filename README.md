@@ -21,14 +21,11 @@ Privacy is enforced by **Postgres Row-Level Security**, not just by hiding field
 
 Deal Room transitions (`open_deal_room`, `accept_deal_room`, `cancel_deal_room`, `close_deal_room`) are `security definer` functions, so the state machine can't be bypassed from the client. An agreed room (`status = active`) cannot be cancelled unilaterally.
 
-## Business model (built in)
+## Plans and fees
 
-- **Free** — browse, up to 3 live listings (enforced by a DB trigger)
-- **Pro Agent** — €79/month, unlimited listings & requests
-- **Agency** — €299/month, team seats & analytics
-- **Success fee** — 7.5% of the buyer-agent commission from each side on deals closed through a Deal Room. Both agents accept this digitally before the reveal.
-
-Plan limits live in `PLANS` (`src/lib/constants.ts`) and `enforce_listing_limit()` (migration). Billing (Stripe) is **not** wired up yet; change `agents.plan` manually for now.
+Pricing is **not shown anywhere in the product for now** (the `/pricing` page was removed and redirects home). Plan tiers still
+exist in the database (`agents.plan`, free plan limited to 3 live listings by a trigger) and in `PLANS` in `src/lib/constants.ts`,
+so they can be surfaced again later. Deal Rooms still record the platform fee as part of the co-broker terms.
 
 ---
 

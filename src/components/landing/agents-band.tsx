@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Check, Heart, X } from "lucide-react";
-import { PLATFORM_FEE_PCT } from "@/lib/constants";
 import { DEMO_MODE } from "@/lib/demo";
 import type { ShowcaseHome } from "@/data/portugal-showcase";
 import { formatNumber, formatPrice } from "@/lib/format";
@@ -25,8 +24,8 @@ export function AgentsBand({ sample }: { sample: ShowcaseHome }) {
               network. Right means interested; when several agents want the same home, the listing agent sees it.
             </p>
             <p>
-              <strong className="font-medium text-limestone">Terms before names.</strong> Chat as Agent #…, then open a Deal Room. Both sides accept the split and the{" "}
-              {PLATFORM_FEE_PCT}% platform fee digitally, and only then are names, contacts and the address revealed.
+              <strong className="font-medium text-limestone">Terms before names.</strong> Chat as Agent #…, then open a Deal Room. Both sides accept the split and the platform
+              terms digitally, and only then are names, contacts and the address revealed.
             </p>
           </div>
           <div className="mt-9 flex flex-wrap gap-3">
@@ -37,10 +36,10 @@ export function AgentsBand({ sample }: { sample: ShowcaseHome }) {
               {DEMO_MODE ? "Try the swipe deck" : "Create your agent profile"}
             </Link>
             <Link
-              href="/pricing"
+              href="/signup"
               className="inline-flex h-12 items-center rounded-full border border-limestone/30 px-6 text-[15px] font-medium text-limestone transition hover:border-limestone/60 active:scale-[0.98]"
             >
-              Plans and fees
+              Create an agent profile
             </Link>
           </div>
         </div>

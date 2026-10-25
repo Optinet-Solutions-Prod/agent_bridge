@@ -1,5 +1,3 @@
-import { PLATFORM_FEE_PCT } from "@/lib/constants";
-
 const STEPS = [
   {
     title: "An agency lists a home",
@@ -15,7 +13,7 @@ const STEPS = [
   },
   {
     title: "Terms are agreed, then everything is revealed",
-    body: `A Deal Room records the commission split and the ${PLATFORM_FEE_PCT}% platform fee. Once both accept, names, phone numbers and the exact address unlock.`,
+    body: "A Deal Room records the commission split and the platform terms. Once both accept, names, phone numbers and the exact address unlock.",
   },
 ];
 

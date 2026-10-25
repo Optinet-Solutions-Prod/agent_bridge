@@ -16,9 +16,6 @@ export function SiteHeader({ signedIn }: { signedIn: boolean }) {
           <a href="#agents" className={`hidden sm:inline ${linkClass}`}>
             For agents
           </a>
-          <Link href="/pricing" className={`hidden md:inline ${linkClass}`}>
-            Pricing
-          </Link>
           {signedIn ? (
             <LinkButton href="/dashboard" size="sm" className="sm:h-10 sm:px-4 sm:text-sm">
               Open dashboard

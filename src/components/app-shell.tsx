@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { Suspense } from "react";
 import { LogOut, Plus } from "lucide-react";
 import { signOut } from "@/app/auth/actions";
@@ -6,13 +5,10 @@ import { DemoSwitcher } from "@/components/demo-switcher";
 import { Logo } from "@/components/logo";
 import { SidebarNav, TabBarNav } from "@/components/nav-links";
 import { AnonBadge, LinkButton } from "@/components/ui";
-import { PLANS } from "@/lib/constants";
 import { DEMO_MODE } from "@/lib/demo";
 import type { Agent } from "@/lib/types";
 
 export function AppShell({ agent, email, children }: { agent: Agent; email: string | null; children: React.ReactNode }) {
-  const plan = PLANS[agent.plan];
-
   return (
     <div className="flex min-h-full flex-1 flex-col lg:flex-row">
       {/* Desktop sidebar */}
@@ -51,14 +47,6 @@ export function AppShell({ agent, email, children }: { agent: Agent; email: stri
                 <LogOut className="h-4 w-4" />
               </button>
             </form>
-          </div>
-          <div className="flex items-center justify-between text-xs">
-            <span className="text-slate-400">{plan.name} plan</span>
-            {agent.plan === "free" && (
-              <Link href="/pricing" className="font-medium text-brand-300 hover:underline">
-                Upgrade
-              </Link>
-            )}
           </div>
         </div>
       </aside>

@@ -4,7 +4,6 @@ import { ArrowRight, Building2, Flame, Handshake, MessageSquare, Plus, Users } f
 import { ListingCard } from "@/components/listing-card";
 import { AnonBadge, Badge, Card, CardBody, CardTitle, LinkButton, PageHeader, Stat } from "@/components/ui";
 import { requireAgent } from "@/lib/auth";
-import { PLANS } from "@/lib/constants";
 import { timeAgo } from "@/lib/format";
 import { listingInterest } from "@/lib/interest";
 import { listingsMatchingRequest } from "@/lib/matching";
@@ -61,7 +60,6 @@ export default async function DashboardPage() {
     (d) => d.status === "proposed" && (d.buyer_agent_id === agent.id ? !d.buyer_agent_accepted_at : !d.listing_agent_accepted_at),
   );
   const activeDeals = dealRows.filter((d) => d.status === "active").length;
-  const limit = PLANS[agent.plan].listingLimit;
   const conversationRows = (conversations.data ?? []) as ConversationRow[];
 
   return (
@@ -122,13 +120,7 @@ export default async function DashboardPage() {
           tone={interestedInMine > 0 ? "amber" : "neutral"}
           label="Live listings"
           value={liveListings}
-          hint={
-            interestedInMine > 0
-              ? `${interestedInMine} agent${interestedInMine === 1 ? "" : "s"} interested in your stock`
-              : limit
-                ? `${Math.max(limit - liveListings, 0)} left on ${PLANS[agent.plan].name}`
-                : "Unlimited on your plan"
-          }
+          hint={interestedInMine > 0 ? `${interestedInMine} agent${interestedInMine === 1 ? "" : "s"} interested in your stock` : "visible to every agent on the network"}
         />
         <Stat icon={Users} tone="teal" label="Active buyer briefs" value={requests.length} hint={requests.length ? `${matchCounts.reduce((a, b) => a + b, 0)} matching properties` : "Post one to start matching"} />
         <Stat icon={MessageSquare} label="Conversations" value={conversationRows.length} hint="most recent shown below" />

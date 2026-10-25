@@ -19,9 +19,6 @@ export function SiteFooter() {
           <a href="#agents" className="text-ink/80 hover:text-ink">
             For agents
           </a>
-          <Link href="/pricing" className="text-ink/80 hover:text-ink">
-            Pricing
-          </Link>
           <Link href="/login" className="text-ink/80 hover:text-ink">
             Log in
           </Link>
