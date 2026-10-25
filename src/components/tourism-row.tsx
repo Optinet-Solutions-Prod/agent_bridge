@@ -2,22 +2,11 @@
 
 import { Building2, ExternalLink, Globe, Landmark, Mail, Star } from "lucide-react";
 import type { Company, LeadStatus, TourismPropertyWithTracking } from "@/lib/types";
+import { TOURISM_TYPE_LABEL } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { LAND_REGISTRY_URL } from "./register-row";
 import { useTracking } from "./tracking-controls";
 
-export const TOURISM_TYPE_LABEL: Record<string, string> = {
-  CasaDeCampo: "Country house",
-  Hotel: "Hotel",
-  Agroturismo: "Agritourism",
-  TurismoDeHabitacao: "Manor house",
-  ApartamentosTuristicos: "Tourist apartments",
-  "ParqueCampismo/Caravanismo": "Campsite",
-  HotelApartamento: "Apartment hotel",
-  HotelRural: "Rural hotel",
-  AldeamentoTuristico: "Tourist village",
-  Pousada: "Pousada",
-};
 const typeLabel = (t: string | null) => (t ? (TOURISM_TYPE_LABEL[t] ?? t) : "—");
 const companySearch = (name: string) => `https://www.google.com/search?q=${encodeURIComponent(`site:racius.com "${name}"`)}`;
 const site = (url: string) => (/^https?:\/\//i.test(url) ? url : `https://${url}`);

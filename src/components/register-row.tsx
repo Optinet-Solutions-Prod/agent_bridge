@@ -15,7 +15,7 @@ function FetchButton() {
     <button
       type="submit"
       disabled={pending}
-      className="inline-flex h-8 items-center gap-1.5 rounded-full border border-brand-200 bg-brand-50 px-3 text-[13px] font-medium text-brand-800 transition hover:border-brand-300 active:scale-[0.98] disabled:opacity-60"
+      className="inline-flex h-8 items-center gap-1.5 whitespace-nowrap rounded-full border border-brand-200 bg-brand-50 px-3 text-[13px] font-medium text-brand-800 transition hover:border-brand-300 active:scale-[0.98] disabled:opacity-60"
     >
       {pending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <DownloadCloud className="h-3.5 w-3.5" />}
       {pending ? "Reading record…" : "Get operator details"}
@@ -133,7 +133,7 @@ export function RegisterTableRow({ rental, contact, canSee }: { rental: Register
           <Role role={rental.operator_role} kind={rental.operator_kind} />
           {(rental.operators ?? 0) > 1 && <p className="mt-1 text-[12px] text-slate-500">+{(rental.operators ?? 1) - 1} more</p>}
         </td>
-        <td className="max-w-[260px] px-4 py-3">
+        <td className="min-w-[210px] max-w-[260px] px-4 py-3">
           <OperatorCell rental={rental} op={op} canSee={canSee} />
         </td>
         <td className="px-4 py-3">

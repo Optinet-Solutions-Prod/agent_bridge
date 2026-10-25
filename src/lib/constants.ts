@@ -150,3 +150,17 @@ export const CO_BROKER_TERMS = [
   `Both agents agree that this introduction was made through ${APP_NAME} and will not circumvent, directly or indirectly, the terms above for a period of 12 months from the date of agreement.`,
   "Identities, contact details and the exact location of the property are revealed only once both parties have accepted these terms.",
 ];
+
+/** English labels for the tourist-property register's types (RNET). */
+export const TOURISM_TYPE_LABEL: Record<string, string> = {
+  CasaDeCampo: "Country house",
+  Hotel: "Hotel",
+  Agroturismo: "Agritourism",
+  TurismoDeHabitacao: "Manor house",
+  ApartamentosTuristicos: "Tourist apartments",
+  "ParqueCampismo/Caravanismo": "Campsite",
+  HotelApartamento: "Apartment hotel",
+  HotelRural: "Rural hotel",
+  AldeamentoTuristico: "Tourist village",
+  Pousada: "Pousada",
+};
