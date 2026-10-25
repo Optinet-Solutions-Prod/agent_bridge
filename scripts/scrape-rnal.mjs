@@ -34,7 +34,7 @@ function decode(s) {
     .replace(/&([a-z]+);/gi, (m, n) => ENTITIES[n.toLowerCase()] ?? m);
 }
 // The register mixes encodings: a UTF-8 non-breaking space read as Latin-1 shows up as "Â ", so fold it to a space.
-const text = (html) => decode(html.replace(/<[^>]+>/g, " ")).replace(/Â(?=[ \s])/g, "").replace(/[ \s]+/g, " ").trim();
+const text = (html) => decode(html.replace(/<[^>]+>/g, " ")).replace(/Â(?=[ \s]|$)/g, "").replace(/[ \s]+/g, " ").trim();
 const cells = (rowHtml) => [...rowHtml.matchAll(/<td[^>]*>([\s\S]*?)<\/td>/g)].map((m) => m[1]);
 const bodyRows = (tableHtml) => {
   const body = tableHtml.match(/<tbody>([\s\S]*?)<\/tbody>/)?.[1] ?? "";
