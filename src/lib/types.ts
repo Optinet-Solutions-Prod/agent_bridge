@@ -199,3 +199,46 @@ export interface ActionState {
   message?: string;
   fieldErrors?: Record<string, string>;
 }
+
+/** A rental from the public holiday-rental register (RNAL). */
+export interface RegisterRental {
+  rnal_nr: string;
+  name: string | null;
+  modality: string | null;
+  guests: number | null;
+  rooms: number | null;
+  beds: number | null;
+  parish: string | null;
+  municipality: string | null;
+  district: string | null;
+  postcode: string | null;
+  registered_on: string | null;
+  opened_on: string | null;
+  operator_role: string | null;
+  operator_kind: "person" | "company" | null;
+  operators: number;
+  has_email: boolean;
+  has_phone: boolean;
+  source_url: string;
+  checked_on: string | null;
+}
+
+export interface RegisterOperator {
+  role: string;
+  role_en: string;
+  kind: "person" | "company" | null;
+  name: string | null;
+  email: string | null;
+  phone: string | null;
+}
+
+/** Admin-only: who runs the rental and where it is. */
+export interface RegisterContact {
+  rnal_nr: string;
+  address: string | null;
+  operators: RegisterOperator[];
+}
+
+export type RegisterRentalWithTracking = RegisterRental & {
+  register_tracking: { status: LeadStatus; notes: string | null; updated_at: string }[];
+};

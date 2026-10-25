@@ -84,8 +84,24 @@ node scripts/import-owner-leads.mjs file.csv --district Porto --platform Idealis
 
 Rows upsert on `(platform, listing_id)`, known columns map to typed fields and anything else is kept in the `extra` JSON column,
 so a feed can grow without a migration. Needs `supabase/migrations/0004_owner_leads.sql`. Agents browse and filter leads at
-`/leads`, keeping a private status (New → Contacted → Appointment → Listed / Not interested) and notes per lead; the landing page
+`/leads/listings`, keeping a private status (New → Contacted → Appointment → Listed / Not interested) and notes per lead; the landing page
 shows only aggregates per area via `owner_lead_overview()`.
+
+### Registered owners (holiday-rental register, demo sample)
+
+`/leads` opens on owners from Turismo de Portugal's public holiday-rental register (RNAL). Each record names the operator,
+says whether they own the property, a tenant runs it or it is lent to them, and usually gives an email and sometimes a phone.
+The register publishes this under DL 128/2014, art. 10.
+
+```bash
+node scripts/scrape-rnal.mjs --count 150        # walks register numbers downwards, ~1 request/second, resumable
+node scripts/import-rnal.mjs                    # loads data/private/rnal-owners.json (add --dry-run to preview)
+```
+
+Needs `supabase/migrations/0006_register_owners.sql`. Rental details are visible to every signed-in agent; operator names,
+emails, phones and street addresses live in `register_contacts`, which row level security opens **only to the admin login**,
+because demo mode lets anyone sign in as a guest. The scraped file holds personal data and is git-ignored (`data/private/`).
+This is a feasibility sample for the demo, not a production data pipeline.
 
 ### 3a. Demo mode (no login)
 

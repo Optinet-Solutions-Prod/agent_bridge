@@ -42,3 +42,6 @@ next-env.d.ts
 
 # keep the template
 !.env.example
+
+# personal data collected for demos (never commit)
+/data/private/

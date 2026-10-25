@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portugal Owner Leads</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f6f5f1;
+    --surface: #ffffff;
+    --surface-2: #f1efe9;
+    --ink: #1c222a;
+    --muted: #5e6672;
+    --line: #e4e1d9;
+    --stone: #b4602c;
+    --stone-soft: #f6e8de;
+    --teal: #0e7768;
+    --teal-soft: #dcefeb;
+    --ok: #2b7a4b;
+    --ok-soft: #e1f1e7;
+    --warn: #9a6a12;
+    --warn-soft: #f8eed6;
+    --no: #a33a2e;
+    --no-soft: #f6e2df;
+    --shadow: 0 1px 2px rgba(20, 24, 30, .04), 0 4px 16px rgba(20, 24, 30, .05);
+    --radius: 14px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #111419;
+      --surface: #191d24;
+      --surface-2: #20252d;
+      --ink: #e9e7e2;
+      --muted: #a1a9b4;
+      --line: #2b313a;
+      --stone: #e58d56;
+      --stone-soft: #3a2a20;
+      --teal: #45c2af;
+      --teal-soft: #17332f;
+      --ok: #6fcf97;
+      --ok-soft: #1a3326;
+      --warn: #e6b450;
+      --warn-soft: #3a2f17;
+      --no: #f08a7d;
+      --no-soft: #3a211e;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 4px 16px rgba(0, 0, 0, .25);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #111419;
+    --surface: #191d24;
+    --surface-2: #20252d;
+    --ink: #e9e7e2;
+    --muted: #a1a9b4;
+    --line: #2b313a;
+    --stone: #e58d56;
+    --stone-soft: #3a2a20;
+    --teal: #45c2af;
+    --teal-soft: #17332f;
+    --ok: #6fcf97;
+    --ok-soft: #1a3326;
+    --warn: #e6b450;
+    --warn-soft: #3a2f17;
+    --no: #f08a7d;
+    --no-soft: #3a211e;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 4px 16px rgba(0, 0, 0, .25);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 16px; }
+
+  /* Nav */
+  nav {
+    position: sticky; top: 0; z-index: 10;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  nav .wrap { display: flex; gap: 6px; overflow-x: auto; padding-top: 10px; padding-bottom: 10px; scrollbar-width: none; }
+  nav .wrap::-webkit-scrollbar { display: none; }
+  nav a {
+    flex: none; text-decoration: none; color: var(--muted);
+    font-size: 14px; font-weight: 500; padding: 6px 12px; border-radius: 999px;
+  }
+  nav a:hover { background: var(--surface-2); color: var(--ink); }
+
+  /* Hero */
+  header.hero { padding: 56px 0 24px; }
+  .eyebrow { font-size: 13px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 0 0 10px; }
+  h1 { font-size: clamp(32px, 5vw, 48px); line-height: 1.1; letter-spacing: -.02em; margin: 0 0 14px; font-weight: 800; }
+  .lede { font-size: 18px; color: var(--muted); max-width: 640px; margin: 0 0 20px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 14px; color: var(--muted); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+
+  /* Sections */
+  section { padding: 36px 0; }
+  h2 { font-size: 28px; letter-spacing: -.01em; margin: 0 0 6px; font-weight: 800; }
+  h3 { font-size: 18px; margin: 32px 0 4px; font-weight: 700; }
+  .sub { color: var(--muted); margin: 0 0 14px; font-size: 15px; }
+  .tag {
+    display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 999px; margin-bottom: 10px;
+  }
+  .tag.stone { background: var(--stone-soft); color: var(--stone); }
+  .tag.teal { background: var(--teal-soft); color: var(--teal); }
+  .tag.red { background: var(--no-soft); color: var(--no); }
+  .divider { height: 1px; background: var(--line); border: 0; margin: 0; }
+
+  /* Pills */
+  .pill { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 9px; border-radius: 999px; white-space: nowrap; }
+  .pill.free { background: var(--ok-soft); color: var(--ok); }
+  .pill.paid { background: var(--warn-soft); color: var(--warn); }
+  .pill.bot { background: var(--no-soft); color: var(--no); }
+  .pill.check { background: var(--warn-soft); color: var(--warn); }
+  .pill.best { background: var(--teal-soft); color: var(--teal); }
+
+  /* Tables */
+  .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow); margin-top: 12px; }
+  table.data { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 680px; }
+  .data th, .data td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .data th { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); background: var(--surface-2); white-space: nowrap; }
+  .data tr:last-child td { border-bottom: 0; }
+  .data tr.group td {
+    background: var(--surface-2); font-size: 12px; font-weight: 700; letter-spacing: .06em;
+    text-transform: uppercase; color: var(--ink); padding: 8px 14px;
+  }
+  .data td:first-child { width: 24%; }
+  .data td:first-child a { font-weight: 700; text-decoration: none; color: var(--stone); }
+  #portugal .data td:first-child a, #portugal-samples .data td:first-child a, #pm-samples .data td:first-child a { color: var(--teal); }
+  #blocked .data td:first-child a { color: var(--no); }
+  .data td:first-child a:hover { text-decoration: underline; }
+  .dom { display: block; font-size: 12px; color: var(--muted); word-break: break-all; margin-top: 2px; }
+  .data .tip { display: block; font-size: 13px; color: var(--muted); margin-top: 3px; }
+  .data .nowrap { white-space: nowrap; }
+  .yes { color: var(--ok); font-weight: 700; }
+  .no { color: var(--muted); }
+  .note { font-size: 13px; color: var(--muted); margin: 10px 0 0; }
+
+  /* Route tip */
+  .route {
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 14px;
+    background: var(--teal-soft); border-radius: var(--radius); padding: 14px 18px; font-size: 14px;
+  }
+  .route b { margin-right: 4px; }
+  .route span { background: var(--surface); border-radius: 8px; padding: 4px 10px; font-weight: 500; }
+  .route i { font-style: normal; color: var(--teal); font-weight: 700; }
+
+  /* Samples */
+  .stats { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); margin: 14px 0 18px; }
+  .stat { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; box-shadow: var(--shadow); }
+  .stat b { display: block; font-size: 26px; font-weight: 800; letter-spacing: -.02em; line-height: 1.15; color: var(--teal); }
+  .stat span { font-size: 13px; color: var(--muted); }
+
+  .finding {
+    background: var(--teal-soft); border-radius: var(--radius); padding: 18px 20px; margin: 14px 0 18px;
+    border-left: 4px solid var(--teal);
+  }
+  .finding h4 { margin: 0 0 4px; font-size: 16px; }
+  .finding p { margin: 0; font-size: 15px; }
+
+  .sample-grid { display: grid; gap: 16px; grid-template-columns: 2fr 3fr; }
+  @media (max-width: 860px) { .sample-grid { grid-template-columns: 1fr; } }
+  .sample-grid .table-wrap { margin-top: 0; align-self: start; }
+  .sample-grid table.data { min-width: 520px; }
+  .sample-grid .data td:first-child { width: auto; }
+  .record {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow);
+    padding: 18px 20px; display: grid; gap: 4px 20px; grid-template-columns: minmax(120px, max-content) 1fr; font-size: 14px; margin: 0;
+  }
+  .record dt { color: var(--muted); }
+  .record dd { margin: 0; font-weight: 600; }
+  .record .sep { grid-column: 1 / -1; height: 1px; background: var(--line); margin: 8px 0; }
+  .record .hl { grid-column: 1 / -1; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--teal); }
+  .mask { color: var(--muted); letter-spacing: .1em; }
+
+  /* Sample tables */
+  #stonewood-samples .stat b { color: var(--stone); }
+  .samples-table .data td:first-child { width: 22%; }
+  .samples-table .data td a { color: var(--stone); text-decoration: none; }
+  #portugal-samples .samples-table .data td a, #pm-samples .samples-table .data td a { color: var(--teal); }
+  .samples-table .data td a:hover { text-decoration: underline; }
+  .samples-table .data td { font-size: 13px; }
+
+  footer { padding: 32px 0 56px; color: var(--muted); font-size: 13px; }
+
+  @media (max-width: 640px) {
+    header.hero { padding-top: 36px; }
+  }
+  @media print {
+    nav { display: none; }
+    body { background: #fff; }
+    .table-wrap, .stat, .record { box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a href="#portugal">Scrape</a>
+    <a href="#portugal-buy">Buy</a>
+    <a href="#portugal-samples">Samples</a>
+    <a href="#pm-samples">Managers sample</a>
+    <a href="#blocked">Sites that blocked us</a>
+    <a href="stonewood.html" style="margin-left:auto">Stonewood →</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <header class="hero">
+    <p class="eyebrow">Project 2 · Portugal property owners · October 2026</p>
+    <h1>Where to get the leads</h1>
+    <p class="lede">Websites to find property owners who are selling, renting out or already running a holiday rental, plus the managers who look after them. The last table lists the sites that blocked our automated tests.</p>
+    <div class="legend">
+      <span><span class="pill free">OK</span> opened for our test</span>
+      <span><span class="pill bot">Blocked us</span> refused our automated test</span>
+      <span><span class="pill check">Bot check</span> showed a robot check</span>
+    </div>
+  </header>
+
+  <hr class="divider">
+
+  <section id="portugal">
+    <span class="tag teal">Project 2</span>
+    <h2>Portugal: property owners</h2>
+    <p class="sub">Owners selling, landlords renting now, holiday rentals already running, and the property managers who look after them.</p>
+
+    <div class="table-wrap">
+      <table class="data">
+        <thead><tr><th>Website</th><th>What you get</th><th>Cost</th><th>Access</th></tr></thead>
+        <tbody>
+          <tr class="group"><td colspan="4">Holiday rentals: already renting (best source)</td></tr>
+          <tr><td><a href="https://rnt.turismodeportugal.pt/RNT/Pesquisa_AL.aspx" target="_blank" rel="noopener">RNAL register</a><span class="dom">rnt.turismodeportugal.pt</span></td><td>The official register of every holiday rental. Each record shows who runs it (owner, tenant or a management company), plus their name, email and often a phone number.<span class="tip">Open a record: RNAL.aspx?nr=<i>number</i></span></td><td>Free</td><td><span class="pill free">OK</span></td></tr>
+          <tr><td><a href="https://dadosabertos.turismodeportugal.pt/datasets/turismoportugal::estabelecimentos-de-alojamento-local" target="_blank" rel="noopener">All rentals: free download</a><span class="dom">dadosabertos.turismodeportugal.pt</span></td><td>111,933 holiday rentals as CSV, GeoJSON or API, with register number, address and GPS position. Look each number up in RNAL.</td><td>Free</td><td><span class="pill free">OK</span></td></tr>
+          <tr><td><a href="https://www.airbnb.pt" target="_blank" rel="noopener">Airbnb</a><span class="dom">airbnb.pt</span></td><td>Each listing shows its licence number ("AL number") to match to RNAL. Hosts with many listings are usually management companies.</td><td>Free</td><td><span class="pill free">OK</span></td></tr>
+          <tr><td><a href="https://www.booking.com" target="_blank" rel="noopener">Booking.com</a><span class="dom">booking.com</span></td><td>Same as Airbnb: listings show the licence number.</td><td>Free</td><td><span class="pill check">Bot check</span></td></tr>
+          <tr><td><a href="https://www.vrbo.com" target="_blank" rel="noopener">Vrbo</a><span class="dom">vrbo.com</span></td><td>Holiday homes, often villas in the Algarve, with licence numbers.</td><td>Free</td><td><span class="pill bot">Blocked us</span></td></tr>
+          <tr><td><a href="https://www.hometogo.pt/f/lisboa/" target="_blank" rel="noopener">HomeToGo</a><span class="dom">hometogo.pt</span></td><td>Search engine across many holiday-rental sites, so it finds rentals that aren't on Airbnb.</td><td>Free</td><td><span class="pill check">Bot check</span></td></tr>
+          <tr><td><a href="https://www.holidu.pt" target="_blank" rel="noopener">Holidu</a><span class="dom">holidu.pt</span></td><td>Another holiday-rental search engine.</td><td>Free</td><td><span class="pill bot">Blocked us</span></td></tr>
+          <tr><td><a href="https://sigtur.turismodeportugal.pt" target="_blank" rel="noopener">SIGTUR map</a><span class="dom">sigtur.turismodeportugal.pt</span></td><td>Shows each registered rental on a map.</td><td>Free</td><td><span class="pill bot">Blocked us</span></td></tr>
+          <tr class="group"><td colspan="4">Property portals: owners selling or renting now (filter "Particular")</td></tr>
+          <tr><td><a href="https://www.idealista.pt" target="_blank" rel="noopener">Idealista</a><span class="dom">idealista.pt</span></td><td>Portugal's biggest property site, with sales and long-term rentals.<span class="tip">Filter: Arrendar or Comprar → advertiser "Particulares"</span></td><td>Free</td><td><span class="pill bot">Blocked us</span></td></tr>
+          <tr><td><a href="https://www.imovirtual.com/pt/resultados/arrendar/apartamento/lisboa?ownerTypeSingleSelect=PRIVATE" target="_blank" rel="noopener">Imovirtual</a><span class="dom">imovirtual.com</span></td><td>Second-biggest property site. The link opens Lisbon rentals by private landlords.<span class="tip">Change "arrendar" to "comprar" for sales</span></td><td>Free</td><td><span class="pill bot">Blocked us</span></td></tr>
+          <tr><td><a href="https://www.olx.pt/imoveis/" target="_blank" rel="noopener">OLX Imóveis</a><span class="dom">olx.pt/imoveis</span></td><td>Classifieds with lots of private landlords and sellers. Phones are usually hidden.<span class="tip">Filter: "Particular"</span></td><td>Free</td><td><span class="pill bot">Blocked us</span></td></tr>
+          <tr><td><a href="https://casa.sapo.pt/alugar-apartamentos/lisboa/" target="_blank" rel="noopener">Casa Sapo</a><span class="dom">casa.sapo.pt</span></td><td>1,502 Lisbon rentals, from agencies and private landlords. The link opens Lisbon rentals.</td><td>Free</td><td><span class="pill check">Rate-limited</span></td></tr>
+          <tr><td><a href="https://supercasa.pt" target="_blank" rel="noopener">SUPERCASA</a><span class="dom">supercasa.pt</span></td><td>Sales and rentals from agencies and private owners.</td><td>Free</td><td><span class="pill bot">Blocked us</span></td></tr>
+          <tr><td><a href="https://www.custojusto.pt/portugal/imobiliario" target="_blank" rel="noopener">CustoJusto</a><span class="dom">custojusto.pt</span></td><td>Classifieds, mostly from private owners, with sales and rentals.</td><td>Free</td><td><span class="pill free">OK</span></td></tr>
+          <tr><td><a href="https://www.bquarto.pt" target="_blank" rel="noopener">BQuarto</a><span class="dom">bquarto.pt</span></td><td>Rooms and flats for rent in Lisbon, Porto and Coimbra, mostly from private landlords.</td><td>Free</td><td><span class="pill free">OK</span></td></tr>
+          <tr class="group"><td colspan="4">Mid-term and student rentals: landlords renting by the month</td></tr>
+          <tr><td><a href="https://www.uniplaces.com/accommodation/lisbon" target="_blank" rel="noopener">Uniplaces</a><span class="dom">uniplaces.com</span></td><td>Rooms and flats for students and young professionals.<span class="tip">Landlords are contacted through the platform</span></td><td>Free</td><td><span class="pill free">OK</span></td></tr>
+          <tr><td><a href="https://www.spotahome.com/s/lisbon" target="_blank" rel="noopener">Spotahome</a><span class="dom">spotahome.com</span></td><td>Furnished mid-term rentals with video tours.</td><td>Free</td><td><span class="pill free">OK</span></td></tr>
+          <tr><td><a href="https://housinganywhere.com/s/Lisbon--Portugal" target="_blank" rel="noopener">HousingAnywhere</a><span class="dom">housinganywhere.com</span></td><td>Mid-term rentals for international tenants.</td><td>Free</td><td><span class="pill free">OK</span></td></tr>
+          <tr><td><a href="https://www.flatio.com/s/Lisbon" target="_blank" rel="noopener">Flatio</a><span class="dom">flatio.com</span></td><td>Monthly rentals for digital nomads.</td><td>Free</td><td><span class="pill free">OK</span></td></tr>
+          <tr><td><a href="https://www.inlifehousing.com" target="_blank" rel="noopener">Inlife</a><span class="dom">inlifehousing.com</span></td><td>Mid-term rentals with live video visits, in Lisbon, Porto and Carcavelos.</td><td>Free</td><td><span class="pill free">OK</span></td></tr>
+          <tr><td><a href="https://badi.com/rent-room/lisboa" target="_blank" rel="noopener">Badi</a><span class="dom">badi.com</span></td><td>Rooms in shared flats.</td><td>Free</td><td><span class="pill check">Bot check</span></td></tr>
+          <tr class="group"><td colspan="4">Property managers: one contact reaches many owners</td></tr>
+          <tr><td><a href="https://www.google.com/maps/search/gest%C3%A3o+de+alojamento+local" target="_blank" rel="noopener">Google Maps: holiday-rental managers</a><span class="dom">google.com/maps</span></td><td>Companies that run holiday rentals for owners. See the sample below.<span class="tip">Search "gestão de alojamento local" city by city</span></td><td>Free</td><td><span class="pill free">OK</span></td></tr>
+          <tr><td><a href="https://www.google.com/maps/search/gest%C3%A3o+de+arrendamento" target="_blank" rel="noopener">Google Maps: long-term rental managers</a><span class="dom">google.com/maps</span></td><td>Companies that find tenants and collect rent for landlords.<span class="tip">Search "gestão de arrendamento"</span></td><td>Free</td><td><span class="pill free">OK</span></td></tr>
+          <tr><td><a href="https://www.airdna.co/vacation-rental-data/app/pt/lisboa/lisbon/overview" target="_blank" rel="noopener">AirDNA city pages</a><span class="dom">airdna.co</span></td><td>Free pages that rank the biggest managers in each city, for example GuestReady with about 239 Lisbon listings.</td><td>Free</td><td><span class="pill check">Bot check</span></td></tr>
+          <tr><td><a href="https://www.alep.pt" target="_blank" rel="noopener">ALEP</a><span class="dom">alep.pt</span></td><td>The holiday-rental owners' association. A partner channel, not a list.</td><td>Free</td><td><span class="pill bot">Blocked us</span></td></tr>
+          <tr class="group"><td colspan="4">Affordable-rent programmes: landlords renting through the government</td></tr>
+          <tr><td><a href="https://www.arrendamentoacessivel.portaldahabitacao.pt" target="_blank" rel="noopener">Arrendamento Acessível</a><span class="dom">portaldahabitacao.pt</span></td><td>The national affordable-rent programme. Landlords advertise homes here in return for tax breaks.</td><td>Free</td><td><span class="pill bot">Blocked us</span></td></tr>
+          <tr><td><a href="https://habitarlisboa.cm-lisboa.pt" target="_blank" rel="noopener">Habitar Lisboa (Renda Segura)</a><span class="dom">habitarlisboa.cm-lisboa.pt</span></td><td>Lisbon City Council rents homes from private owners. A partner channel.</td><td>Free</td><td><span class="pill bot">Blocked us</span></td></tr>
+          <tr class="group"><td colspan="4">Companies, associations and partners</td></tr>
+          <tr><td><a href="https://www.racius.com" target="_blank" rel="noopener">Racius</a><span class="dom">racius.com</span></td><td>Free company lookup: tax number, address and business activity.</td><td>Free</td><td><span class="pill free">OK</span></td></tr>
+          <tr><td><a href="https://publicacoes.mj.pt" target="_blank" rel="noopener">Publicações MJ</a><span class="dom">publicacoes.mj.pt</span></td><td>Official company announcements, including who the partners and managers are.</td><td>Free</td><td><span class="pill free">OK</span></td></tr>
+          <tr><td><a href="https://www.alp.pt" target="_blank" rel="noopener">ALP</a><span class="dom">alp.pt</span></td><td>Lisbon landlords' association. A partner channel to reach landlords.</td><td>Free</td><td><span class="pill free">OK</span></td></tr>
+          <tr><td><a href="https://anp.pt" target="_blank" rel="noopener">ANP</a><span class="dom">anp.pt</span></td><td>National landlords' association.</td><td>Free</td><td><span class="pill free">OK</span></td></tr>
+          <tr><td><a href="https://www.google.com/maps/search/administra%C3%A7%C3%A3o+de+condom%C3%ADnios" target="_blank" rel="noopener">Condominium administrators</a><span class="dom">google.com/maps</span></td><td>They manage buildings and know every owner in them. A partner channel.<span class="tip">Search "administração de condomínios"</span></td><td>Free</td><td><span class="pill free">OK</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="route">
+      <b>How to link a rental to its operator:</b>
+      <span>Free download or Airbnb listing</span><i>→</i><span>Register number</span><i>→</i><span>RNAL record</span><i>→</i><span>Operator's name, email and phone</span>
+    </div>
+  </section>
+
+  <section id="portugal-buy" style="padding-top:0">
+    <h3 style="margin-top:0">Buy data</h3>
+    <div class="table-wrap">
+      <table class="data">
+        <thead><tr><th>Website</th><th>What you get</th><th>Cost</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.casafari.com" target="_blank" rel="noopener">Casafari</a><span class="dom">casafari.com</span></td><td>Every owner-sold and owner-rented listing in Portugal in one feed, updated every 15 minutes. <span class="pill best">Best paid option</span></td><td>Quote</td></tr>
+          <tr><td><a href="https://www.airdna.co" target="_blank" rel="noopener">AirDNA</a><span class="dom">airdna.co</span></td><td>Data on every Airbnb, Vrbo and Booking.com rental: revenue, occupancy, and which hosts and managers run the most listings.</td><td>Subscription</td></tr>
+          <tr><td><a href="https://www.keydata.co" target="_blank" rel="noopener">Key Data</a><span class="dom">keydata.co</span></td><td>Holiday-rental data straight from property managers' booking systems.</td><td>Quote</td></tr>
+          <tr><td><a href="https://www.alltherooms.com/analytics" target="_blank" rel="noopener">AllTheRooms</a><span class="dom">alltherooms.com</span></td><td>Short-term rental analytics by area, including host details.</td><td>Subscription</td></tr>
+          <tr><td><a href="https://www.mylighthouse.com" target="_blank" rel="noopener">Lighthouse (formerly Transparent)</a><span class="dom">mylighthouse.com</span></td><td>Holiday-rental market data, used by management companies.</td><td>Quote</td></tr>
+          <tr><td><a href="https://www.predialonline.pt" target="_blank" rel="noopener">Predial Online</a><span class="dom">predialonline.pt</span></td><td>The official land registry. Gives the owner's name for one property, but no phone or email.<span class="tip">Needs the property's registry or tax number</span></td><td><span class="nowrap">€15 per property</span></td></tr>
+          <tr><td><a href="https://www.einforma.pt" target="_blank" rel="noopener">eInforma</a><span class="dom">einforma.pt</span></td><td>Company reports with contacts and directors.</td><td>Paid reports</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="portugal-samples" style="padding-top:0">
+    <h3 style="margin-top:0">Sample: Lisbon holiday-rental register (RNAL)</h3>
+    <p class="sub">Checked 23 Oct 2026 with a browser.</p>
+
+    <div class="finding">
+      <h4>The register shows who runs each rental</h4>
+      <p>Every RNAL record lists the operator's role (owner, tenant or borrower), tax number, name, email and often a phone number. Portuguese law requires this to be published (DL 128/2014, art. 10). This is the most direct route to owner contacts that we found.</p>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><b>11,851</b><span>registered rentals in Lisbon</span></div>
+      <div class="stat"><b>111,933</b><span>rentals in the free download</span></div>
+      <div class="stat"><b>3 of 3</b><span>records checked list an email</span></div>
+      <div class="stat"><b>1 of 3</b><span>also list a phone</span></div>
+    </div>
+
+    <div class="sample-grid">
+      <dl class="record">
+        <span class="hl">What a record looks like (contacts hidden)</span>
+        <dt>RNAL nº</dt><dd>182013/AL</dd>
+        <dt>Name</dt><dd>CASA IZA</dd>
+        <dt>Type · Guests</dt><dd>Rooms · 10</dd>
+        <dt>Address</dt><dd>Rua <span class="mask">●●●●●</span>, 1900 Lisboa</dd>
+        <dt>Parish</dt><dd>Penha de França</dd>
+        <span class="sep"></span>
+        <span class="hl">Operator</span>
+        <dt>Role</dt><dd>Proprietário (owner)</dd>
+        <dt>Tax number</dt><dd><span class="mask">●●●●●●●●●</span></dd>
+        <dt>Name</dt><dd><span class="mask">●●●●● ●●●●●</span></dd>
+        <dt>Contact</dt><dd><span class="mask">●●●●●@●●●●●.com</span></dd>
+      </dl>
+
+      <div class="table-wrap">
+        <table class="data">
+          <thead><tr><th>RNAL nº</th><th>Type</th><th>Parish</th><th>Operator</th><th>Email</th><th>Phone</th></tr></thead>
+          <tbody>
+            <tr><td><a href="https://rnt.turismodeportugal.pt/RNT/RNAL.aspx?nr=182013" target="_blank" rel="noopener">182013/AL</a></td><td class="nowrap">Rooms · 10</td><td>Penha de França</td><td>Owner · person</td><td class="yes">✓</td><td class="no">—</td></tr>
+            <tr><td><a href="https://rnt.turismodeportugal.pt/RNT/RNAL.aspx?nr=181688" target="_blank" rel="noopener">181688/AL</a></td><td class="nowrap">Apartment · 4</td><td>Campolide</td><td>Tenant · company</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+            <tr><td><a href="https://rnt.turismodeportugal.pt/RNT/RNAL.aspx?nr=181460" target="_blank" rel="noopener">181460/AL</a></td><td class="nowrap">Guest house · 4</td><td>Olivais</td><td>Borrower · person</td><td class="yes">✓</td><td class="no">—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <p class="note">Names and contacts are hidden here for privacy. Click a number to see the full record on the official register.</p>
+
+    <h3>Sample: private-seller listings on OLX (Lisbon)</h3>
+    <p class="sub">Collected by our team on 24 Oct 2026. Click a listing to open it.</p>
+
+    <div class="finding" style="background:var(--warn-soft); border-left-color:var(--warn)">
+      <h4>Listings don't give us the owner's phone</h4>
+      <p>None of the 10 listings showed a phone number, and 3 showed it masked (only revealed after clicking or logging in). The "particular" tag is the seller's own claim, not proof of ownership. For owner contacts, the rental register above works better.</p>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><b>10</b><span>listings (8 sale · 2 rent)</span></div>
+      <div class="stat"><b>0</b><span>phones visible</span></div>
+      <div class="stat"><b>3</b><span>phones masked</span></div>
+      <div class="stat"><b>0</b><span>owners verified</span></div>
+    </div>
+
+    <div class="table-wrap samples-table">
+      <table class="data">
+        <thead><tr><th>Listing</th><th>Offer</th><th>Area</th><th>Price</th><th>Size</th><th>Seller says</th><th>Phone</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.olx.pt/d/anuncio/apartamento-logradouro-centro-de-lisboa-particular-IDF5QcB.html" target="_blank" rel="noopener">OLX 607222085</a><span class="dom">T2</span></td><td>Sale</td><td>Santa Maria Maior</td><td class="nowrap">€585,000</td><td class="nowrap">60 m²</td><td>Private seller self-description</td><td><span class="pill bot">Not shown</span></td></tr>
+          <tr><td><a href="https://www.olx.pt/d/anuncio/apartamento-t1-para-venda-rua-da-madalena-IDJtdVB.html?search_reason=search%7Corganic" target="_blank" rel="noopener">OLX 671900237</a><span class="dom">T1</span></td><td>Sale</td><td>Santa Maria Maior</td><td class="nowrap">€408,000</td><td class="nowrap">65 m²</td><td>Particular listing, listing price changed across captures</td><td><span class="pill check">Masked</span></td></tr>
+          <tr><td><a href="https://www.olx.pt/d/anuncio/apartamento-t2-ajuda-lisboa-IDJx30S.html" target="_blank" rel="noopener">OLX 672811530</a><span class="dom">T2</span></td><td>Rent</td><td>Ajuda</td><td class="nowrap">€1,150/mo</td><td class="nowrap">75 m²</td><td>Particular listing</td><td><span class="pill bot">Not shown</span></td></tr>
+          <tr><td><a href="https://www.olx.pt/d/anuncio/apartamento-t1-lisboa-lumiar-IDJwygl.html" target="_blank" rel="noopener">OLX 672454997</a><span class="dom">T1</span></td><td>Sale</td><td>Lumiar</td><td class="nowrap">€490,000</td><td class="nowrap">63 m²</td><td>Claims contact with owner directly</td><td><span class="pill bot">Not shown</span></td></tr>
+          <tr><td><a href="https://www.olx.pt/d/anuncio/vendo-apartamento-t2-penha-de-frana-IDJBBJv.html" target="_blank" rel="noopener">OLX 673898306</a><span class="dom">T2</span></td><td>Sale</td><td>Penha de França</td><td class="nowrap">€430,000</td><td class="nowrap">61 m²</td><td>Particular tag</td><td><span class="pill bot">Not shown</span></td></tr>
+          <tr><td><a href="https://www.olx.pt/d/anuncio/apartamento-lisboa-benfica-IDJw6dO.html" target="_blank" rel="noopener">OLX 672347208</a><span class="dom">T1</span></td><td>Sale</td><td>Benfica</td><td class="nowrap">€359,000</td><td class="nowrap">59 m²</td><td>Particular-to-particular statement</td><td><span class="pill check">Masked</span></td></tr>
+          <tr><td><a href="https://www.olx.pt/d/anuncio/apartamento-t2-em-lapa-lisboa-IDJwzxY.html" target="_blank" rel="noopener">OLX 672459934</a><span class="dom">T2</span></td><td>Rent</td><td>Estrela</td><td class="nowrap">€1,400/mo</td><td class="nowrap">70 m²</td><td>Particular tag</td><td><span class="pill bot">Not shown</span></td></tr>
+          <tr><td><a href="https://www.olx.pt/d/anuncio/s-particulares-t2-nas-olaias-com-vista-rio-desafogada-orientao-sul-garagem-e-arrecadao-IDJAneg.html" target="_blank" rel="noopener">OLX 673604224</a><span class="dom">T2</span></td><td>Sale</td><td>Beato</td><td class="nowrap">€420,000</td><td class="nowrap"><span class="no">—</span></td><td>No agencies requested</td><td><span class="pill bot">Not shown</span></td></tr>
+          <tr><td><a href="https://www.olx.pt/d/anuncio/apartamento-t3-lumiar-av-rainha-d-leonor-IDJtOQ5.html" target="_blank" rel="noopener">OLX 672042061</a><span class="dom">T3</span></td><td>Sale</td><td>Lumiar</td><td class="nowrap">€350,000</td><td class="nowrap">67 m²</td><td>Particular tag</td><td><span class="pill check">Masked</span></td></tr>
+          <tr><td><a href="https://www.olx.pt/d/anuncio/apartamento-venda-perto-praa-paiva-couceiro-lisboa-IDJt5T2.html" target="_blank" rel="noopener">OLX 671869264</a><span class="dom">T1</span></td><td>Sale</td><td>Penha de França</td><td class="nowrap">€365,000</td><td class="nowrap">57 m²</td><td>Particular tag</td><td><span class="pill bot">Not shown</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="pm-samples" style="padding-top:0">
+    <h3 style="margin-top:0">Sample: property managers (Google Maps, Lisbon and Algarve)</h3>
+    <p class="sub">Collected 24 Oct 2026 by searching "gestão de alojamento local". Single holiday homes and duplicates were removed. Click a name to open it on Google Maps.</p>
+
+    <div class="stats">
+      <div class="stat"><b>19</b><span>management companies</span></div>
+      <div class="stat"><b>95%</b><span>have a phone</span></div>
+      <div class="stat"><b>84%</b><span>have a website</span></div>
+      <div class="stat"><b>63%</b><span>have an email</span></div>
+    </div>
+
+    <div class="table-wrap samples-table">
+      <table class="data">
+        <thead><tr><th>Company</th><th>Type</th><th>Phone</th><th>Website</th><th>Email</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.google.com/maps/place/Salam+Stays+%E2%80%93+Gest%C3%A3o+de+Alojamento+Local+%26+Propriedades/data=!4m7!3m6!1s0xd19333bf92a59f1:0xa54a426db7404338!8m2!3d38.7129464!4d-9.1688054!16s%2Fg%2F11mywfy5_4!19sChIJ8Vkq-TszGQ0ROENAt21CSqU" target="_blank" rel="noopener">Salam Stays – Gestão de Alojamento Local &amp; Propriedades</a><span class="dom">Lisbon</span></td><td>Property administration service</td><td><a class="nowrap" href="tel:+351913433012">+351913433012</a></td><td><span class="no">—</span></td><td><span class="no">—</span></td></tr>
+          <tr><td><a href="https://www.google.com/maps/place/GuestReady+-+Gest%C3%A3o+de+Alojamento+Local+Lisboa/data=!4m7!3m6!1s0xd1933731804ade1:0x59008dfb15577ed0!8m2!3d38.7432696!4d-9.1428043!16s%2Fg%2F11sg2jp9tw!19sChIJ4a0EGHMzGQ0R0H5XFfuNAFk" target="_blank" rel="noopener">GuestReady - Gestão de Alojamento Local Lisboa</a><span class="dom">Lisbon</span></td><td>Property management company</td><td><a class="nowrap" href="tel:+351308810511">+351308810511</a></td><td><a href="https://www.guestready.com/airbnb-management/lisbon/" target="_blank" rel="noopener">guestready.com</a></td><td><a href="mailto:contact@guestready.com">contact@guestready.com</a></td></tr>
+          <tr><td><a href="https://www.google.com/maps/place/GAL+-+Gest%C3%A3o+de+Alojamento+Local/data=!4m7!3m6!1s0xd1ecd660e2b0167:0xf308d477657ec96e!8m2!3d38.7083874!4d-9.2428216!16s%2Fg%2F11j49f9tyh!19sChIJZwErDmbNHg0Rbsl-ZXfUCPM" target="_blank" rel="noopener">GAL - Gestão de Alojamento Local</a><span class="dom">Lisbon</span></td><td>Short term apartment rental agency</td><td><a class="nowrap" href="tel:+351214643310">+351214643310</a></td><td><a href="http://gestaodealojamentolocal.pt/" target="_blank" rel="noopener">gestaodealojamentolocal.pt</a></td><td><a href="mailto:geral@gestaodealojamentolocal.pt">geral@gestaodealojamentolocal.pt</a></td></tr>
+          <tr><td><a href="https://www.google.com/maps/place/My+Fair+Lisbon+-+Gest%C3%A3o+de+Alojamento+Local/data=!4m7!3m6!1s0xd1933570ab8a099:0xae2b34125f31feb8!8m2!3d38.7118177!4d-9.1574968!16s%2Fg%2F11kj364bh6!19sChIJmaC4ClczGQ0RuP4xXxI0K64" target="_blank" rel="noopener">My Fair Lisbon - Gestão de Alojamento Local</a><span class="dom">Lisbon</span></td><td>Property management company</td><td><a class="nowrap" href="tel:+351964140139">+351964140139</a></td><td><a href="https://myfairlisbon.talkguestwebsites.com/en-GB/" target="_blank" rel="noopener">myfairlisbon.talkguestwebsites.com</a></td><td><span class="no">—</span></td></tr>
+          <tr><td><a href="https://www.google.com/maps/place/Turisma+-+Gest%C3%A3o+de+Alojamento+Local/data=!4m7!3m6!1s0xd19347f09e79a8b:0xf977531bb2186892!8m2!3d38.7113979!4d-9.1423688!16s%2Fg%2F11cmd1qh8l!19sChIJi5rnCX80GQ0RkmgYshtTd_k" target="_blank" rel="noopener">Turisma - Gestão de Alojamento Local</a><span class="dom">Lisbon</span></td><td>Short term apartment rental agency</td><td><a class="nowrap" href="tel:+351911707141">+351911707141</a></td><td><a href="http://www.turisma.pt/" target="_blank" rel="noopener">turisma.pt</a></td><td><a href="mailto:hello@turisma.pt">hello@turisma.pt</a></td></tr>
+          <tr><td><a href="https://www.google.com/maps/place/Ocasional+-+Gest%C3%A3o+de+Alojamento+Local/data=!4m7!3m6!1s0xd1ecda69c14ae7f:0x3f7919a3cbd11837!8m2!3d38.7472407!4d-9.2358712!16s%2Fg%2F11gy8d43_f!19sChIJf64UnKbNHg0RNxjRy6MZeT8" target="_blank" rel="noopener">Ocasional - Gestão de Alojamento Local</a><span class="dom">Lisbon</span></td><td>Vacation home rental agency</td><td><a class="nowrap" href="tel:+351916098771">+351916098771</a></td><td><a href="http://ocasional.pt/" target="_blank" rel="noopener">ocasional.pt</a></td><td><a href="mailto:info@ocasional.pt">info@ocasional.pt</a></td></tr>
+          <tr><td><a href="https://www.google.com/maps/place/Margem+Sul+-+Gest%C3%A3o+de+alojamento+local/data=!4m7!3m6!1s0xd19377fe182e379:0x64dde2eb477204ca!8m2!3d38.6420393!4d-9.0992778!16s%2Fg%2F11vzg0jy_2!19sChIJeeOC4X83GQ0RygRyR-vi3WQ" target="_blank" rel="noopener">Margem Sul - Gestão de alojamento local</a><span class="dom">Lisbon</span></td><td>Hotel</td><td><a class="nowrap" href="tel:+351924324621">+351924324621</a></td><td><a href="http://www.margemsulal.com/" target="_blank" rel="noopener">margemsulal.com</a></td><td><a href="mailto:info@margemsulal.com">info@margemsulal.com</a></td></tr>
+          <tr><td><a href="https://www.google.com/maps/place/Gest%C3%A3o+Partilhada/data=!4m7!3m6!1s0xd1933e14e23ff95:0x48e68e89d28ee937!8m2!3d38.7321934!4d-9.1064429!16s%2Fg%2F11c1x3t498!19sChIJlf8jTuEzGQ0RN-mO0omO5kg" target="_blank" rel="noopener">Gestão Partilhada</a><span class="dom">Lisbon</span></td><td>Hotel</td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td></tr>
+          <tr><td><a href="https://www.google.com/maps/place/Homeful+-+Gest%C3%A3o+de+Alojamento+Local/data=!4m7!3m6!1s0xd1ecdcfea3c818b:0x421cac2e12c5f8ac!8m2!3d38.7270036!4d-9.1576569!16s%2Fg%2F11h4qlhlgj!19sChIJi4E86s_NHg0RrPjFEi6sHEI" target="_blank" rel="noopener">Homeful - Gestão de Alojamento Local</a><span class="dom">Lisbon</span></td><td>Apartment rental agency</td><td><a class="nowrap" href="tel:+351211230470">+351211230470</a></td><td><a href="http://www.homeful.pt/" target="_blank" rel="noopener">homeful.pt</a></td><td><a href="mailto:hello@homeful.pt">hello@homeful.pt</a></td></tr>
+          <tr><td><a href="https://www.google.com/maps/place/BestGuest/data=!4m7!3m6!1s0xd1ec9176d56fb2d:0x5e3178e4a9db9597!8m2!3d38.7011373!4d-9.2928207!16s%2Fg%2F11f5v8p5c_!19sChIJLftWbRfJHg0Rl5XbqeR4MV4" target="_blank" rel="noopener">BestGuest</a><span class="dom">Lisbon</span></td><td>Property administration service</td><td><a class="nowrap" href="tel:+351967293443">+351967293443</a></td><td><a href="http://bestguest.com.pt/" target="_blank" rel="noopener">bestguest.com.pt</a></td><td><span class="no">—</span></td></tr>
+          <tr><td><a href="https://www.google.com/maps/place/Gest+Homes/data=!4m7!3m6!1s0xd1933021cd7a85b:0x97fc0698ebcf8101!8m2!3d38.7160327!4d-9.1439143!16s%2Fg%2F11k5rx0gg3!19sChIJW6jXHAIzGQ0RAYHP65gG_Jc" target="_blank" rel="noopener">Gest Homes</a><span class="dom">Lisbon</span></td><td>Vacation home rental agency</td><td><a class="nowrap" href="tel:+351308801338">+351308801338</a></td><td><a href="http://www.gesthomes.com/" target="_blank" rel="noopener">gesthomes.com</a></td><td><span class="no">—</span></td></tr>
+          <tr><td><a href="https://www.google.com/maps/place/ALgest+-+Gest%C3%A3o+de+Alojamento+Local+%26+Casas+de+F%C3%A9rias/data=!4m7!3m6!1s0xd1b2f2ccf30c6cf:0x5251a4265d26a0fa!8m2!3d37.1294789!4d-8.5957527!16s%2Fg%2F11nx_kr3t3!19sChIJz8YwzywvGw0R-qAmXSakUVI" target="_blank" rel="noopener">ALgest - Gestão de Alojamento Local &amp; Casas de Férias</a><span class="dom">Algarve</span></td><td>Lodging</td><td><a class="nowrap" href="tel:+351933212476">+351933212476</a></td><td><a href="https://www.algestgroup.com/" target="_blank" rel="noopener">algestgroup.com</a></td><td><a href="mailto:algest.proprietarios@gmail.com">algest.proprietarios@gmail.com</a></td></tr>
+          <tr><td><a href="https://www.google.com/maps/place/CorAL+-+Gest%C3%A3o+de+Alojamento+Local/data=!4m7!3m6!1s0x6a4c137eaadcdad9:0x4f90f643cbc23175!8m2!3d37.1430947!4d-8.5392976!16s%2Fg%2F11trk7j9dd!19sChIJ2drcqn4TTGoRdTHCy0P2kE8" target="_blank" rel="noopener">CorAL - Gestão de Alojamento Local</a><span class="dom">Algarve</span></td><td>Property management company</td><td><a class="nowrap" href="tel:+351937605622">+351937605622</a></td><td><a href="https://www.coralgest.com/" target="_blank" rel="noopener">coralgest.com</a></td><td><a href="mailto:coral.gestao.al@gmail.com">coral.gestao.al@gmail.com</a></td></tr>
+          <tr><td><a href="https://www.google.com/maps/place/AlgarStays-+Gest%C3%A3o+de+Alojamento+Local+no+Algarve/data=!4m7!3m6!1s0xd1ad1703a9fb197:0x32a3ef3f52bb6ae5!8m2!3d37.1263979!4d-8.3465018!16s%2Fg%2F11z2kccs1k!19sChIJl7GfOnDRGg0R5Wq7Uj_vozI" target="_blank" rel="noopener">AlgarStays- Gestão de Alojamento Local no Algarve</a><span class="dom">Algarve</span></td><td>Property administration service</td><td><a class="nowrap" href="tel:+351968796744">+351968796744</a></td><td><a href="https://www.algarstays.pt/pt" target="_blank" rel="noopener">algarstays.pt</a></td><td><span class="no">—</span></td></tr>
+          <tr><td><a href="https://www.google.com/maps/place/DreamStay+-+Gest%C3%A3o+de+Alojamento+Local/data=!4m7!3m6!1s0xd1b294e0c7e44bf:0x9f3dc412c45ab51a!8m2!3d37.1217776!4d-8.5398632!16s%2Fg%2F11x0th7x82!19sChIJv0R-DE4pGw0RGrVaxBLEPZ8" target="_blank" rel="noopener">DreamStay - Gestão de Alojamento Local</a><span class="dom">Algarve</span></td><td>Property management company</td><td><a class="nowrap" href="tel:+351912381983">+351912381983</a></td><td><a href="https://dreamstay.pt/" target="_blank" rel="noopener">dreamstay.pt</a></td><td><a href="mailto:info@dreamstay.pt">info@dreamstay.pt</a></td></tr>
+          <tr><td><a href="https://www.google.com/maps/place/Stay+Wise+PT+%7C+Gest%C3%A3o+de+Alojamento+Local+em+Portim%C3%A3o/data=!4m7!3m6!1s0xd1b29dcc8868967:0x48b421090a21c218!8m2!3d37.1414337!4d-8.5436606!16s%2Fg%2F11x0w4tx00!19sChIJZ4mGyNwpGw0RGMIhCgkhtEg" target="_blank" rel="noopener">Stay Wise PT | Gestão de Alojamento Local em Portimão</a><span class="dom">Algarve</span></td><td>Property administration service</td><td><a class="nowrap" href="tel:+351933961576">+351933961576</a></td><td><a href="https://staywiseportugal.com/" target="_blank" rel="noopener">staywiseportugal.com</a></td><td><a href="mailto:atendimento@staywiseportugal.com">atendimento@staywiseportugal.com</a></td></tr>
+          <tr><td><a href="https://www.google.com/maps/place/Localhosting+-+Gest%C3%A3o+e+aluguer+de+casas+de+f%C3%A9rias/data=!4m7!3m6!1s0xd1ac9ec4c181dab:0x1cc3a94f5e220f9f!8m2!3d37.1045489!4d-8.1948885!16s%2Fg%2F11wmqjn2th!19sChIJqx0YTOzJGg0Rnw8iXk-pwxw" target="_blank" rel="noopener">Localhosting - Gestão e aluguer de casas de férias</a><span class="dom">Algarve</span></td><td>Property management company</td><td><a class="nowrap" href="tel:+351926369400">+351926369400</a></td><td><a href="https://www.localhostingpt.com/" target="_blank" rel="noopener">localhostingpt.com</a></td><td><a href="mailto:booking@localhostingpt.com">booking@localhostingpt.com</a></td></tr>
+          <tr><td><a href="https://www.google.com/maps/place/Dream+Lodging+-+Gest%C3%A3o+de+Alojamento+Local+e+Propriedades/data=!4m7!3m6!1s0xd1acb284df540f3:0x1ba71c405a0ec16!8m2!3d37.0977782!4d-8.2140231!16s%2Fg%2F11qrjlzp3f!19sChIJ80D1TSjLGg0RFuygBcRxugE" target="_blank" rel="noopener">Dream Lodging - Gestão de Alojamento Local e Propriedades</a><span class="dom">Algarve</span></td><td>Serviced accommodation</td><td><a class="nowrap" href="tel:+351924083958">+351924083958</a></td><td><a href="http://www.dreamlodging.pt/" target="_blank" rel="noopener">dreamlodging.pt</a></td><td><a href="mailto:geral.dreamlodging@gmail.com">geral.dreamlodging@gmail.com</a></td></tr>
+          <tr><td><a href="https://www.google.com/maps/place/TimeShare+-+Gest%C3%A3o+de+Alojamento+Local/data=!4m7!3m6!1s0xd1ac9ce0ef48579:0x14bd098006fe7a2c!8m2!3d37.1315934!4d-8.1585149!16s%2Fg%2F11fhxwczwl!19sChIJeYX0Ds7JGg0RLHr-BoAJvRQ" target="_blank" rel="noopener">TimeShare - Gestão de Alojamento Local</a><span class="dom">Algarve</span></td><td>Cleaning service</td><td><a class="nowrap" href="tel:+351912364783">+351912364783</a></td><td><span class="no">—</span></td><td><span class="no">—</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">AirDNA's free Lisbon page also ranks the biggest managers, including Feelslikehome (about 253 listings), GuestReady (about 239) and Smith&amp;Adams (about 220). File: <a href="samples/pt_property_managers.csv">samples/pt_property_managers.csv</a></p>
+  </section>
+
+  <hr class="divider">
+
+  <section id="blocked">
+    <span class="tag red">To try with your tools</span>
+    <h2>Sites that blocked us</h2>
+    <p class="sub">These sites refused or challenged our automated requests on 23–24 Oct 2026. A full browser with realistic settings, slower request rates, a Portuguese connection or an official API may get through.</p>
+
+    <div class="table-wrap">
+      <table class="data">
+        <thead><tr><th>Website</th><th>What happened</th><th>Why it matters</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.idealista.pt" target="_blank" rel="noopener">Idealista</a><span class="dom">idealista.pt</span></td><td><span class="pill bot">Refused (403)</span></td><td>Biggest source of private sellers and landlords.</td></tr>
+          <tr><td><a href="https://www.imovirtual.com/pt/resultados/arrendar/apartamento/lisboa?ownerTypeSingleSelect=PRIVATE" target="_blank" rel="noopener">Imovirtual</a><span class="dom">imovirtual.com</span></td><td><span class="pill bot">Blocked our browser (CloudFront 403)</span></td><td>Private landlords and sellers, with a working "private" filter.</td></tr>
+          <tr><td><a href="https://www.olx.pt/imoveis/" target="_blank" rel="noopener">OLX Imóveis</a><span class="dom">olx.pt/imoveis</span></td><td><span class="pill bot">Refused (403)</span></td><td>Many private landlords and sellers.</td></tr>
+          <tr><td><a href="https://casa.sapo.pt/alugar-apartamentos/lisboa/" target="_blank" rel="noopener">Casa Sapo</a><span class="dom">casa.sapo.pt</span></td><td><span class="pill check">Rate-limited after a few pages (429)</span></td><td>1,502 Lisbon rentals. Go slowly.</td></tr>
+          <tr><td><a href="https://supercasa.pt" target="_blank" rel="noopener">SUPERCASA</a><span class="dom">supercasa.pt</span></td><td><span class="pill bot">Refused (403)</span></td><td>Sales and rentals from private owners and agencies.</td></tr>
+          <tr><td><a href="https://www.booking.com" target="_blank" rel="noopener">Booking.com</a><span class="dom">booking.com</span></td><td><span class="pill check">Robot check (202)</span></td><td>Licence numbers to match against RNAL.</td></tr>
+          <tr><td><a href="https://www.vrbo.com" target="_blank" rel="noopener">Vrbo</a><span class="dom">vrbo.com</span></td><td><span class="pill bot">Too many requests (429)</span></td><td>Holiday villas, strong in the Algarve.</td></tr>
+          <tr><td><a href="https://www.hometogo.pt/f/lisboa/" target="_blank" rel="noopener">HomeToGo</a><span class="dom">hometogo.pt</span></td><td><span class="pill check">Robot check (403)</span></td><td>Holiday rentals from many sites in one search.</td></tr>
+          <tr><td><a href="https://www.holidu.pt" target="_blank" rel="noopener">Holidu</a><span class="dom">holidu.pt</span></td><td><span class="pill bot">Refused (405)</span></td><td>Holiday-rental search engine.</td></tr>
+          <tr><td><a href="https://badi.com/rent-room/lisboa" target="_blank" rel="noopener">Badi</a><span class="dom">badi.com</span></td><td><span class="pill check">Robot check</span></td><td>Rooms in shared flats.</td></tr>
+          <tr><td><a href="https://www.airdna.co/vacation-rental-data/app/pt/lisboa/lisbon/overview" target="_blank" rel="noopener">AirDNA city pages</a><span class="dom">airdna.co</span></td><td><span class="pill check">Robot check in browser (403)</span></td><td>Free ranking of the biggest property managers per city.</td></tr>
+          <tr><td><a href="https://www.alep.pt" target="_blank" rel="noopener">ALEP</a><span class="dom">alep.pt</span></td><td><span class="pill bot">Refused (403)</span></td><td>Holiday-rental owners' association.</td></tr>
+          <tr><td><a href="https://www.arrendamentoacessivel.portaldahabitacao.pt" target="_blank" rel="noopener">Arrendamento Acessível</a><span class="dom">portaldahabitacao.pt</span></td><td><span class="pill bot">No response (timed out)</span></td><td>Landlords in the affordable-rent programme. May only work from Portugal.</td></tr>
+          <tr><td><a href="https://habitarlisboa.cm-lisboa.pt" target="_blank" rel="noopener">Habitar Lisboa</a><span class="dom">habitarlisboa.cm-lisboa.pt</span></td><td><span class="pill bot">Refused (403)</span></td><td>Lisbon's Renda Segura programme.</td></tr>
+          <tr><td><a href="https://sigtur.turismodeportugal.pt" target="_blank" rel="noopener">SIGTUR map</a><span class="dom">sigtur.turismodeportugal.pt</span></td><td><span class="pill bot">No response (timed out)</span></td><td>Map location of each rental. May only work from Portugal.</td></tr>
+          <tr><td><a href="https://geo.turismodeportugal.pt/server/rest/services/TDP/OpenData_AL/MapServer/6" target="_blank" rel="noopener">Tourism map API</a><span class="dom">geo.turismodeportugal.pt</span></td><td><span class="pill bot">No response (timed out)</span></td><td>Live API for the rental list. Use the CSV download instead.</td></tr>
+          <tr><td><a href="https://dadosabertos.cm-lisboa.pt/en/dataset/alojamento-local-registo-nacional" target="_blank" rel="noopener">Lisbon open data</a><span class="dom">dadosabertos.cm-lisboa.pt</span></td><td><span class="pill bot">Refused (403)</span></td><td>Lisbon rental data. The national download covers the same rentals.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">The RNAL register itself did not block us. Our own privacy safeguard stopped bulk collection of operators' names and contacts, so the sample above shows only 3 records.</p>
+  </section>
+
+  <footer>Links checked and samples collected 23 October 2026. Prices are approximate, so confirm them on each site.</footer>
+</div>
+
+</body>
+</html>
