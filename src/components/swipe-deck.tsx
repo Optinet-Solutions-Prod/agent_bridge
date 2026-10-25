@@ -401,7 +401,7 @@ function Control({
       >
         {children}
       </button>
-      <span className="text-[11px] font-medium text-slate-500">{label}</span>
+      <span data-control-label className="text-[11px] font-medium text-slate-500">{label}</span>
     </div>
   );
 }

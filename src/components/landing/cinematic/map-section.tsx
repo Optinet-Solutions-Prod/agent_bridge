@@ -58,7 +58,7 @@ export function MapSection({
       if (path) gsap.set(path, { strokeDasharray: len, strokeDashoffset: len });
 
       const tl = gsap.timeline({ scrollTrigger: { trigger: root.current, start: "top 70%", once: true }, defaults: { ease: EASE.out } });
-      tl.from("[data-map-head] > *", { y: 28, autoAlpha: 0, duration: 0.9, stagger: 0.08 }, 0)
+      tl.from("[data-map-head] > :not(h2)", { y: 28, autoAlpha: 0, duration: 0.9, stagger: 0.08 }, 0)
         .to(path, { strokeDashoffset: 0, duration: 2.2, ease: "power2.inOut" }, 0.1)
         .from("[data-map-fill]", { autoAlpha: 0, duration: 1.2 }, 1.2)
         .from("[data-map-dot]", { scale: 0, transformOrigin: "50% 50%", duration: 0.7, ease: EASE.back, stagger: 0.09 }, 1.5)
@@ -79,10 +79,10 @@ export function MapSection({
   const activeHomes = active ? (byDistrict[active] ?? []) : [];
 
   return (
-    <section id={id} ref={root} aria-labelledby="map-heading" className="relative overflow-hidden bg-sand/50 py-20 text-ink sm:py-28">
+    <section id={id} ref={root} data-section="map" aria-labelledby="map-heading" className="relative z-20 overflow-hidden bg-sand pb-[30vh] pt-20 text-ink shadow-[0_-30px_60px_-40px_rgba(20,33,61,0.35)] sm:pt-28">
       <div className="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-[1fr_1.05fr] lg:items-center lg:gap-10 lg:px-8">
         <div data-map-head>
-          <h2 id="map-heading" className="max-w-[16ch] font-display text-[2.2rem] leading-[1.04] tracking-tight sm:text-[3rem] lg:text-[3.6rem]">
+          <h2 id="map-heading" data-reveal className="max-w-[16ch] font-display text-[2.2rem] leading-[1.04] tracking-tight sm:text-[3rem] lg:text-[3.6rem]">
             Where the network&apos;s stock is, right now.
           </h2>
           <p className="mt-4 max-w-[46ch] text-[17px] leading-relaxed text-ink/75">

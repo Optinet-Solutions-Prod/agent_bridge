@@ -66,7 +66,8 @@ export function Hero({
   );
 
   return (
-    <section id={id} ref={root} aria-labelledby="hero-heading" className="relative isolate flex min-h-[100svh] flex-col justify-end overflow-hidden bg-ink text-limestone">
+    <section id={id} ref={root} data-section="hero" aria-labelledby="hero-heading" className="sticky top-0 z-0 h-[100svh] min-h-[640px] overflow-hidden bg-ink text-limestone">
+      <div data-hero-inner className="relative flex h-full flex-col justify-end will-change-transform">
       <div data-hero-photo className="absolute inset-[-6%] will-change-transform">
         <Image
           src={home.photos[0]}
@@ -80,13 +81,13 @@ export function Hero({
         />
       </div>
       <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/30 to-ink/10" />
-      <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-ink/55 via-transparent to-transparent" />
+      <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-ink/75 via-ink/30 to-transparent" />
 
-      <div data-hero-copy className="relative mx-auto w-full max-w-7xl px-4 pb-32 pt-28 sm:px-6 sm:pb-36 lg:px-8 lg:pb-40">
+      <div data-hero-copy className="relative mx-auto w-full max-w-7xl px-4 pb-10 pt-24 sm:px-6 sm:pb-12 lg:px-8 lg:pb-14">
         <h1
           id="hero-heading"
           data-hero-title
-          className="max-w-[16ch] font-display text-[2.75rem] leading-[0.98] tracking-[-0.02em] sm:text-[4.2rem] lg:text-[5.6rem]"
+          className="max-w-[16ch] font-display text-[2.75rem] leading-[0.98] tracking-[-0.02em] [text-shadow:0_2px_28px_rgba(20,33,61,0.55)] sm:text-[4.2rem] lg:text-[5.2rem]"
         >
           Homes across Portugal, shared by the agents who hold them.
         </h1>
@@ -143,6 +144,8 @@ export function Hero({
         <span>Scroll</span>
         <span data-hero-cue-line className="block h-12 w-px bg-limestone/60" />
       </div>
+      </div>
+      <div data-hero-dim aria-hidden className="pointer-events-none absolute inset-0 bg-ink opacity-0" />
     </section>
   );
 }

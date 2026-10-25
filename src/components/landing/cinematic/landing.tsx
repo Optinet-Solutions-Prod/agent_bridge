@@ -13,6 +13,7 @@ import { HomeSheet } from "./home-sheet";
 import { MapSection } from "./map-section";
 import { MotionProvider, useMotion } from "./motion";
 import { Steps } from "./steps";
+import { useSectionTransitions } from "./transitions";
 
 const FILM_IDS = ["cs-guincho-architect-villa", "al-carvoeiro-villa", "cp-carvalhal-beach-house", "at-montemor-monte", "pt-foz-townhouse", "md-calheta-clifftop"];
 const DEMO_IDS = ["al-lagos-minimal", "lx-alfama-terrace", "st-colares-quinta", "cs-birre-villa", "pt-ribeira-apartment", "al-tavira-village-house", "at-evora-village-house"];
@@ -28,7 +29,8 @@ export function CinematicLanding(props: { homes: ShowcaseHome[]; overview: Owner
 function LandingInner({ homes, overview, signedIn }: { homes: ShowcaseHome[]; overview: OwnerLeadOverview | null; signedIn: boolean }) {
   const [district, setDistrict] = useState("All");
   const [open, setOpen] = useState<ShowcaseHome | null>(null);
-  const { scrollTo } = useMotion();
+  const { scrollTo, reduced } = useMotion();
+  useSectionTransitions(reduced);
 
   const counts = useMemo(() => {
     const c: Record<string, number> = { All: homes.length };
@@ -55,8 +57,11 @@ function LandingInner({ homes, overview, signedIn }: { homes: ShowcaseHome[]; ov
     <>
       <CinematicHeader signedIn={signedIn} heroId="hero" />
       <main id="main">
-        <Hero id="hero" home={hero} counts={counts} agencies={agencies} district={district} onPickDistrict={browse} />
-        <Film homes={film} onOpen={setOpen} />
+        {/* The hero is sticky only within this wrapper, so it never shows through later sections. */}
+        <div className="relative">
+          <Hero id="hero" home={hero} counts={counts} agencies={agencies} district={district} onPickDistrict={browse} />
+          <Film homes={film} onOpen={setOpen} />
+        </div>
         <Gallery id="homes" homes={homes} district={district} onDistrict={setDistrict} onOpen={setOpen} />
         <MapSection id="map" homes={homes} overview={overview} onBrowse={browse} />
         <AgentsDemo id="agents" homes={demo} />

@@ -18,7 +18,6 @@ export function Steps() {
   useGSAP(
     () => {
       if (reduced) return;
-      gsap.from("[data-steps-head]", { y: 28, autoAlpha: 0, duration: 0.9, ease: EASE.out, scrollTrigger: { trigger: root.current, start: "top 75%", once: true } });
       gsap.fromTo(
         "[data-steps-line]",
         { scaleX: 0, scaleY: 1 },
@@ -33,9 +32,9 @@ export function Steps() {
   );
 
   return (
-    <section ref={root} aria-labelledby="steps-heading" className="bg-limestone py-20 text-ink sm:py-28">
+    <section ref={root} data-section="steps" aria-labelledby="steps-heading" className="relative z-30 -mt-28 bg-limestone pb-20 pt-40 text-ink sm:pb-28 sm:pt-48">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <h2 id="steps-heading" data-steps-head className="max-w-[20ch] font-display text-[2.2rem] leading-[1.04] tracking-tight sm:text-[3rem]">
+        <h2 id="steps-heading" data-reveal className="max-w-[20ch] font-display text-[2.2rem] leading-[1.04] tracking-tight sm:text-[3rem]">
           How a home goes from one agency&apos;s window to another agency&apos;s buyer
         </h2>
         <div className="relative mt-12 sm:mt-16">

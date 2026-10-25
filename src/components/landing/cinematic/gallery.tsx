@@ -47,7 +47,7 @@ export function Gallery({
   useGSAP(
     () => {
       if (reduced) return;
-      gsap.from("[data-gallery-head] > *", {
+      gsap.from("[data-gallery-head] > :not(h2)", {
         y: 28,
         autoAlpha: 0,
         duration: 0.9,
@@ -72,10 +72,17 @@ export function Gallery({
   }
 
   return (
-    <section id={id} ref={root} aria-labelledby="gallery-heading" className="relative bg-limestone py-20 text-ink sm:py-28">
+    <section
+      id={id}
+      ref={root}
+      data-section="gallery"
+      aria-labelledby="gallery-heading"
+      className="relative z-20 -mt-[100vh] overflow-hidden bg-limestone py-20 text-ink shadow-[0_-40px_80px_-40px_rgba(20,33,61,0.7)] sm:py-28"
+      style={{ borderTopLeftRadius: 40, borderTopRightRadius: 40 }}
+    >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div data-gallery-head className="max-w-3xl">
-          <h2 id="gallery-heading" className="font-display text-[2.2rem] leading-[1.04] tracking-tight sm:text-[3rem] lg:text-[3.6rem]">
+          <h2 id="gallery-heading" data-reveal className="font-display text-[2.2rem] leading-[1.04] tracking-tight sm:text-[3rem] lg:text-[3.6rem]">
             Every home on the network, in one place.
           </h2>
           <p className="mt-4 max-w-[52ch] text-[17px] leading-relaxed text-ink/75">

@@ -5,7 +5,7 @@ import { useRef, useState } from "react";
 import { Logo } from "@/components/logo";
 import { DEMO_MODE } from "@/lib/demo";
 import { cn } from "@/lib/utils";
-import { ScrollTrigger, useGSAP } from "./motion";
+import { ScrollTrigger, gsap, useGSAP } from "./motion";
 
 /** Transparent over the hero, solid limestone once the hero has scrolled away. */
 export function CinematicHeader({ signedIn, heroId }: { signedIn: boolean; heroId: string }) {
@@ -22,7 +22,16 @@ export function CinematicHeader({ signedIn, heroId }: { signedIn: boolean; heroI
       onToggle: (self) => setSolid(self.isActive),
       onRefresh: (self) => setSolid(self.isActive),
     });
-    return () => trigger.kill();
+    // One thin line tracks progress through the whole page.
+    const progress = ScrollTrigger.create({
+      start: 0,
+      end: "max",
+      onUpdate: (self) => gsap.set("[data-page-progress]", { scaleX: self.progress }),
+    });
+    return () => {
+      trigger.kill();
+      progress.kill();
+    };
   }, [heroId]);
 
   const link = cn("rounded-lg px-3 py-2 text-[15px] transition", solid ? "text-ink/75 hover:text-ink" : "text-limestone/80 hover:text-limestone");
@@ -35,6 +44,7 @@ export function CinematicHeader({ signedIn, heroId }: { signedIn: boolean; heroI
         solid ? "bg-limestone/85 shadow-[0_1px_0_rgba(20,33,61,0.06)] backdrop-blur-md" : "bg-transparent",
       )}
     >
+      <div data-page-progress aria-hidden className={cn("absolute inset-x-0 top-0 h-[2px] origin-left scale-x-0", solid ? "bg-brand-700" : "bg-limestone/80")} />
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:h-16 sm:px-6 lg:px-8">
         <Logo light={!solid} />
         <nav aria-label="Site" className="flex items-center gap-1 sm:gap-2">

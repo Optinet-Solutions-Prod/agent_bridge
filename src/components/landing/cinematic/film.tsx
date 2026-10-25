@@ -31,6 +31,10 @@ export function Film({ homes, onOpen }: { homes: ShowcaseHome[]; onOpen: (home: 
         gsap.set(images.slice(1), { autoAlpha: 0, scale: 1.1 });
         gsap.set(blocks.slice(1), { autoAlpha: 0, yPercent: 30 });
 
+        // The scroll range is (n + 1) screens: n homes, then one screen of hold
+        // during which the gallery sheet slides over the last frame.
+        const homesShare = n / (n + 1);
+        const labelAt = (i: number) => (i / (n - 1)) * homesShare;
         const tl = gsap.timeline({
           defaults: { ease: "none" },
           scrollTrigger: {
@@ -40,8 +44,23 @@ export function Film({ homes, onOpen }: { homes: ShowcaseHome[]; onOpen: (home: 
             scrub: 0.7,
             pin: "[data-film-stage]",
             anticipatePin: 1,
-            snap: { snapTo: 1 / (n - 1), duration: { min: 0.25, max: 0.7 }, delay: 0.05, ease: "power1.inOut" },
-            onUpdate: (self) => setIndex(Math.min(n - 1, Math.round(self.progress * (n - 1)))),
+            snap: {
+              // Snap home to home, but never inside the hold at the end.
+              snapTo: (value: number) => {
+                if (value > homesShare + 0.02) return value;
+                let best = 0;
+                for (let i = 0; i < n; i++) if (Math.abs(labelAt(i) - value) < Math.abs(labelAt(best) - value)) best = i;
+                return labelAt(best);
+              },
+              duration: { min: 0.25, max: 0.7 },
+              delay: 0.05,
+              ease: "power1.inOut",
+              // Snap from where the scroll actually is, not where a flick might end up,
+              // so a fast wheel never skips a home.
+              inertia: false,
+              directional: false,
+            },
+            onUpdate: (self) => setIndex(Math.min(n - 1, Math.round((Math.min(self.progress, homesShare) / homesShare) * (n - 1)))),
           },
         });
 
@@ -64,6 +83,8 @@ export function Film({ homes, onOpen }: { homes: ShowcaseHome[]; onOpen: (home: 
             .add(countUp(i), at + 0.5)
             .to({}, { duration: 0.35 });
         }
+        // Hold: the same duration as one home, so the timing above maps onto (n + 1) screens.
+        tl.to({}, { duration: tl.duration() / n });
       });
       return () => mm.revert();
     },
@@ -87,8 +108,9 @@ export function Film({ homes, onOpen }: { homes: ShowcaseHome[]; onOpen: (home: 
   }
 
   return (
-    <section ref={root} aria-label="Featured homes" className="relative bg-ink text-limestone" style={{ height: `${n * 100}vh` }}>
+    <section ref={root} data-section="film" aria-label="Featured homes" className="relative z-10 bg-ink text-limestone" style={{ height: `${(n + 1) * 100}vh` }}>
       <div data-film-stage className="relative h-screen overflow-hidden">
+        <div data-film-inner className="absolute inset-0 will-change-transform">
         {homes.map((home, i) => (
           <div key={home.id} data-film-photo className="absolute inset-0 will-change-transform">
             <Image
@@ -120,6 +142,8 @@ export function Film({ homes, onOpen }: { homes: ShowcaseHome[]; onOpen: (home: 
             </li>
           ))}
         </ol>
+        </div>
+        <div data-film-dim aria-hidden className="pointer-events-none absolute inset-0 bg-ink opacity-0" />
       </div>
     </section>
   );

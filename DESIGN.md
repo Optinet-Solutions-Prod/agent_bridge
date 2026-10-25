@@ -35,6 +35,11 @@ Rules: cobalt owns whole regions (a full band, a primary button), never scattere
   counting up, a bento gallery whose cards rise in and tilt in 3D under the pointer, a map of Portugal that draws itself
   with pulsing district dots and count-ups, a live swipe deck, steps whose connecting line draws with scroll, and a
   parallax closing. Lenis leaves touch scrolling native; wheel/keyboard scroll is eased.
+- Between sections the page never cuts (`cinematic/transitions.tsx`, all scrubbed to scroll): the hero stays pinned and
+  dims while the film slides over it; the film's last frame recedes under the gallery, which arrives as a rounded sheet;
+  the map rises as a sheet; cobalt wells up out of the map as an expanding circle; the steps enter as a slanted curtain
+  that straightens; the closing photograph zooms from an inset frame to full bleed. Section headings share the hero's
+  masked line reveal, and a 2px progress line in the header threads the whole scroll together.
 - Inside the app: one orchestrated moment per screen at most; otherwise motion only answers a user action (filter
   re-sorts via View Transitions, sheets via `@starting-style`, press feedback `scale(0.97–0.985)` at 100–160ms).
 - Curves: `power4.out` for entrances, `power3.inOut` for on-screen movement, `back.out(1.6)` for pops; CSS tokens
